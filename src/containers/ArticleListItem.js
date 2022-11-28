@@ -1,3 +1,5 @@
-const ArticleListItem = () => <div>Article List Item</div>;
+const ArticleListItem = () => (
+  <div>This is the "Home" page that will display the list of articles</div>
+);
 
 export default ArticleListItem;
