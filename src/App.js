@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import { fetchStories } from './actions';
 import SearchBar from './components/SearchBar';
 import Header from './components/Header';
+import Main from './components/Main';
 
 function App() {
   // const [query, setQuery] = useState('');
@@ -10,11 +11,11 @@ function App() {
   const stories = useSelector((state) => state);
   const dispatch = useDispatch();
 
-useEffect(() =>{
-  dispatch(fetchStories('brazil'))
-  },[])
- 
-  console.log('stories', stories);
+  useEffect(() =>{
+    dispatch(fetchStories('brazil'))
+    },[])
+
+    console.log('stories', stories);
 
   return (
     <div className="App">
