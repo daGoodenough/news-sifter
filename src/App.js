@@ -5,20 +5,20 @@ import SearchBar from './components/SearchBar';
 import Header from './components/Header';
 import Main from './components/Main';
 
-function App() {
+async function App() {
   // const [query, setQuery] = useState('');
 
-  const stories = useSelector((state) => state);
+  const stories = useSelector((state) => state.articles);
   const dispatch = useDispatch();
-
   useEffect(() => {
-    dispatch(fetchStories('brazil'));
+    dispatch(fetchStories());
   }, []);
 
-  // console.log('stories', stories);
+  // console.log('stories', await stories);
 
   return (
     <div className="App">
+      <p>Hello world</p>
       {/* <Header />
       <SearchBar />
       <Main /> */}
