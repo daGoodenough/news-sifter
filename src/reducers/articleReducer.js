@@ -135,8 +135,7 @@ const reducer = async function (state = [], action) {
         };
         return acc;
       }, {});
-      console.log(storiesWithInfo);
-      return action.payload;
+      return storiesWithInfo;
     default:
       return state;
   }
