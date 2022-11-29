@@ -6,10 +6,11 @@ function pullURLS(data) {
   return pulled;
 }
 
-function extractArticles(data, extractedArticles) {
-  extractedArticles = [];
-  data.forEach((i) => {
-    extract(i).then((article) => {
+async function extractArticles(data) {
+  const extractedArticles = [];
+  const articlePromises = await data.map((i) => extract(i));
+  await Promise.all(articlePromises).then((data) => {
+    data.map((article) => {
       const content = article.content.replaceAll('<', ' <');
       const parser = new DOMParser();
       const parsedArticle = parser.parseFromString(content, 'text/html');
@@ -40,22 +41,46 @@ async function getWordList() {
   wordList.lemmas = lemmas;
   wordList.lemRanks = lemRanks;
   wordList.wordForms = wordForms;
-  console.log(wordList);
+  return wordList;
 }
 
-async function getReadingLevelInfo(story) {
-  console.log('this doesnt work either', story[0]);
+async function getReadingLevelInfo(story, wordList) {
+  const splitStory = story[0]
+    .toLowerCase()
+    .trim()
+    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
+  const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
+  const filteredStory = noHyphens.filter((el) => el !== '');
+  const wordCount = filteredStory.reduce(
+    (acc, i) => {
+      if (wordList.wordForms.includes(i)) {
+        const index = wordList.wordForms.indexOf(i);
+        if (Number(wordList.lemRanks[index]) <= 1000) {
+          acc.beginner += 1;
+        } else if (Number(wordList.lemRanks[index]) <= 2500) {
+          acc.intermediate += 1;
+        } else if (Number(wordList.lemRanks[index]) <= 5050) {
+          acc.advanced += 1;
+        }
+      } else {
+        acc.super += 1;
+      }
+      return acc;
+    },
+    { beginner: 0, intermediate: 0, advanced: 0, super: 0 }
+  );
+  console.log('splitstory', noHyphens);
+  console.log('Word Count', wordCount);
 }
 
-const reducer = function (state = [], action) {
+const reducer = async function (state = [], action) {
   switch (action.type) {
     case FETCH_STORIES:
       const pulledURLS = pullURLS(action.payload);
-      const extractedArticles = extractArticles(pulledURLS);
-      console.log('why does this work', extractedArticles);
-      console.log('but this doesnt', extractedArticles[0]);
-      getReadingLevelInfo(extractedArticles);
-      return extractedArticles;
+      const extractedArticles = await extractArticles(pulledURLS);
+      const wordList = await getWordList();
+      getReadingLevelInfo(extractedArticles, wordList);
+      return action.payload;
     default:
       return state;
   }
