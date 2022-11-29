@@ -11,17 +11,17 @@ function App() {
   const stories = useSelector((state) => state);
   const dispatch = useDispatch();
 
-  useEffect(() =>{
-    dispatch(fetchStories('brazil'))
-    },[])
+  useEffect(() => {
+    dispatch(fetchStories('brazil'));
+  }, []);
 
-    console.log('stories', stories);
+  // console.log('stories', stories);
 
   return (
     <div className="App">
-      <Header />
+      {/* <Header />
       <SearchBar />
-      <Main />
+      <Main /> */}
     </div>
   );
 }
