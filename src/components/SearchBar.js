@@ -7,6 +7,12 @@ const SearchBar = () => {
   const [readingLevel, setReadingLevel] = useState('');
   const [sortMethod, setSortMethod] = useState('');
 
+  const handleSubmitClick = () => {
+    // dispatch(fetchStories(query))
+    // either dispatch all the state information to fetchSotries
+    // or dispatch to a different part of the store that will keep track of language, readingLevel, and sortMethod
+  };
+
   return (
     <Row>
       <Col md={{ span: 6, offset: 3 }}>
@@ -18,7 +24,11 @@ const SearchBar = () => {
                 type="text"
                 placeholder="Search to find articles..."
               />
-              <InputGroup.Text role="button" type="submit">
+              <InputGroup.Text
+                onClick={handleSubmitClick}
+                role="button"
+                type="submit"
+              >
                 Search
               </InputGroup.Text>
             </InputGroup>
