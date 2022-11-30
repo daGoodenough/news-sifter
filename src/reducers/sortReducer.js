@@ -10,7 +10,6 @@ const DEFAULT_STATE = {
 const sortReducer = (state = DEFAULT_STATE, action) => {
   switch (action.type) {
     case CHANGE_DIFFICULTY:
-      debugger;
       return { ...state, difficulty: action.payload };
     case CHANGE_LANGUAGE:
       return { ...state, language: action.payload };
