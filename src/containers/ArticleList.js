@@ -1,15 +1,22 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
+
 import ArticleListItem from './ArticleListItem';
+import sortArticles from '../helpers/sortArticleData';
 /* eslint-disable react/prop-types */
 
 const ArticleList = ({ history }) => {
   const stories = useSelector((state) => state.articles);
+  const sort = useSelector((state) => state.sort);
+
+  const sortedArticles = sortArticles(stories, sort);
+
+  console.log('Sorted: ', sortedArticles);
 
   const renderArticleListItems = () =>
-    _.map(stories, (article, articleId) => (
-      <ArticleListItem key={articleId} id={articleId} history={history} />
+    sortedArticles.map((article) => (
+      <ArticleListItem key={article.id} id={article.id} />
     ));
 
   return (
