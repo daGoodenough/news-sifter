@@ -23,7 +23,7 @@ function App() {
 
   return (
     <div className="App">
-      {/* <Header /> */}
+      <Header />
       <SearchBar />
       <Main />
     </div>
