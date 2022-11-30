@@ -47,15 +47,16 @@ async function getReadingLevelInfo(stories, wordList) {
       .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
     const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
     const filteredStory = noHyphens.filter((el) => el !== '');
+    const [beginnerRank, intermediateRank, advancedRank] = [800, 2000, 5500];
     const wordCount = filteredStory.reduce(
       (acc, i) => {
         if (wordList.wordForms.includes(i)) {
           const index = wordList.wordForms.indexOf(i);
-          if (Number(wordList.lemRanks[index]) <= 1000) {
+          if (Number(wordList.lemRanks[index]) <= beginnerRank) {
             acc.beginner += 1;
-          } else if (Number(wordList.lemRanks[index]) <= 2500) {
+          } else if (Number(wordList.lemRanks[index]) <= intermediateRank) {
             acc.intermediate += 1;
-          } else if (Number(wordList.lemRanks[index]) <= 5050) {
+          } else if (Number(wordList.lemRanks[index]) <= advancedRank) {
             acc.advanced += 1;
           }
         } else {
