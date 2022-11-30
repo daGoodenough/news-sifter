@@ -9,6 +9,7 @@ export const fetchStories = async (query) => {
   const results = await axios.get('./data.json');
   const { articles } = results.data;
   const formattedData = await formatData(articles);
+  console.log('formatted', formattedData);
   return formattedData;
 };
 
@@ -139,7 +140,8 @@ const formatData = async (articles) => {
     };
     return acc;
   }, {});
-  return storiesWithInfo;
+  const notPromiesed = storiesWithInfo;
+  return notPromiesed;
 };
 
 // const DEFAULT_STATE = {
