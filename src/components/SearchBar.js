@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { fetchStories } from '../helpers/fetchStoryData';
-// import addStories from 'somewhere'
+import { addStories } from '../actions';
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -14,10 +14,14 @@ const SearchBar = () => {
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {
+    console.log('Fetched', fetchStories());
     const storiesData = await fetchStories(query);
     console.log('storiesdata', storiesData);
 
-    // dispatch(addStories(storiesData));
+    console.log('Dispatch: ', dispatch);
+    console.log('addStories: ', addStories);
+
+    dispatch(addStories(storiesData));
     // either dispatch all the state information to fetchSotries
     // or dispatch to a different part of the store that will keep track of language, readingLevel, and sortMethod
   };

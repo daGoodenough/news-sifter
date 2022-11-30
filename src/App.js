@@ -8,8 +8,10 @@ import Main from './components/Main';
 function App() {
   // const [query, setQuery] = useState('');
 
-  const stories = useSelector((state) => state.articles);
+  const stories = useSelector((state) => state);
   const dispatch = useDispatch();
+
+  console.log('app stories', stories);
 
   // useEffect(() => {
   //   dispatch(fetchStories('brazil'));

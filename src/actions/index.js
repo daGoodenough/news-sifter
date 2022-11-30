@@ -1,8 +1,9 @@
-export const FETCH_STORIES = 'FETCH_STORIES';
+export const ADD_STORIES = 'ADD_STORIES';
 
-export async function addStories(storiesData) {
+export function addStories(storiesData) {
+  console.log('Add stories action called');
   return {
-    type: FETCH_STORIES,
-    payload: results.data.articles,
+    type: ADD_STORIES,
+    payload: storiesData,
   };
 }
