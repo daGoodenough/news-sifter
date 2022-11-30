@@ -2,6 +2,10 @@ import React from 'react';
 import Container from 'react-bootstrap/Container';
 import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+<<<<<<< HEAD
+=======
+import NavDropdown from 'react-bootstrap/NavDropdown';
+>>>>>>> c337728 (adds initial navbar and DropdownListItem component)
 
 const Header = () => (
   <Navbar className="color-nav" expand="lg" variant="light">
