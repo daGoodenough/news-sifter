@@ -99,22 +99,13 @@ const formatData = async (articles, wordList) => {
       source: articles[index].source.name,
       htmlContent: extractedHTML[index],
       wordCount: storiesDifficulty[index].total,
-      beginnerWords: `${Math.floor(
-        100 *
-          (storiesDifficulty[index].beginner / storiesDifficulty[index].total)
-      )}%`,
-      intermediateWords: `${Math.floor(
-        100 *
-          (storiesDifficulty[index].intermediate /
-            storiesDifficulty[index].total)
-      )}%`,
-      advancedWords: `${Math.floor(
-        100 *
-          (storiesDifficulty[index].advanced / storiesDifficulty[index].total)
-      )}%`,
-      super: `${Math.floor(
-        100 * (storiesDifficulty[index].super / storiesDifficulty[index].total)
-      )}%`,
+      beginnerWords:
+        storiesDifficulty[index].beginner / storiesDifficulty[index].total,
+      intermediateWords:
+        storiesDifficulty[index].intermediate / storiesDifficulty[index].total,
+      advancedWords:
+        storiesDifficulty[index].advanced / storiesDifficulty[index].total,
+      super: storiesDifficulty[index].super / storiesDifficulty[index].total,
     };
     return acc;
   }, {});
