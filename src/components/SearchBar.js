@@ -3,7 +3,12 @@ import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { fetchStories } from '../helpers/fetchStoryData';
-import { addStories, changeDifficulty } from '../actions';
+import {
+  addStories,
+  changeDifficulty,
+  changeLanguage,
+  changeSortBy,
+} from '../actions';
 
 async function getWordList() {
   const lemmas = [];
@@ -30,9 +35,6 @@ async function getWordList() {
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
-  const [language, setLanguage] = useState('');
-  const [readingLevel, setReadingLevel] = useState('');
-  const [sortMethod, setSortMethod] = useState('');
 
   let wordList = {};
 
@@ -48,9 +50,13 @@ const SearchBar = () => {
   };
 
   const handleReadingLevelChange = (e) => {
-    setReadingLevel(e.target.value);
+    // setReadingLevel(e.target.value);
     dispatch(changeDifficulty(e.target.value));
   };
+
+  const handleLanguageChange = (e) => dispatch(changeLanguage(e.target.value));
+
+  const handleSortByChange = (e) => dispatch(changeSortBy(e.target.value));
 
   return (
     <Row>
@@ -77,11 +83,11 @@ const SearchBar = () => {
               <Form.Group>
                 <InputGroup>
                   <Form.Select
-                    onChange={(e) => setLanguage(e.target.value)}
+                    onChange={(e) => handleLanguageChange(e)}
                     aria-label="Default select example"
                   >
                     <option>Language</option>
-                    <option value="en">English</option>
+                    <option value="english">English</option>
                   </Form.Select>
                 </InputGroup>
               </Form.Group>
@@ -106,7 +112,7 @@ const SearchBar = () => {
               <Form.Group>
                 <InputGroup>
                   <Form.Select
-                    onChange={(e) => setSortMethod(e.target.value)}
+                    onChange={(e) => handleSortByChange(e)}
                     aria-label="Default select example"
                   >
                     <option>Sort By</option>
