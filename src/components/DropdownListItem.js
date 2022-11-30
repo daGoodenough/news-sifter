@@ -1,41 +1,32 @@
-import React from 'react'
+import React from 'react';
+import NavDropdown from 'react-bootstrap/NavDropdown';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
-const DropdownListItem = () => {
-   const store = {
-    1: {
-      id: 1,
-      title: 'How to Make Milk',
-      author: 'James Cameron',
-      image:
-        'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80',
-      description: `It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).`,
-    },
-    2: {
-      id: 1,
-      title: 'How to Make Milk',
-      author: 'James Cameron',
-      image:
-        'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80',
-      description: `It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).`,
-    },
-    3: {
-      id: 1,
-      title: 'How to Make Milk',
-      author: 'James Cameron',
-      image:
-        'https://images.unsplash.com/photo-1541963463532-d68292c34b19?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxleHBsb3JlLWZlZWR8Mnx8fGVufDB8fHx8&w=1000&q=80',
-      description: `It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident, sometimes on purpose (injected humour and the like).`,
-    },
-  };
-
-
-
-  return (
+const DropdownListItem = ({ article }) => (
+  <>
     <NavDropdown.Item href="#action/3.3">
-      
+      <Container>
+        <Row className="justify-content-md-center">
+          <Col xs lg="2">
+            <img src={article.image} alt="" width="200" height="200" />
+          </Col>
+          <Col md="auto">
+            <p>{article.title}</p>
+            <p>{article.author}</p>
+            <p>{article.description}</p>
+          </Col>
+          <Col xs lg="2">
+            <span>{article.begginerWords}</span>
+            <span>{article.intermediateWords}</span>
+            <span>{article.advancedWords}</span>
+          </Col>
+        </Row>
+      </Container>
     </NavDropdown.Item>
     <NavDropdown.Divider />
-  )
-}
+  </>
+);
 
-export default DropdownListItem
+export default DropdownListItem;
