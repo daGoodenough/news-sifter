@@ -99,7 +99,7 @@ const SearchBar = () => {
                     onChange={(e) => handleReadingLevelChange(e)}
                     aria-label="Default select example"
                   >
-                    <option>Reading Level</option>
+                    <option value="default">Reading Level</option>
 
                     <option value="beginner">Beginner</option>
                     <option value="intermediate">Intermediate</option>
