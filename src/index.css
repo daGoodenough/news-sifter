@@ -33,10 +33,6 @@ td img {
   border-radius: 8px;
 }
 
-a {
-  color: blue;
-}
-
 .reading-level-box{
   border-radius: 8px;
   border: .1px solid black;
@@ -54,8 +50,41 @@ td h3{
   margin-bottom: -2px;
 }
 
+td h3:hover{
+  cursor:pointer;
+  color: rgb(34, 34, 255);
+}
+
 small {
   color: red;
+}
+
+.article-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 2%;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+article img {
+  max-width: 500px;
+  max-height: 500px;
+  object-fit: cover;
+  width: 100%;
+
+}
+
+.title-and-author {
+  display: flex;
+  flex-direction: row;
+  font-style: italic;
+  margin-bottom: 1%;
+}
+
+.back-button {
+  margin-left: 1%;
 }
 
 @media screen and (max-width:480px) {

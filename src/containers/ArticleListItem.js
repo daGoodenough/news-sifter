@@ -1,7 +1,10 @@
 /* eslint-disable react/prop-types */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+
 import { useSelector } from 'react-redux';
 
-const ArticleListItem = ({ id }) => {
+const ArticleListItem = ({ id, history }) => {
   const stories = useSelector((state) => state.articles);
   return (
     <tbody>
@@ -20,8 +23,8 @@ const ArticleListItem = ({ id }) => {
           </div>
         </td>
         <td className="article-text-cell">
-          <h3>
-            <a>{stories[id].title}</a>
+          <h3 onClick={() => history.push(`/${stories[id].id}`)}>
+            {stories[id].title}
           </h3>
           <small>{stories[id].source}</small>
           <small> | {stories[id].author}</small>
