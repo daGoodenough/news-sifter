@@ -18,7 +18,11 @@ const ArticleList = () => {
       <ArticleListItem key={article.id} id={article.id} />
     ));
 
-  return <table className="table">{renderArticleListItems()}</table>;
+  return (
+    <div className="search-results-box">
+      <table className="table">{renderArticleListItems()}</table>
+    </div>
+  );
 };
 
 export default ArticleList;
