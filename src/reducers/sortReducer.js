@@ -1,5 +1,5 @@
 /* eslint-disable default-param-last */
-import { CHANGE_DIFFICULTY } from '../actions';
+import { CHANGE_DIFFICULTY, CHANGE_LANGUAGE, CHANGE_SORTBY } from '../actions';
 
 const DEFAULT_STATE = {
   difficulty: null,
@@ -12,6 +12,10 @@ const sortReducer = (state = DEFAULT_STATE, action) => {
     case CHANGE_DIFFICULTY:
       debugger;
       return { ...state, difficulty: action.payload };
+    case CHANGE_LANGUAGE:
+      return { ...state, language: action.payload };
+    case CHANGE_SORTBY:
+      return { ...state, sortBy: action.payload };
     default:
       return state;
   }
