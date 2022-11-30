@@ -1,9 +1,32 @@
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { fetchStories } from '../helpers/fetchStoryData';
 import { addStories } from '../actions';
+
+async function getWordList() {
+  const lemmas = [];
+  const lemRanks = [];
+  const wordForms = [];
+  const response = await fetch('wordForms.csv');
+  const data = await response.text();
+  const table = data.split(/\r?\n/).slice(1);
+  table.forEach((row) => {
+    const columns = row.split(',');
+    const lemRank = columns[0];
+    const lemma = columns[1];
+    const wordForm = columns[5];
+    lemRanks.push(parseFloat(lemRank));
+    lemmas.push(lemma);
+    wordForms.push(wordForm);
+  });
+  const wordList = {};
+  wordList.lemmas = lemmas;
+  wordList.lemRanks = lemRanks;
+  wordList.wordForms = wordForms;
+  return wordList;
+}
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -11,16 +34,16 @@ const SearchBar = () => {
   const [readingLevel, setReadingLevel] = useState('');
   const [sortMethod, setSortMethod] = useState('');
 
+  let wordList = {};
+
+  useEffect(() => {
+    wordList = getWordList();
+  }, []); 
+
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {
-    console.log('Fetched', fetchStories());
-    const storiesData = await fetchStories(query);
-    console.log('storiesdata', storiesData);
-
-    console.log('Dispatch: ', dispatch);
-    console.log('addStories: ', addStories);
-
+    const storiesData = await fetchStories(query, await wordList);
     dispatch(addStories(storiesData));
     // either dispatch all the state information to fetchSotries
     // or dispatch to a different part of the store that will keep track of language, readingLevel, and sortMethod
