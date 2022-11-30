@@ -1,5 +1,9 @@
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
 import { useState } from 'react';
+import { useDispatch } from 'react-redux';
+
+import { fetchStories } from '../helpers/fetchStoryData';
+// import addStories from 'somewhere'
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -7,8 +11,13 @@ const SearchBar = () => {
   const [readingLevel, setReadingLevel] = useState('');
   const [sortMethod, setSortMethod] = useState('');
 
-  const handleSubmitClick = () => {
-    // dispatch(fetchStories(query))
+  const dispatch = useDispatch();
+
+  const handleSubmitClick = async () => {
+    const storiesData = await fetchStories(query);
+    console.log('storiesdata', storiesData);
+
+    // dispatch(addStories(storiesData));
     // either dispatch all the state information to fetchSotries
     // or dispatch to a different part of the store that will keep track of language, readingLevel, and sortMethod
   };
