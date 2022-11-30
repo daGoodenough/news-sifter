@@ -4,7 +4,7 @@ import { useDispatch } from 'react-redux';
 
 import { fetchStories } from '../helpers/fetchStoryData';
 import { addStories } from '../actions';
-
+/* eslint-disable no-unused-vars */
 async function getWordList() {
   const lemmas = [];
   const lemRanks = [];
@@ -38,7 +38,7 @@ const SearchBar = () => {
 
   useEffect(() => {
     wordList = getWordList();
-  }, []); 
+  }, []);
 
   const dispatch = useDispatch();
 

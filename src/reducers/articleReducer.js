@@ -1,4 +1,5 @@
 /* eslint-disable no-case-declarations */
+/* eslint-disable default-param-last */
 import { ADD_STORIES } from '../actions';
 
 const reducer = function (state = [], action) {
