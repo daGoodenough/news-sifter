@@ -11,7 +11,7 @@ function App() {
   const stories = useSelector((state) => state);
   const dispatch = useDispatch();
 
-  console.log('app stories', stories);
+  // console.log('app stories', stories);
 
   // useEffect(() => {
   //   dispatch(fetchStories('brazil'));

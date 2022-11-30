@@ -5,8 +5,15 @@ import Article from '../containers/Article';
 
 const Main = () => (
   <Switch>
-    <Route exact path="/" render={() => <Home />} />
-    <Route path="/article/:articleId" render={() => <Article />} />
+    <Route
+      exact
+      path="/"
+      render={(routerProps) => <Home history={routerProps.history} />}
+    />
+    <Route
+      path="/:articleId"
+      render={(routerProps) => <Article history={routerProps.history} />}
+    />
   </Switch>
 );
 
