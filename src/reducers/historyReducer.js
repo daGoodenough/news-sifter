@@ -1,6 +1,6 @@
 import { ADD_HISTORY, DELETE_HISTORY, REMOVE_HISTORY } from '../actions';
 
-export function historyReducer(state = {}, action) {
+function historyReducer(state = {}, action) {
   switch (action.type) {
     case ADD_HISTORY:
       const tempADD = { ...state };
@@ -16,3 +16,5 @@ export function historyReducer(state = {}, action) {
       return state;
   }
 }
+
+export default historyReducer;
