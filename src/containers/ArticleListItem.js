@@ -7,17 +7,6 @@ const ArticleListItem = ({ id }) => {
     <tbody>
       <tr>
         <td>
-          <img src={stories[id].image} alt="article header" />
-        </td>
-        <td className="article-text-cell">
-          <h3>
-            <a>{stories[id].title}</a>
-          </h3>
-          <small>{stories[id].source}</small>
-          <small> | {stories[id].author}</small>
-          <p>{stories[id].description}</p>
-        </td>
-        <td>
           <div className="reading-level-box">
             <ul>
               <h6>
@@ -29,6 +18,17 @@ const ArticleListItem = ({ id }) => {
               <li>Advanced words: {stories[id].advancedWords}</li>
             </ul>
           </div>
+        </td>
+        <td className="article-text-cell">
+          <h3>
+            <a>{stories[id].title}</a>
+          </h3>
+          <small>{stories[id].source}</small>
+          <small> | {stories[id].author}</small>
+          <p>{stories[id].description}</p>
+        </td>
+        <td>
+          <img src={stories[id].image} alt="article header" />
         </td>
       </tr>
     </tbody>
