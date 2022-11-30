@@ -2,14 +2,13 @@ import { extract } from 'article-parser';
 import axios from 'axios';
 import { FETCH_STORIES } from '../actions';
 
-export const fetchStories = async (query) => {
+export const fetchStories = async (query, wordList) => {
   // const results = await axios.get(
   //   `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=6f455332142e46d88daddea6d559b104`
   // );
   const results = await axios.get('./data.json');
   const { articles } = results.data;
-  const formattedData = await formatData(articles);
-  console.log('formatted', formattedData);
+  const formattedData = await formatData(articles, wordList);
   return formattedData;
 };
 
@@ -34,30 +33,6 @@ async function extractArticles(data) {
 
 function extractHTML(data) {
   return data.map((i) => extract(i).then((article) => article.content));
-}
-
-// word list
-async function getWordList() {
-  const lemmas = [];
-  const lemRanks = [];
-  const wordForms = [];
-  const response = await fetch('wordForms.csv');
-  const data = await response.text();
-  const table = data.split(/\r?\n/).slice(1);
-  table.forEach((row) => {
-    const columns = row.split(',');
-    const lemRank = columns[0];
-    const lemma = columns[1];
-    const wordForm = columns[5];
-    lemRanks.push(parseFloat(lemRank));
-    lemmas.push(lemma);
-    wordForms.push(wordForm);
-  });
-  const wordList = {};
-  wordList.lemmas = lemmas;
-  wordList.lemRanks = lemRanks;
-  wordList.wordForms = wordForms;
-  return wordList;
 }
 
 async function getReadingLevelInfo(stories, wordList) {
@@ -98,10 +73,9 @@ async function getReadingLevelInfo(stories, wordList) {
   return storiesDifficulty;
 }
 
-const formatData = async (articles) => {
+const formatData = async (articles, wordList) => {
   const pulledURLS = pullURLS(articles);
   const extractedArticles = await extractArticles(pulledURLS);
-  const wordList = await getWordList();
   const storiesDifficulty = await getReadingLevelInfo(
     extractedArticles,
     wordList
