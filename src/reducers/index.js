@@ -1,11 +1,11 @@
 import { combineReducers } from 'redux';
 import articleReducer from './articleReducer';
-import readLaterReducer from './readLaterReducer';
+import savedReducer from './savedReducer';
 import historyReducer from './historyReducer';
 
 const rootReducer = combineReducers({
   articles: articleReducer,
-  readLater: readLaterReducer,
+  saved: savedReducer,
   history: historyReducer,
 });
 
