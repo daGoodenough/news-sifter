@@ -15,6 +15,18 @@ const sortStories = (articleData, sort) => {
       (article) => article.beginnerWords >= difficulty
     );
   }
+  if (sortDifficulty === 'intermediate') {
+    return _.filter(
+      articleData,
+      (article) => article.intermediateWords >= difficulty
+    );
+  }
+  if (sortDifficulty === 'advanced') {
+    return _.filter(
+      articleData,
+      (article) => article.advancedWords >= difficulty
+    );
+  }
 };
 
 export default sortStories;
