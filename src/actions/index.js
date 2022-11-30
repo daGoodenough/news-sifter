@@ -4,6 +4,7 @@ export const ADD_HISTORY = 'ADD_HISTORY';
 export const REMOVE_HISTORY = 'REMOVE_HISTORY';
 export const REMOVE_SAVED = 'REMOVE_SAVED';
 export const DELETE_HISTORY = 'DELETE_HISTORY';
+export const CHANGE_DIFFICULTY = 'CHANGE_DIFFICULTY';
 
 export function addStories(storiesData) {
   return {
@@ -44,5 +45,12 @@ export function deleteHistory(historyItem) {
   return {
     type: DELETE_HISTORY,
     payload: historyItem,
+  };
+}
+
+export function changeDifficulty(difficulty) {
+  return {
+    type: CHANGE_DIFFICULTY,
+    payload: difficulty,
   };
 }
