@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 
 import { fetchStories } from '../helpers/fetchStoryData';
-import { addStories } from '../actions';
+import { addStories, changeDifficulty } from '../actions';
 
 async function getWordList() {
   const lemmas = [];
@@ -38,15 +38,18 @@ const SearchBar = () => {
 
   useEffect(() => {
     wordList = getWordList();
-  }, []); 
+  }, []);
 
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {
     const storiesData = await fetchStories(query, await wordList);
     dispatch(addStories(storiesData));
-    // either dispatch all the state information to fetchSotries
-    // or dispatch to a different part of the store that will keep track of language, readingLevel, and sortMethod
+  };
+
+  const handleReadingLevelChange = (e) => {
+    setReadingLevel(e.target.value);
+    dispatch(changeDifficulty(e.target.value));
   };
 
   return (
@@ -87,7 +90,7 @@ const SearchBar = () => {
               <Form.Group>
                 <InputGroup>
                   <Form.Select
-                    onChange={(e) => setReadingLevel(e.target.value)}
+                    onChange={(e) => handleReadingLevelChange(e)}
                     aria-label="Default select example"
                   >
                     <option>Reading Level</option>

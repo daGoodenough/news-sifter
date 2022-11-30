@@ -1,3 +1,4 @@
+/* eslint-disable default-param-last */
 /* eslint-disable no-case-declarations */
 import { ADD_STORIES } from '../actions';
 
