@@ -11,7 +11,9 @@ const ArticleListItem = ({ id }) => {
         <img src={stories[id].image} alt="article header" />
       </td>
       <td className="flex-cell">
-        <div>{stories[id].title}</div>
+        <div>
+          <h3>{stories[id].title}</h3>
+        </div>
         <div>{stories[id].description}</div>
       </td>
       <td>
