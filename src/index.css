@@ -42,11 +42,12 @@ a {
   border: .1px solid black;
   width: 110%;
   background-color: rgba(53, 186, 226, .15) !important;  
-  backdrop-filter: blur(5px) !important;
+  backdrop-filter: blur(500px) !important;
 }
 
 .article-text-cell {
   width: 60% !important;
+  margin-left: 20px;
 }
 
 td h3{
