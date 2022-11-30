@@ -1,3 +1,4 @@
+/* eslint-disable no-case-declarations */
 import { extract } from 'article-parser';
 import { FETCH_STORIES } from '../actions';
 
@@ -18,6 +19,10 @@ async function extractArticles(data) {
     });
   });
   return extractedArticles;
+}
+
+function extractHTML(data) {
+  return data.map((i) => extract(i).then((article) => article.content));
 }
 
 // word list
@@ -44,43 +49,93 @@ async function getWordList() {
   return wordList;
 }
 
-async function getReadingLevelInfo(story, wordList) {
-  const splitStory = story[0]
-    .toLowerCase()
-    .trim()
-    .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
-  const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
-  const filteredStory = noHyphens.filter((el) => el !== '');
-  const wordCount = filteredStory.reduce(
-    (acc, i) => {
-      if (wordList.wordForms.includes(i)) {
-        const index = wordList.wordForms.indexOf(i);
-        if (Number(wordList.lemRanks[index]) <= 1000) {
-          acc.beginner += 1;
-        } else if (Number(wordList.lemRanks[index]) <= 2500) {
-          acc.intermediate += 1;
-        } else if (Number(wordList.lemRanks[index]) <= 5050) {
-          acc.advanced += 1;
+async function getReadingLevelInfo(stories, wordList) {
+  const storiesDifficulty = [];
+  stories.forEach((j) => {
+    const splitStory = j
+      .toLowerCase()
+      .trim()
+      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
+    const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
+    const filteredStory = noHyphens.filter((el) => el !== '');
+    const wordCount = filteredStory.reduce(
+      (acc, i) => {
+        if (wordList.wordForms.includes(i)) {
+          const index = wordList.wordForms.indexOf(i);
+          if (Number(wordList.lemRanks[index]) <= 1000) {
+            acc.beginner += 1;
+          } else if (Number(wordList.lemRanks[index]) <= 2500) {
+            acc.intermediate += 1;
+          } else if (Number(wordList.lemRanks[index]) <= 5050) {
+            acc.advanced += 1;
+          }
+        } else {
+          acc.super += 1;
         }
-      } else {
-        acc.super += 1;
+        return acc;
+      },
+      {
+        beginner: 0,
+        intermediate: 0,
+        advanced: 0,
+        super: 0,
+        total: filteredStory.length + 1,
       }
-      return acc;
-    },
-    { beginner: 0, intermediate: 0, advanced: 0, super: 0 }
-  );
-  console.log('splitstory', noHyphens);
-  console.log('Word Count', wordCount);
+    );
+    storiesDifficulty.push(wordCount);
+  });
+  return storiesDifficulty;
 }
 
 const reducer = async function (state = [], action) {
   switch (action.type) {
     case FETCH_STORIES:
       const pulledURLS = pullURLS(action.payload);
+      console.log('payload', action.payload);
       const extractedArticles = await extractArticles(pulledURLS);
       const wordList = await getWordList();
-      getReadingLevelInfo(extractedArticles, wordList);
-      return action.payload;
+      const storiesDifficulty = await getReadingLevelInfo(
+        extractedArticles,
+        wordList
+      );
+      const promisedHTML = extractHTML(pulledURLS);
+      let extractedHTML;
+      await Promise.all(promisedHTML).then((data) => {
+        extractedHTML = data;
+      });
+      const storiesWithInfo = storiesDifficulty.reduce((acc, item, index) => {
+        acc[Date.parse(action.payload[index].publishedAt)] = {
+          id: Date.parse(action.payload[index].publishedAt),
+          title: action.payload[index].title,
+          author: action.payload[index].author,
+          image: action.payload[index].urlToImage,
+          description: action.payload[index].description,
+          source: action.payload[index].source.name,
+          htmlContent: extractedHTML[index],
+          wordCount: storiesDifficulty[index].total,
+          beginnerWords: `${Math.floor(
+            100 *
+              (storiesDifficulty[index].beginner /
+                storiesDifficulty[index].total)
+          )}%`,
+          intermediateWords: `${Math.floor(
+            100 *
+              (storiesDifficulty[index].intermediate /
+                storiesDifficulty[index].total)
+          )}%`,
+          advancedWords: `${Math.floor(
+            100 *
+              (storiesDifficulty[index].advanced /
+                storiesDifficulty[index].total)
+          )}%`,
+          super: `${Math.floor(
+            100 *
+              (storiesDifficulty[index].super / storiesDifficulty[index].total)
+          )}%`,
+        };
+        return acc;
+      }, {});
+      return storiesWithInfo;
     default:
       return state;
   }

@@ -8,14 +8,16 @@ import Main from './components/Main';
 function App() {
   // const [query, setQuery] = useState('');
 
-  const stories = useSelector((state) => state);
+  const stories = useSelector((state) => state.articles);
   const dispatch = useDispatch();
 
   // useEffect(() => {
   //   dispatch(fetchStories('brazil'));
   // }, []);
 
-  // console.log('stories', stories);
+  // const getData = async () => {
+  //   console.log('stories', await stories);
+  // };
 
   return (
     <div className="App">
