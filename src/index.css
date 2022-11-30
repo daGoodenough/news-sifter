@@ -62,3 +62,7 @@ small {
     display: none;
   }
 }
+
+.color-nav {
+  background-color: aquamarine;
+}
