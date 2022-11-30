@@ -25,7 +25,7 @@ function App() {
     <div className="App">
       {/* <Header /> */}
       <SearchBar />
-      {/* <Main /> */}
+      <Main />
     </div>
   );
 }
