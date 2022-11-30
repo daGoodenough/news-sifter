@@ -1,6 +1,8 @@
 import { extract } from 'article-parser';
 import axios from 'axios';
-import { FETCH_STORIES } from '../actions';
+/* eslint-disable no-useless-escape */
+/* eslint-disable no-shadow */
+/* eslint-disable array-callback-return */
 
 export const fetchStories = async (query, wordList) => {
   // const results = await axios.get(
