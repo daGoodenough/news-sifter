@@ -12,13 +12,17 @@ const Main = () => (
       render={(routerProps) => <Home history={routerProps.history} />}
     />
     <Route
+      exact
+      path="/history"
+      render={(routerProps) => <History history={routerProps.history} />}
+    />
+    <Route path="/saved" render={() => <Saved />} />
+    <Route
       path="/:articleId"
       render={(routerProps) => <Article history={routerProps.history} />}
     />
     <Route exact path="/" render={() => <Home />} />
     <Route path="/article/:articleId" render={() => <Article />} />
-    <Route path="/saved" render={() => <Saved />} />
-    <Route path="/history" render={() => <History />} />
   </Switch>
 );
 
