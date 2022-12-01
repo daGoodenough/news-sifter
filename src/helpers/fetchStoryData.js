@@ -95,6 +95,7 @@ const formatData = async (articles, wordList) => {
   const storiesWithInfo = storiesDifficulty.reduce((acc, item, index) => {
     acc[Date.parse(articles[index].publishedAt)] = {
       id: Date.parse(articles[index].publishedAt),
+      url: articles[index].url,
       title: articles[index].title,
       author: articles[index].author,
       image: articles[index].urlToImage,

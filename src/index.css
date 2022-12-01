@@ -13,7 +13,7 @@ table {
 }
 
 tr {
-  border-top: 0.1px solid rgba(0, 0, 0, 0.3);
+  border-top: 0.1px solid rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
 }
@@ -30,15 +30,22 @@ td img {
   height: 120px;
   width: 120px;
   border-radius: 8px;
+  cursor: pointer;
 }
 
 .reading-level-box {
   border-radius: 8px;
   border: 0.1px solid black;
   width: 110%;
-  background-color: rgba(53, 186, 226, 0.15) !important;
-  backdrop-filter: blur(500px) !important;
+  background-color: rgba(7, 124, 240, 0.4) !important;
+  backdrop-filter: blur(2px) !important;
 }
+
+/* .box-bg-img{
+background-image: url(https://www.shutterstock.com/image-vector/abstract-geometric-background-color-theme-600w-1913860915.jpg);
+
+border-radius: 8px;
+} */
 
 .article-text-cell {
   width: 60% !important;
@@ -79,6 +86,7 @@ article img {
   flex-direction: row;
   font-style: italic;
   margin-bottom: 1%;
+  margin-top: 2%;
 }
 
 .back-button {
