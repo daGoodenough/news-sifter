@@ -14,8 +14,10 @@ const Article = (props) => {
       <h5 className="back-button">
         <Link to="/">Back</Link>
       </h5>
+      <h5 className="save-button">Save</h5>
       <div className="article-box">
         <h2>{thisArticle.title}</h2>
+        <a href={thisArticle.url}>{thisArticle.url}</a>
         <div className="title-and-author">
           <h6>{thisArticle.author} | </h6> <h6> {thisArticle.source}</h6>
         </div>
