@@ -1,6 +1,12 @@
+/* eslint-disable default-param-last */
+/* eslint-disable no-case-declarations */
 import { ADD_SAVED, REMOVE_SAVED } from '../actions';
 
-function savedReducer(state = {}, action) {
+const DEFAULT_STATE = localStorage.savedArticles
+  ? JSON.parse(localStorage.getItem('savedArticles'))
+  : {};
+
+function savedReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case ADD_SAVED:
       const tempADD = { ...state };
