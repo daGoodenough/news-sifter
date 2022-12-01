@@ -13,7 +13,7 @@ table {
 }
 
 tr {
-  border-top: 0.1px solid rgba(0, 0, 0, 0.9);
+  border-top: 0.2px solid rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
 }
@@ -33,6 +33,8 @@ td img {
   cursor: pointer;
 }
 
+
+
 .reading-level-box {
   border-radius: 8px;
   border: 0.1px solid black;
@@ -41,9 +43,26 @@ td img {
   backdrop-filter: blur(2px) !important;
 }
 
+.extra-reading-level-info{
+  position: absolute;
+  right:102%;
+  background-color: aquamarine;
+  width: 180px;
+  height: 150px; 
+  padding: 3%;
+  border-radius: 8px;
+}
+
+.extra-reading-level-info-text {
+  word-wrap: break-word;
+}
+
+.relatively-positioned-div {
+  position: relative;
+}
+
 /* .box-bg-img{
 background-image: url(https://www.shutterstock.com/image-vector/abstract-geometric-background-color-theme-600w-1913860915.jpg);
-
 border-radius: 8px;
 } */
 
@@ -63,6 +82,19 @@ td h3:hover {
 
 small {
   color: red;
+}
+
+
+
+.save-button{
+  float:right;
+  margin-right: 1%;
+  color: #0d6efd;
+  text-decoration: underline;
+}
+.save-button:hover {
+  cursor: pointer;
+  color: #0a58ca;
 }
 
 .article-box {
@@ -91,6 +123,7 @@ article img {
 
 .back-button {
   margin-left: 1%;
+  float: left;
 }
 
 @media screen and (max-width: 480px) {
@@ -101,4 +134,5 @@ article img {
 
 .color-nav {
   background-color: aquamarine;
+  margin-bottom: 2%;
 }

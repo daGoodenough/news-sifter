@@ -1,6 +1,7 @@
 import _ from 'lodash';
 
-const difficulty = '0.7';
+const high = 0.2;
+const low = 0.1;
 
 const sortStories = (articleData, sort) => {
   const sortDifficulty = sort.difficulty;
@@ -21,22 +22,16 @@ const sortByDifficulty = (articleData, sortDifficulty) => {
   }
 
   if (sortDifficulty === 'beginner') {
-    return _.filter(
-      articleData,
-      (article) => article.beginnerWords >= difficulty
-    );
+    return _.filter(articleData, (article) => article.advancedWords <= low);
   }
   if (sortDifficulty === 'intermediate') {
     return _.filter(
       articleData,
-      (article) => article.intermediateWords >= difficulty
+      (article) => article.advancedWords > low && article.advancedWords < high
     );
   }
   if (sortDifficulty === 'advanced') {
-    return _.filter(
-      articleData,
-      (article) => article.advancedWords >= difficulty
-    );
+    return _.filter(articleData, (article) => article.advancedWords >= high);
   }
 };
 
