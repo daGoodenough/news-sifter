@@ -16,6 +16,7 @@ const Article = (props) => {
       </h5>
       <div className="article-box">
         <h2>{thisArticle.title}</h2>
+        <a href={thisArticle.url}>{thisArticle.url}</a>
         <div className="title-and-author">
           <h6>{thisArticle.author} | </h6> <h6> {thisArticle.source}</h6>
         </div>
