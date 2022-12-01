@@ -1,6 +1,12 @@
+/* eslint-disable default-param-last */
+/* eslint-disable no-case-declarations */
 import { ADD_HISTORY, DELETE_HISTORY, REMOVE_HISTORY } from '../actions';
 
-function historyReducer(state = {}, action) {
+const DEFAULT_STATE = localStorage.articleHistory
+  ? JSON.parse(localStorage.getItem('articleHistory'))
+  : {};
+
+function historyReducer(state = DEFAULT_STATE, action) {
   switch (action.type) {
     case ADD_HISTORY:
       const tempADD = { ...state };
