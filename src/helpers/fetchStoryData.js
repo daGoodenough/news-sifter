@@ -6,13 +6,13 @@ import axios from 'axios';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-export const fetchStories = async (query, wordList) => {
+export const fetchStories = async (query, wordList, cocaWords) => {
   // const results = await axios.get(
   //   `https://newsapi.org/v2/everything?q=${query}&pageSize=100&apiKey=${API_KEY}`
   // );
   const results = await axios.get('./data.json');
   const { articles } = results.data;
-  const formattedData = await formatData(articles, wordList);
+  const formattedData = await formatData(articles, wordList, cocaWords);
   console.log('Formatted: ', formattedData);
   return formattedData;
 };
@@ -40,7 +40,7 @@ function extractHTML(data) {
   return data.map((i) => extract(i).then((article) => article.content));
 }
 
-async function getReadingLevelInfo(stories, wordList) {
+async function getReadingLevelInfo(stories, wordList, cocaWords) {
   const storiesDifficulty = [];
   stories.forEach((j) => {
     const splitStory = j
@@ -50,19 +50,21 @@ async function getReadingLevelInfo(stories, wordList) {
     const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
     const filteredStory = noHyphens.filter((el) => el !== '');
     const [beginnerRank, intermediateRank, tooAdvancedRank] = [
-      2000, 10000, 40000,
+      2000, 10000, 30000,
     ];
     const wordCount = filteredStory.reduce(
       (acc, i) => {
         if (wordList.wordForms.includes(i)) {
           const index = wordList.wordForms.indexOf(i);
-          if (index <= beginnerRank) {
-            acc.beginner += 1;
-          } else if (index <= intermediateRank) {
-            acc.intermediate += 1;
-          } else if (index >= intermediateRank && index <= tooAdvancedRank) {
-            acc.advanced += 1;
-            acc.wordsToShow.push(wordList.wordForms[index]);
+          if (cocaWords.includes(wordList.lemmas[index])) {
+            if (index <= beginnerRank) {
+              acc.beginner += 1;
+            } else if (index <= intermediateRank) {
+              acc.intermediate += 1;
+            } else if (index >= intermediateRank && index <= tooAdvancedRank) {
+              acc.advanced += 1;
+              acc.wordsToShow.push(wordList.wordForms[index]);
+            }
           }
         }
         return acc;
@@ -80,13 +82,15 @@ async function getReadingLevelInfo(stories, wordList) {
   return storiesDifficulty;
 }
 
-const formatData = async (articles, wordList) => {
+const formatData = async (articles, wordList, cocaWords) => {
   console.log('wordList', wordList);
+  console.log('cocaWords', cocaWords);
   const pulledURLS = pullURLS(articles);
   const extractedArticles = await extractArticles(pulledURLS);
   const storiesDifficulty = await getReadingLevelInfo(
     extractedArticles,
-    wordList
+    wordList,
+    cocaWords
   );
   const promisedHTML = extractHTML(pulledURLS);
   let extractedHTML;
@@ -103,7 +107,7 @@ const formatData = async (articles, wordList) => {
       description: articles[index].description,
       source: articles[index].source.name,
       htmlContent: extractedHTML[index],
-      wordsToShow: storiesDifficulty[index].wordsToShow,
+      wordsToShow: storiesDifficulty[index].wordsToShow.join(', '),
       wordCount: storiesDifficulty[index].total,
       beginnerWords:
         storiesDifficulty[index].beginner / storiesDifficulty[index].total,

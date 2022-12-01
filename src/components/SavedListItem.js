@@ -1,5 +1,8 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable react/prop-types */
+
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import { addHistory, addSaved, removeSaved } from '../actions';

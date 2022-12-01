@@ -52,16 +52,34 @@ async function getNewWords() {
   return wordList;
 }
 
+async function getCocaWords() {
+  const cocaWords = [];
+  const response = await fetch('COCA60K.csv');
+  const data = await response.text();
+  const table = data.split(/\r?\n/).slice(1);
+  table.forEach((row) => {
+    const columns = row.split(',');
+    const cocaWord = columns[0];
+    cocaWords.push(cocaWord);
+  });
+  return cocaWords;
+}
+
 const SearchBar = () => {
   const [query, setQuery] = useState('');
 
   let wordList = {};
-
+  let cocaWords = [];
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {
     wordList = getNewWords();
-    const storiesData = await fetchStories(query, await wordList);
+    cocaWords = getCocaWords();
+    const storiesData = await fetchStories(
+      query,
+      await wordList,
+      await cocaWords
+    );
     dispatch(addStories(storiesData));
   };
 
