@@ -36,14 +36,16 @@ const SearchBar = () => {
 
   let wordList = {};
 
-  useEffect(() => {
-    wordList = getWordList();
-  }, []);
+  // useEffect(() => {
+  //   wordList = getWordList();
+  // }, []);
 
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {
+    wordList = getWordList();
     const storiesData = await fetchStories(query, await wordList);
+    console.log(storiesData);
     dispatch(addStories(storiesData));
     // either dispatch all the state information to fetchSotries
     // or dispatch to a different part of the store that will keep track of language, readingLevel, and sortMethod
