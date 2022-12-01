@@ -10,9 +10,9 @@ import { addHistory, addSaved, removeSaved } from '../actions';
 
 const ArticleListItem = ({ id, history }) => {
   const [isHovering, setIsHovering] = useState('');
-  const [isSaved, setIsSaved] = useState(false);
 
   const stories = useSelector((state) => state.articles);
+  const savedStories = useSelector((state) => state.saved);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
   const clickHandler = () => {
@@ -22,14 +22,11 @@ const ArticleListItem = ({ id, history }) => {
   };
 
   const handleSaveClick = () => {
-    if (!isSaved) {
-      dispatch(addSaved(stories[id]));
-      setIsSaved(true);
-    } else {
+    if (Object.hasOwn(savedStories, id)) {
       dispatch(removeSaved(stories[id]));
-      setIsSaved(false);
+    } else {
+      dispatch(addSaved(stories[id]));
     }
-    console.log(state);
   };
   const calculatePercentage = (readingLevel) =>
     `${Math.floor(readingLevel * 100)}%`;
@@ -95,7 +92,7 @@ const ArticleListItem = ({ id, history }) => {
             onClick={handleSaveClick}
             className="fa-solid fa-star"
             style={{
-              color: isSaved ? 'yellow' : '',
+              color: Object.hasOwn(savedStories, id) ? 'yellow' : '',
             }}
           />
         </td>
