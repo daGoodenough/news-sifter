@@ -136,3 +136,20 @@ article img {
   background-color: aquamarine;
   margin-bottom: 2%;
 }
+
+.btn-search {
+  background-color: aquamarine;
+  border-radius: 0 18px 18px 0;
+}
+
+.btn-search:hover {
+  background-color: rgb(65, 165, 131);
+}
+
+.search-bar {
+  border-radius: 18px 0 0 18px;
+}
+
+.form-select {
+  border-radius: 18px;
+}

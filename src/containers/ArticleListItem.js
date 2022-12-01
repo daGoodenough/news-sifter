@@ -19,6 +19,9 @@ const ArticleListItem = ({ id, history }) => {
     console.log('State from article List item:', state);
   };
 
+  const calculatePercentage = (readingLevel) =>
+    `${Math.floor(readingLevel * 100)}%`;
+
   return (
     <tbody>
       <tr>
