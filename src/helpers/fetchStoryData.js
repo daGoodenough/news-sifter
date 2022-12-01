@@ -4,11 +4,13 @@ import axios from 'axios';
 /* eslint-disable no-shadow */
 /* eslint-disable array-callback-return */
 
+const API_KEY = process.env.REACT_APP_API_KEY;
+
 export const fetchStories = async (query, wordList) => {
-  const results = await axios.get(
-    `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=6f455332142e46d88daddea6d559b104`
-  );
-  // const results = await axios.get('./data.json');
+  // const results = await axios.get(
+  //   `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=${API_KEY}`
+  // );
+  const results = await axios.get('./data.json');
   const { articles } = results.data;
   const formattedData = await formatData(articles, wordList);
   console.log('Formatted: ', formattedData);
