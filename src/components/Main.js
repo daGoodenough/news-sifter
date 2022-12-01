@@ -16,7 +16,10 @@ const Main = () => (
       path="/history"
       render={(routerProps) => <History history={routerProps.history} />}
     />
-    <Route path="/saved" render={() => <Saved />} />
+    <Route
+      path="/saved"
+      render={(routerProps) => <Saved history={routerProps.history} />}
+    />
     <Route
       path="/:articleId"
       render={(routerProps) => <Article history={routerProps.history} />}
