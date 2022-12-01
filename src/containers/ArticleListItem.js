@@ -9,12 +9,8 @@ import { useSelector, useDispatch } from 'react-redux';
 import { addHistory, addSaved, removeSaved } from '../actions';
 
 const ArticleListItem = ({ id, history }) => {
-  const [isSaved, setIsSaved] = useState(false);
-
-
-const ArticleListItem = ({ id, history }) => {
   const [isHovering, setIsHovering] = useState('');
-
+  const [isSaved, setIsSaved] = useState(false);
 
   const stories = useSelector((state) => state.articles);
   const state = useSelector((state) => state);
@@ -24,7 +20,6 @@ const ArticleListItem = ({ id, history }) => {
     history.push(`/${stories[id].id}`);
     console.log('State from article List item:', state);
   };
-
 
   const handleSaveClick = () => {
     if (!isSaved) {
@@ -60,7 +55,7 @@ const ArticleListItem = ({ id, history }) => {
             >
               <div className="extra-reading-level-info-text">
                 <h5>Advanced words:</h5>
-                <p>{stories[id].wordsToShow.join(', ')}</p>
+                <p>{stories[id].wordsToShow}</p>
               </div>
             </div>
             <ul>
@@ -96,7 +91,13 @@ const ArticleListItem = ({ id, history }) => {
           />
         </td>
         <td>
-          <i onClick={handleSaveClick} className="fa-regular fa-star" />
+          <i
+            onClick={handleSaveClick}
+            className="fa-solid fa-star"
+            style={{
+              color: isSaved ? 'yellow' : '',
+            }}
+          />
         </td>
       </tr>
     </tbody>
