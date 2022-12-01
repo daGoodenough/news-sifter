@@ -21,12 +21,22 @@ const History = ({ history }) => {
   const deleteHandler = () => dispatch(deleteHistory());
 
   return (
-    <div>
-      <table className="table">{renderArticleListItems()}</table>
-      <button type="button" onClick={deleteHandler}>
-        Clear History
-      </button>
-    </div>
+    <>
+      {_.isEmpty(stories) ? (
+        <h5 className="history-message">No Search History...</h5>
+      ) : (
+        <button
+          className="clear-history-button"
+          type="button"
+          onClick={deleteHandler}
+        >
+          Clear History
+        </button>
+      )}
+      <div className="search-results-box">
+        <table className="table">{renderArticleListItems()}</table>
+      </div>
+    </>
   );
 };
 
