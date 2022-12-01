@@ -1,5 +1,4 @@
 import React from 'react';
-<<<<<<< HEAD
 import { useSelector } from 'react-redux';
 import _ from 'lodash';
 import ArticleListItem from '../containers/ArticleListItem';
@@ -14,9 +13,5 @@ const Saved = () => {
 
   return <table className="table">{renderArticleListItems()}</table>;
 };
-=======
-
-const Saved = () => <div>Saved</div>;
->>>>>>> 32047ea (replaces nav dropdowns with nav links to history and saved pages)
 
 export default Saved;

@@ -32,6 +32,13 @@ td img {
   border-radius: 8px;
 }
 
+<<<<<<< HEAD
+=======
+a {
+  color: blue;
+}
+
+>>>>>>> 02557736df4019d9bf5d1b09b011e5be60bce77f
 .reading-level-box {
   border-radius: 8px;
   border: 0.1px solid black;
@@ -58,6 +65,7 @@ small {
   color: red;
 }
 
+<<<<<<< HEAD
 .article-box {
   display: flex;
   flex-direction: column;
@@ -85,6 +93,8 @@ article img {
   margin-left: 1%;
 }
 
+=======
+>>>>>>> 02557736df4019d9bf5d1b09b011e5be60bce77f
 @media screen and (max-width: 480px) {
   td img {
     display: none;
