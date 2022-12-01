@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';

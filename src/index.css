@@ -48,7 +48,7 @@ td img {
   right:102%;
   background-color: aquamarine;
   width: 180px;
-  height: 150px; 
+  height: fit-content; 
   padding: 3%;
   border-radius: 8px;
 }
