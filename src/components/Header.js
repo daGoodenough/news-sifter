@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 const Header = () => (
   <Navbar className="color-nav" expand="lg" variant="light">
     <Container>
-      <Navbar.Brand href="/">
+      <Navbar.Brand as={Link} to="/">
         <img
           alt=""
           src="/logo.svg"
@@ -20,15 +20,12 @@ const Header = () => (
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ms-auto" alignRight>
-          <Link to="/save">
-            <Nav.Link>
-              <strong>Saved</strong>
-            </Nav.Link>
-          </Link>
-          <Link to="/history">
-            {/* <Nav.Link>History</Nav.Link> */}
-            HISTORY
-          </Link>
+          <Nav.Link as={Link} to="/saved">
+            <strong>Saved</strong>
+          </Nav.Link>
+          <Nav.Link as={Link} to="/history">
+            History
+          </Nav.Link>
         </Nav>
       </Navbar.Collapse>
     </Container>

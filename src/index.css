@@ -160,3 +160,11 @@ article img {
 .form-select {
   border-radius: 18px;
 }
+
+.clear-history-button {
+  margin-left: 15%;
+}
+
+.history-message {
+  margin-left: 15%;
+}
