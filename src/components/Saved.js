@@ -1,17 +1,28 @@
+/* eslint-disable react/jsx-no-useless-fragment */
 import React from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
-import ArticleListItem from '../containers/ArticleListItem';
+import SavedListItem from './SavedListItem';
 
-const Saved = () => {
+const Saved = ({ history }) => {
   const stories = useSelector((state) => state.saved);
 
-  const renderArticleListItems = () =>
+  const renderSavedListItems = () =>
     _.map(stories, (article, articleId) => (
-      <ArticleListItem key={articleId} id={articleId} />
+      <SavedListItem key={articleId} id={articleId} history={history} />
     ));
 
-  return <table className="table">{renderArticleListItems()}</table>;
+  return (
+    <>
+      {_.isEmpty(stories) ? (
+        <h5 className="history-message">No saved articles...</h5>
+      ) : (
+        <div className="search-results-box">
+          <table className="table">{renderSavedListItems()}</table>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default Saved;
