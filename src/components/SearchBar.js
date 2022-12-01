@@ -63,18 +63,20 @@ const SearchBar = () => {
   return (
     <Row>
       <Col md={{ span: 6, offset: 3 }}>
-        <Form>
+        <Form className="m-3">
           <Form.Group>
             <InputGroup>
               <Form.Control
                 onChange={(e) => setQuery(e.target.value)}
                 type="text"
                 placeholder="Search to find articles..."
+                className="search-bar"
               />
               <InputGroup.Text
                 onClick={handleSubmitClick}
                 role="button"
                 type="submit"
+                className="btn btn-search"
               >
                 Search
               </InputGroup.Text>
