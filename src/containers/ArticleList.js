@@ -12,8 +12,6 @@ const ArticleList = ({ history }) => {
 
   const sortedArticles = sortArticles(stories, sort);
 
-  console.log('Sorted: ', sortedArticles);
-
   const renderArticleListItems = () =>
     sortedArticles.map((article) => (
       <ArticleListItem key={article.id} id={article.id} />

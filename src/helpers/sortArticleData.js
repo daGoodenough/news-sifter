@@ -4,8 +4,19 @@ const difficulty = '0.7';
 
 const sortStories = (articleData, sort) => {
   const sortDifficulty = sort.difficulty;
+  const sortedByDifficulty = sortByDifficulty(articleData, sortDifficulty);
+
+  const sortByMethod = sort.sortBy;
+  const sortedBySortByMethodAndDifficulty = sortBySortByMethod(
+    sortedByDifficulty,
+    sortByMethod
+  );
+
+  return sortedBySortByMethodAndDifficulty;
+};
+
+const sortByDifficulty = (articleData, sortDifficulty) => {
   if (sortDifficulty === 'default') {
-    console.log('MESSAGE: There is no reading level selected');
     return _.map(articleData, (article) => article);
   }
 
@@ -25,6 +36,26 @@ const sortStories = (articleData, sort) => {
     return _.filter(
       articleData,
       (article) => article.advancedWords >= difficulty
+    );
+  }
+};
+
+const sortBySortByMethod = (articles, sortByMethod) => {
+  if (sortByMethod === 'default') {
+    return articles;
+  }
+
+  if (sortByMethod === 'beginnerToAdvanced') {
+    return _.sortBy(
+      articles,
+      (article) => article.advancedWords - article.beginnerWords
+    );
+  }
+
+  if (sortByMethod === 'advancedToBeginner') {
+    return _.sortBy(
+      articles,
+      (article) => article.beginnerWords - article.advancedWords
     );
   }
 };
