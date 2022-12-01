@@ -2,19 +2,14 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 
-import { useSelector, useDispatch } from 'react-redux';
-import { addHistory } from '../actions';
+import { useSelector } from 'react-redux';
 
-const ArticleListItem = ({ id, history }) => {
-  const stories = useSelector((state) => state.articles);
-  const state = useSelector((state) => state);
-  const dispatch = useDispatch();
+const HistoryListItem = ({ id, history }) => {
   const clickHandler = () => {
-    dispatch(addHistory(stories[id]));
     history.push(`/${stories[id].id}`);
-    console.log('State from article List item:', state);
   };
 
+  const stories = useSelector((state) => state.history);
   return (
     <tbody>
       <tr>
@@ -45,4 +40,4 @@ const ArticleListItem = ({ id, history }) => {
   );
 };
 
-export default ArticleListItem;
+export default HistoryListItem;
