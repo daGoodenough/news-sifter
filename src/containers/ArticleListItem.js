@@ -2,10 +2,13 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 
+import { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { addHistory } from '../actions';
+import { FontAwesomeIcon } from '@fortawesome/fontawesome-free';
+import { addHistory, addSaved, removeSaved } from '../actions';
 
 const ArticleListItem = ({ id, history }) => {
+  const [isSaved, setIsSaved] = useState(false);
   const stories = useSelector((state) => state.articles);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -13,6 +16,17 @@ const ArticleListItem = ({ id, history }) => {
     dispatch(addHistory(stories[id]));
     history.push(`/${stories[id].id}`);
     console.log('State from article List item:', state);
+  };
+
+  const handleSaveClick = () => {
+    if (!isSaved) {
+      dispatch(addSaved(stories[id]));
+      setIsSaved(true);
+    } else {
+      dispatch(removeSaved(stories[id]));
+      setIsSaved(false);
+    }
+    console.log(state);
   };
 
   return (
@@ -39,6 +53,9 @@ const ArticleListItem = ({ id, history }) => {
         </td>
         <td>
           <img src={stories[id].image} alt="article header" />
+        </td>
+        <td>
+          <i onClick={handleSaveClick} className="fa-regular fa-star" />
         </td>
       </tr>
     </tbody>
