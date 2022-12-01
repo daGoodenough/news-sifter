@@ -1,20 +1,18 @@
-import { ADD_HISTORY, DELETE_HISTORY, REMOVE_HISTORY } from '../actions';
+import { ADD_SAVED, REMOVE_SAVED } from '../actions';
 
-function historyReducer(state = {}, action) {
+function savedReducer(state = {}, action) {
   switch (action.type) {
-    case ADD_HISTORY:
+    case ADD_SAVED:
       const tempADD = { ...state };
       tempADD[action.payload.id] = action.payload;
       return tempADD;
-    case REMOVE_HISTORY:
+    case REMOVE_SAVED:
       const tempREMOVE = { ...state };
       delete tempREMOVE[action.payload.id];
       return tempREMOVE;
-    case DELETE_HISTORY:
-      return {};
     default:
       return state;
   }
 }
 
-export default historyReducer;
+export default savedReducer;

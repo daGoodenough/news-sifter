@@ -1,5 +1,5 @@
-.App{
-  background-color: rgba(245,245,245,.3)
+.App {
+  background-color: rgba(245, 245, 245, 0.3);
 }
 
 .search-results-box {
@@ -13,14 +13,13 @@ table {
 }
 
 tr {
-  border-top: .1px solid rgba(0, 0, 0, .3);
+  border-top: 0.1px solid rgba(0, 0, 0, 0.3);
   display: flex;
   align-items: center;
- 
 }
 
 td {
-  border-bottom-width: 0!important
+  border-bottom-width: 0 !important;
 }
 
 td img {
@@ -33,11 +32,18 @@ td img {
   border-radius: 8px;
 }
 
-.reading-level-box{
+<<<<<<< HEAD
+=======
+a {
+  color: blue;
+}
+
+>>>>>>> 02557736df4019d9bf5d1b09b011e5be60bce77f
+.reading-level-box {
   border-radius: 8px;
-  border: .1px solid black;
+  border: 0.1px solid black;
   width: 110%;
-  background-color: rgba(53, 186, 226, .15) !important;  
+  background-color: rgba(53, 186, 226, 0.15) !important;
   backdrop-filter: blur(500px) !important;
 }
 
@@ -46,12 +52,12 @@ td img {
   margin-left: 20px;
 }
 
-td h3{
+td h3 {
   margin-bottom: -2px;
 }
 
-td h3:hover{
-  cursor:pointer;
+td h3:hover {
+  cursor: pointer;
   color: rgb(34, 34, 255);
 }
 
@@ -59,6 +65,7 @@ small {
   color: red;
 }
 
+<<<<<<< HEAD
 .article-box {
   display: flex;
   flex-direction: column;
@@ -73,7 +80,6 @@ article img {
   max-height: 500px;
   object-fit: cover;
   width: 100%;
-
 }
 
 .title-and-author {
@@ -87,8 +93,14 @@ article img {
   margin-left: 1%;
 }
 
-@media screen and (max-width:480px) {
-  td img{
+=======
+>>>>>>> 02557736df4019d9bf5d1b09b011e5be60bce77f
+@media screen and (max-width: 480px) {
+  td img {
     display: none;
   }
+}
+
+.color-nav {
+  background-color: aquamarine;
 }
