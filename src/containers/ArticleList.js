@@ -14,7 +14,7 @@ const ArticleList = ({ history }) => {
 
   const renderArticleListItems = () =>
     sortedArticles.map((article) => (
-      <ArticleListItem key={article.id} id={article.id} />
+      <ArticleListItem history={history} key={article.id} id={article.id} />
     ));
 
   return (
