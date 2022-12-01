@@ -3,12 +3,18 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable no-shadow */
 
-import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
-import { addHistory } from '../actions';
+import { useSelector, useDispatch } from 'react-redux';
+
+import { addHistory, addSaved, removeSaved } from '../actions';
+
+const ArticleListItem = ({ id, history }) => {
+  const [isSaved, setIsSaved] = useState(false);
+
 
 const ArticleListItem = ({ id, history }) => {
   const [isHovering, setIsHovering] = useState('');
+
 
   const stories = useSelector((state) => state.articles);
   const state = useSelector((state) => state);
@@ -19,6 +25,17 @@ const ArticleListItem = ({ id, history }) => {
     console.log('State from article List item:', state);
   };
 
+
+  const handleSaveClick = () => {
+    if (!isSaved) {
+      dispatch(addSaved(stories[id]));
+      setIsSaved(true);
+    } else {
+      dispatch(removeSaved(stories[id]));
+      setIsSaved(false);
+    }
+    console.log(state);
+  };
   const calculatePercentage = (readingLevel) =>
     `${Math.floor(readingLevel * 100)}%`;
 
@@ -77,6 +94,9 @@ const ArticleListItem = ({ id, history }) => {
             src={stories[id].image}
             alt="article header"
           />
+        </td>
+        <td>
+          <i onClick={handleSaveClick} className="fa-regular fa-star" />
         </td>
       </tr>
     </tbody>
