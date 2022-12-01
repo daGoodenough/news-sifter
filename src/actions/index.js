@@ -16,6 +16,11 @@ export function addStories(storiesData) {
 }
 
 export function addSaved(savedItem) {
+  const locallySaved = JSON.parse(localStorage.getItem('savedArticles'));
+  const newSaved = { ...locallySaved, [savedItem.id]: savedItem };
+
+  localStorage.setItem('savedArticles', JSON.stringify(newSaved));
+
   return {
     type: ADD_SAVED,
     payload: savedItem,
@@ -23,6 +28,11 @@ export function addSaved(savedItem) {
 }
 
 export function removeSaved(removedItem) {
+  const locallySaved = JSON.parse(localStorage.getItem('savedArticles'));
+  delete locallySaved[removedItem.id];
+
+  localStorage.setItem('savedArticles', JSON.stringify(locallySaved));
+
   return {
     type: REMOVE_SAVED,
     payload: removedItem,
@@ -30,6 +40,14 @@ export function removeSaved(removedItem) {
 }
 
 export function addHistory(historyItem) {
+  const articleHistory = JSON.parse(localStorage.getItem('articleHistory'));
+  const newArticleHistory = {
+    ...articleHistory,
+    [historyItem.id]: historyItem,
+  };
+
+  localStorage.setItem('articleHistory', JSON.stringify(newArticleHistory));
+
   return {
     type: ADD_HISTORY,
     payload: historyItem,
@@ -37,6 +55,11 @@ export function addHistory(historyItem) {
 }
 
 export function removeHistory(historyItem) {
+  const articleHistory = JSON.parse(localStorage.getItem('articleHistory'));
+  delete articleHistory[historyItem.id];
+
+  localStorage.setItem('articleHistory', JSON.stringify(articleHistory));
+
   return {
     type: REMOVE_HISTORY,
     payload: historyItem,
@@ -44,6 +67,8 @@ export function removeHistory(historyItem) {
 }
 
 export function deleteHistory(historyItem) {
+  localStorage.setItem('articleHistory', JSON.stringify({}));
+
   return {
     type: DELETE_HISTORY,
     payload: historyItem,
