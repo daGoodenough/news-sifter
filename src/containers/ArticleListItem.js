@@ -16,6 +16,9 @@ const ArticleListItem = ({ id, history }) => {
     console.log('State from article List item:', state);
   };
 
+  const calculatePercentage = (readingLevel) =>
+    `${Math.floor(readingLevel * 100)}%`;
+
   return (
     <tbody>
       <tr>
@@ -27,9 +30,18 @@ const ArticleListItem = ({ id, history }) => {
                   <u>Article Info</u>
                 </h6>
                 <li>Word count: {stories[id].wordCount}</li>
-                <li>Beginner words: {stories[id].beginnerWords}</li>
-                <li>Intermediate words: {stories[id].intermediateWords}</li>
-                <li>Advanced words: {stories[id].advancedWords}</li>
+                <li>
+                  Beginner words:{' '}
+                  {calculatePercentage(stories[id].beginnerWords)}
+                </li>
+                <li>
+                  Intermediate words:{' '}
+                  {calculatePercentage(stories[id].intermediateWords)}
+                </li>
+                <li>
+                  Advanced words:{' '}
+                  {calculatePercentage(stories[id].advancedWords)}
+                </li>
               </ul>
             </div>
           </div>
