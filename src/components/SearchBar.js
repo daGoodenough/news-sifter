@@ -117,7 +117,7 @@ const SearchBar = () => {
                     onChange={(e) => handleSortByChange(e)}
                     aria-label="Default select example"
                   >
-                    <option>Sort By</option>
+                    <option value="default">Sort By</option>
                     <option value="beginnerToAdvanced">
                       Beginner - Advanced
                     </option>
