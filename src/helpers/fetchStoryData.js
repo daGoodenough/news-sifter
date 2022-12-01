@@ -5,12 +5,13 @@ import axios from 'axios';
 /* eslint-disable array-callback-return */
 
 export const fetchStories = async (query, wordList) => {
-  // const results = await axios.get(
-  //   `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=6f455332142e46d88daddea6d559b104`
-  // );
-  const results = await axios.get('./data.json');
+  const results = await axios.get(
+    `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=6f455332142e46d88daddea6d559b104`
+  );
+  // const results = await axios.get('./data.json');
   const { articles } = results.data;
   const formattedData = await formatData(articles, wordList);
+  console.log('Formatted: ', formattedData);
   return formattedData;
 };
 
@@ -76,6 +77,7 @@ async function getReadingLevelInfo(stories, wordList) {
 }
 
 const formatData = async (articles, wordList) => {
+  console.log('wordList', wordList);
   const pulledURLS = pullURLS(articles);
   const extractedArticles = await extractArticles(pulledURLS);
   const storiesDifficulty = await getReadingLevelInfo(
