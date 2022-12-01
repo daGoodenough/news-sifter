@@ -4,9 +4,12 @@
 /* eslint-disable no-shadow */
 
 import { useSelector, useDispatch } from 'react-redux';
+import { useState } from 'react';
 import { addHistory } from '../actions';
 
 const ArticleListItem = ({ id, history }) => {
+  const [isHovering, setIsHovering] = useState('');
+
   const stories = useSelector((state) => state.articles);
   const state = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -23,28 +26,44 @@ const ArticleListItem = ({ id, history }) => {
     <tbody>
       <tr>
         <td>
-          <div className="box-bg-img">
-            <div className="reading-level-box">
-              <ul>
-                <h6>
-                  <u>Article Info</u>
-                </h6>
-                <li>Word count: {stories[id].wordCount}</li>
-                <li>
-                  Beginner words:{' '}
-                  {calculatePercentage(stories[id].beginnerWords)}
-                </li>
-                <li>
-                  Intermediate words:{' '}
-                  {calculatePercentage(stories[id].intermediateWords)}
-                </li>
-                <li>
-                  Advanced words:{' '}
-                  {calculatePercentage(stories[id].advancedWords)}
-                </li>
-              </ul>
+          <div
+            className="reading-level-box"
+            onMouseEnter={() => {
+              setIsHovering(`${stories[id].id}`);
+            }}
+            onMouseLeave={() => {
+              setIsHovering('');
+            }}
+          >
+            <div
+              className="extra-reading-level-info"
+              style={{
+                display: isHovering === `${stories[id].id}` ? 'block' : 'none',
+              }}
+            >
+              <div className="extra-reading-level-info-text">
+                <h5>Advanced words:</h5>
+                <p>{stories[id].wordsToShow.join(', ')}</p>
+              </div>
             </div>
+            <ul>
+              <h6>
+                <u>Article Info</u>
+              </h6>
+              <li>Word count: {stories[id].wordCount}</li>
+              <li>
+                Beginner words: {Math.floor(100 * stories[id].beginnerWords)}%
+              </li>
+              <li>
+                Intermediate words:{' '}
+                {Math.floor(100 * stories[id].intermediateWords)}%
+              </li>
+              <li>
+                Advanced words: {Math.floor(100 * stories[id].advancedWords)}%
+              </li>
+            </ul>
           </div>
+          <div className="relatively-positioned-div" />
         </td>
         <td className="article-text-cell">
           <h3 onClick={clickHandler}>{stories[id].title}</h3>

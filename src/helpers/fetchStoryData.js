@@ -8,7 +8,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const fetchStories = async (query, wordList) => {
   // const results = await axios.get(
-  //   `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=${API_KEY}`
+  //   `https://newsapi.org/v2/everything?q=${query}&pageSize=100&apiKey=${API_KEY}`
   // );
   const results = await axios.get('./data.json');
   const { articles } = results.data;
@@ -49,7 +49,7 @@ async function getReadingLevelInfo(stories, wordList) {
       .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
     const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
     const filteredStory = noHyphens.filter((el) => el !== '');
-    const [beginnerRank, intermediateRank, advancedRank] = [800, 2000, 5500];
+    const [beginnerRank, intermediateRank, advancedRank] = [800, 4000, 5500];
     const wordCount = filteredStory.reduce(
       (acc, i) => {
         if (wordList.wordForms.includes(i)) {
@@ -59,7 +59,7 @@ async function getReadingLevelInfo(stories, wordList) {
           } else if (Number(wordList.lemRanks[index]) <= intermediateRank) {
             acc.intermediate += 1;
           } else if (Number(wordList.lemRanks[index]) <= advancedRank) {
-
+            acc.wordsToShow.push(wordList.wordForms[index]);
             acc.advanced += 1;
           }
         } else {
@@ -71,6 +71,7 @@ async function getReadingLevelInfo(stories, wordList) {
         beginner: 0,
         intermediate: 0,
         advanced: 0,
+        wordsToShow: [],
         total: filteredStory.length + 1,
       }
     );
@@ -102,6 +103,7 @@ const formatData = async (articles, wordList) => {
       description: articles[index].description,
       source: articles[index].source.name,
       htmlContent: extractedHTML[index],
+      wordsToShow: storiesDifficulty[index].wordsToShow,
       wordCount: storiesDifficulty[index].total,
       beginnerWords:
         storiesDifficulty[index].beginner / storiesDifficulty[index].total,
