@@ -53,15 +53,15 @@ async function getReadingLevelInfo(stories, wordList) {
       (acc, i) => {
         if (wordList.wordForms.includes(i)) {
           const index = wordList.wordForms.indexOf(i);
-          if (Number(wordList.lemRanks[index]) <= 1000) {
+          if (Number(wordList.lemRanks[index]) <= 700) {
             acc.beginner += 1;
-          } else if (Number(wordList.lemRanks[index]) <= 2500) {
+          } else if (Number(wordList.lemRanks[index]) <= 3500) {
             acc.intermediate += 1;
-          } else if (Number(wordList.lemRanks[index]) <= 5050) {
+          } else {
             acc.advanced += 1;
           }
         } else {
-          acc.super += 1;
+          acc.advanced += 1;
         }
         return acc;
       },
@@ -69,7 +69,6 @@ async function getReadingLevelInfo(stories, wordList) {
         beginner: 0,
         intermediate: 0,
         advanced: 0,
-        super: 0,
         total: filteredStory.length + 1,
       }
     );
