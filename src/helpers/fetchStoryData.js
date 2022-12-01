@@ -49,15 +49,17 @@ async function getReadingLevelInfo(stories, wordList) {
       .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
     const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
     const filteredStory = noHyphens.filter((el) => el !== '');
+    const [beginnerRank, intermediateRank, advancedRank] = [800, 2000, 5500];
     const wordCount = filteredStory.reduce(
       (acc, i) => {
         if (wordList.wordForms.includes(i)) {
           const index = wordList.wordForms.indexOf(i);
-          if (Number(wordList.lemRanks[index]) <= 700) {
+          if (Number(wordList.lemRanks[index]) <= beginnerRank) {
             acc.beginner += 1;
-          } else if (Number(wordList.lemRanks[index]) <= 3500) {
+          } else if (Number(wordList.lemRanks[index]) <= intermediateRank) {
             acc.intermediate += 1;
-          } else {
+          } else if (Number(wordList.lemRanks[index]) <= advancedRank) {
+
             acc.advanced += 1;
           }
         } else {
@@ -100,22 +102,13 @@ const formatData = async (articles, wordList) => {
       source: articles[index].source.name,
       htmlContent: extractedHTML[index],
       wordCount: storiesDifficulty[index].total,
-      beginnerWords: `${Math.floor(
-        100 *
-          (storiesDifficulty[index].beginner / storiesDifficulty[index].total)
-      )}%`,
-      intermediateWords: `${Math.floor(
-        100 *
-          (storiesDifficulty[index].intermediate /
-            storiesDifficulty[index].total)
-      )}%`,
-      advancedWords: `${Math.floor(
-        100 *
-          (storiesDifficulty[index].advanced / storiesDifficulty[index].total)
-      )}%`,
-      super: `${Math.floor(
-        100 * (storiesDifficulty[index].super / storiesDifficulty[index].total)
-      )}%`,
+      beginnerWords:
+        storiesDifficulty[index].beginner / storiesDifficulty[index].total,
+      intermediateWords:
+        storiesDifficulty[index].intermediate / storiesDifficulty[index].total,
+      advancedWords:
+        storiesDifficulty[index].advanced / storiesDifficulty[index].total,
+      super: storiesDifficulty[index].super / storiesDifficulty[index].total,
     };
     return acc;
   }, {});
