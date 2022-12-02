@@ -19,7 +19,6 @@ const ArticleListItem = ({ id, history }) => {
   const clickHandler = () => {
     dispatch(addHistory(stories[id]));
     history.push(`/${stories[id].id}`);
-    console.log('State from article List item:', state);
   };
 
   const handleSaveClick = () => {
