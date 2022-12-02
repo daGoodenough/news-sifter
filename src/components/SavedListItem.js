@@ -13,7 +13,7 @@ const SavedListItem = ({ id, history }) => {
   const savedStories = useSelector((state) => state.saved);
   const clickHandler = () => {
     dispatch(addHistory(stories[id]));
-    history.push(`/${stories[id].id}`);
+    history.push(`/saved/${stories[id].id}`);
   };
 
   const handleSaveClick = () => {
