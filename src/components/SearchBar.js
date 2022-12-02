@@ -1,7 +1,7 @@
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-
+import { Link } from 'react-router-dom';
 import { fetchStories } from '../helpers/fetchStoryData';
 import {
   addStories,
@@ -109,6 +109,8 @@ const SearchBar = () => {
                 role="button"
                 type="submit"
                 className="btn btn-search"
+                as={Link}
+                to="/"
               >
                 Search
               </InputGroup.Text>
