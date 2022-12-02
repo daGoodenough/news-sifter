@@ -1,30 +1,45 @@
-// import { useDispatch, useSelector } from 'react-redux';
-// import React, { useEffect, useState, useRef } from 'react';
-// import { fetchStories } from './actions';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useDispatch } from 'react-redux';
+import { Row, Col } from 'react-bootstrap';
+import React, { useEffect, useState } from 'react';
+import { fetchStories } from './helpers/fetchStoryData';
 import SearchBar from './components/SearchBar';
 import Header from './components/Header';
 import Main from './components/Main';
+import { getNewWords, getCocaWords } from './helpers/getWords';
+import { addStories } from './actions';
 
 function App() {
-  // const [query, setQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
 
-  // const stories = useSelector((state) => state);
-  // const dispatch = useDispatch();
+  const initialLoad = async () => {
+    setIsLoading(true);
+    const wordList = getNewWords();
+    const cocaWords = getCocaWords();
+    const storiesData = await fetchStories(
+      'news',
+      await wordList,
+      await cocaWords
+    );
 
-  // console.log('app stories', stories);
+    dispatch(addStories(storiesData));
+    setIsLoading(false);
+  };
 
-  // useEffect(() => {
-  //   dispatch(fetchStories('brazil'));
-  // }, []);
-
-  // const getData = async () => {
-  //   console.log('stories', await stories);
-  // };
+  useEffect(() => {
+    initialLoad();
+  }, []);
 
   return (
     <div className="App">
       <Header />
       <SearchBar />
+      <Row>
+        <Col xs={{ offset: 6 }}>
+          {isLoading ? <div className="loader" /> : null}
+        </Col>
+      </Row>
       <Main />
     </div>
   );
