@@ -192,4 +192,7 @@ article img {
   100% {
     transform: rotate(360deg);
   }
+  
+.missing-article-message {
+  text-align: center;
 }
