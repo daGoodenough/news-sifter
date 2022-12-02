@@ -12,8 +12,8 @@ import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
 import { addSaved, removeSaved } from '../actions';
 
-const Article = () => {
-  const stories = useSelector((state) => state.articles);
+const Article = ({ articleLocation }) => {
+  const stories = useSelector((state) => state[articleLocation]);
   const savedStories = useSelector((state) => state.saved);
   const thisURL = window.location.href;
   const id = parseInt(thisURL.substring(thisURL.lastIndexOf('/') + 1));
