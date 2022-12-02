@@ -8,7 +8,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const fetchStories = async (query, wordList, cocaWords) => {
   const results = await axios.get(
-    `https://newsapi.org/v2/everything?q=${query}&pageSize=50&apiKey=${API_KEY}`
+    `https://newsapi.org/v2/everything?q=${query}&pageSize=10&apiKey=${API_KEY}`
   );
   // const results = await axios.get('./data.json');
   const { articles } = results.data;
@@ -49,22 +49,38 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
       .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '');
     const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
     const filteredStory = noHyphens.filter((el) => el !== '');
-    const [beginnerRank, intermediateRank, tooAdvancedRank] = [
-      2000, 8000, 30000,
-    ];
+    const [
+      beginnerRank,
+      intermediateRank,
+      tooAdvancedRank,
+      cocaBeginnerRank,
+      cocaIntermediateRank,
+    ] = [2000, 10000, 30000, 1000, 2500];
     const wordCount = filteredStory.reduce(
       (acc, i) => {
         if (wordList.wordForms.includes(i)) {
           const index = wordList.wordForms.indexOf(i);
           if (cocaWords.includes(wordList.lemmas[index])) {
-            if (index <= beginnerRank) {
+            const cocaIndex = cocaWords.indexOf(wordList.lemmas[index]);
+            if (index <= beginnerRank || cocaIndex <= cocaBeginnerRank) {
               acc.beginner += 1;
-            } else if (index <= intermediateRank) {
+            } else if (
+              index <= intermediateRank ||
+              cocaIndex <= cocaIntermediateRank
+            ) {
               acc.intermediate += 1;
-            } else if (index >= intermediateRank && index <= tooAdvancedRank) {
+              if (
+                !acc?.intermediateWordsArr.includes(wordList.wordForms[index])
+              ) {
+                acc.intermediateWordsArr.push(wordList.wordForms[index]);
+              }
+            } else if (
+              (index >= intermediateRank && index <= tooAdvancedRank) ||
+              cocaIndex !== -1
+            ) {
               acc.advanced += 1;
-              if (!acc?.wordsToShow.includes(wordList.wordForms[index])) {
-                acc.wordsToShow.push(wordList.wordForms[index]);
+              if (!acc?.advancedWordsArr.includes(wordList.wordForms[index])) {
+                acc.advancedWordsArr.push(wordList.wordForms[index]);
               }
             }
           }
@@ -75,7 +91,8 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
         beginner: 0,
         intermediate: 0,
         advanced: 0,
-        wordsToShow: [],
+        intermediateWordsArr: [],
+        advancedWordsArr: [],
         total: filteredStory.length + 1,
       }
     );
@@ -107,9 +124,11 @@ const formatData = async (articles, wordList, cocaWords) => {
       description: articles[index].description,
       source: articles[index].source.name,
       htmlContent: extractedHTML[index],
-      wordsToShow:
-        storiesDifficulty[index].wordsToShow.join(', ').substring(0, 130) || '',
-      wordsNotToShow: storiesDifficulty[index].wordsToShow,
+      advancedWordsString:
+        storiesDifficulty[index].advancedWordsArr
+          .join(', ')
+          .substring(0, 130) || '',
+      advancedWordsArr: storiesDifficulty[index].advancedWordsArr,
       wordCount: storiesDifficulty[index].total,
       beginnerWords:
         storiesDifficulty[index].beginner / storiesDifficulty[index].total,
@@ -118,6 +137,10 @@ const formatData = async (articles, wordList, cocaWords) => {
       advancedWords:
         storiesDifficulty[index].advanced / storiesDifficulty[index].total,
       super: storiesDifficulty[index].super / storiesDifficulty[index].total,
+      intermediateAndAdvancedWords:
+        (storiesDifficulty[index].intermediate +
+          storiesDifficulty[index].advanced) /
+        storiesDifficulty[index].total,
     };
     return acc;
   }, {});

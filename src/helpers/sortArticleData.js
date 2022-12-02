@@ -52,15 +52,12 @@ const sortBySortByMethod = (articles, sortByMethod) => {
   if (sortByMethod === 'beginnerToAdvanced') {
     return _.sortBy(
       articles,
-      (article) => article.advancedWords - article.beginnerWords
+      (article) => article.intermediateAndAdvancedWords
     );
   }
 
   if (sortByMethod === 'advancedToBeginner') {
-    return _.sortBy(
-      articles,
-      (article) => article.beginnerWords - article.advancedWords
-    );
+    return _.sortBy(articles, (article) => article.beginnerWords);
   }
 };
 
