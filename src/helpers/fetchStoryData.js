@@ -126,6 +126,7 @@ const formatData = async (articles, wordList, cocaWords) => {
           .join(', ')
           .substring(0, 130) || '',
       advancedWordsArr: storiesDifficulty[index].advancedWordsArr,
+      intermediateWordsArr: storiesDifficulty[index].intermediateWordsArr,
       wordCount: storiesDifficulty[index].total,
       beginnerWords:
         storiesDifficulty[index].beginner / storiesDifficulty[index].total,
