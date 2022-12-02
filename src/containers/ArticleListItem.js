@@ -53,7 +53,17 @@ const ArticleListItem = ({ id, history }) => {
             >
               <div className="extra-reading-level-info-text">
                 <h5>Advanced words:</h5>
-                <p>{stories[id].wordsToShow}</p>
+                <span>{stories[id].wordsToShow.slice(0, 120)} </span>
+                <span
+                  style={{
+                    display:
+                      stories[id].wordsToShow.length >= 120
+                        ? 'inline-block'
+                        : 'none',
+                  }}
+                >
+                  ...(continued)
+                </span>
               </div>
             </div>
             <ul>
@@ -62,14 +72,14 @@ const ArticleListItem = ({ id, history }) => {
               </h6>
               <li>Word count: {stories[id].wordCount}</li>
               <li>
-                Beginner words: {Math.floor(100 * stories[id].beginnerWords)}%
+                Beginner words: {calculatePercentage(stories[id].beginnerWords)}
               </li>
               <li>
                 Intermediate words:{' '}
-                {Math.floor(100 * stories[id].intermediateWords)}%
+                {calculatePercentage(stories[id].intermediateWords)}
               </li>
               <li>
-                Advanced words: {Math.floor(100 * stories[id].advancedWords)}%
+                Advanced words: {calculatePercentage(stories[id].advancedWords)}
               </li>
             </ul>
           </div>
