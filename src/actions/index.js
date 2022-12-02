@@ -1,5 +1,6 @@
 export const ADD_STORIES = 'ADD_STORIES';
 export const ADD_SAVED = 'ADD_SAVED';
+export const DELETE_SAVED = 'DELETE_SAVED';
 export const ADD_HISTORY = 'ADD_HISTORY';
 export const REMOVE_HISTORY = 'REMOVE_HISTORY';
 export const REMOVE_SAVED = 'REMOVE_SAVED';
@@ -36,6 +37,15 @@ export function removeSaved(removedItem) {
   return {
     type: REMOVE_SAVED,
     payload: removedItem,
+  };
+}
+
+export function deleteSaved(savedItem) {
+  localStorage.setItem('savedArticles', JSON.stringify({}));
+
+  return {
+    type: DELETE_SAVED,
+    payload: savedItem,
   };
 }
 
