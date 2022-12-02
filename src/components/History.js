@@ -10,10 +10,6 @@ import { deleteHistory } from '../actions';
 const History = ({ history }) => {
   const stories = useSelector((state) => state.history);
 
-  console.log('useSelector: ', useSelector);
-
-  console.log('Stories: ', stories);
-
   const renderArticleListItems = () =>
     _.map(stories, (article, articleId) => (
       <HistoryListItem key={articleId} id={articleId} history={history} />

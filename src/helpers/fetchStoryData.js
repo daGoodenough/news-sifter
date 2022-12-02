@@ -14,7 +14,6 @@ export const fetchStories = async (query, wordList, cocaWords) => {
   // const results = await axios.get('./data.json');
   const { articles } = results.data;
   const formattedData = await formatData(articles, wordList, cocaWords);
-  console.log('Formatted: ', formattedData);
   return formattedData;
 };
 
