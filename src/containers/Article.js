@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import _ from 'lodash';
@@ -28,9 +29,9 @@ const Article = (props) => {
   return (
     <div>
       <div className="sidebar-left">
-        <h5 className="back-button">
-          <Link to="/">Back</Link>
-        </h5>
+        <Button as={Link} to="/" varian="primary" className="back-button">
+          Back
+        </Button>
         <button type="button" className="highlight-button btn btn-warning">
           Highlight Advanced Words
         </button>
@@ -41,9 +42,9 @@ const Article = (props) => {
           Saved
         </h5>
       ) : (
-        <h5 onClick={handleSaveClick} className="save-button">
+        <Button onClick={handleSaveClick} className="save-button">
           Save
-        </h5>
+        </Button>
       )}
       <div className="article-box">
         <h2>{thisArticle.title}</h2>
