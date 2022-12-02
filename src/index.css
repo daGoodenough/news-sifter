@@ -38,7 +38,7 @@ td img {
   border-radius: 8px;
   border: 0.1px solid black;
   width: 110%;
-  background-color: rgba(7, 124, 240, 0.4) !important;
+  background-color: aquamarine !important;
   backdrop-filter: blur(2px) !important;
 }
 
@@ -97,22 +97,19 @@ small {
   margin: 2%;
 }
 
-
-.highlight-button{
+.highlight-button {
   margin-top: 15%;
 }
 
-
-
-.sidebar-intermediate-word-list{
-  background-color: #31D2F2;
+.sidebar-intermediate-word-list {
+  background-color: #31d2f2;
   border-radius: 8px;
   margin-top: 5%;
   font-weight: 500;
 }
 
 .sidebar-advanced-word-list {
-  background-color: #FDCA2D;
+  background-color: #fdca2d;
   border-radius: 8px;
   margin-top: 5%;
   font-weight: 500;
@@ -142,17 +139,16 @@ small {
   margin-right: 20%;
 }
 
-.advanced-words-highlighted{
+.advanced-words-highlighted {
   font-weight: 500;
-  background-color: #FDCA2D;
-  border: .1px solid rgba(0, 0, 0, 0.067);
+  background-color: #fdca2d;
+  border: 0.1px solid rgba(0, 0, 0, 0.067);
 }
 
-.intermediate-words-highlighted{
+.intermediate-words-highlighted {
   font-weight: 500;
-  background-color: #31D2F2;
-  border: .1px solid rgba(0, 0, 0, 0.067);
-
+  background-color: #31d2f2;
+  border: 0.1px solid rgba(0, 0, 0, 0.067);
 }
 
 article img {
@@ -227,7 +223,7 @@ article img {
     transform: rotate(360deg);
   }
 }
-  
+
 .missing-article-message {
   text-align: center;
 }
