@@ -1,6 +1,6 @@
 import _ from 'lodash';
 
-const advanced = 0.1;
+const advanced = 0.08;
 const intermediate = 0.12;
 
 const sortStories = (articleData, sort) => {
@@ -24,15 +24,14 @@ const sortByDifficulty = (articleData, sortDifficulty) => {
   if (sortDifficulty === 'beginner') {
     return _.filter(
       articleData,
-      (article) =>
-        article.intermediateWords + article.advancedWords <= intermediate
+      (article) => article.intermediateAndAdvancedWords <= intermediate
     );
   }
   if (sortDifficulty === 'intermediate') {
     return _.filter(
       articleData,
       (article) =>
-        article.intermediateWords + article.advancedWords > intermediate &&
+        article.intermediateAndAdvancedWords > intermediate &&
         article.advancedWords < advanced
     );
   }

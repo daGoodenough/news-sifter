@@ -7,10 +7,10 @@ import axios from 'axios';
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const fetchStories = async (query, wordList, cocaWords) => {
-  const results = await axios.get(
-    `https://newsapi.org/v2/everything?q=${query}&pageSize=10&apiKey=${API_KEY}`
-  );
-  // const results = await axios.get('./data.json');
+  // const results = await axios.get(
+  //   `https://newsapi.org/v2/everything?q=${query}&pageSize=10&apiKey=${API_KEY}`
+  // );
+  const results = await axios.get('./data.json');
   const { articles } = results.data;
   const formattedData = await formatData(articles, wordList, cocaWords);
   console.log('Formatted: ', formattedData);
@@ -55,7 +55,7 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
       tooAdvancedRank,
       cocaBeginnerRank,
       cocaIntermediateRank,
-    ] = [2000, 10000, 30000, 1000, 2500];
+    ] = [2000, 10000, 30000, 1000, 2000];
     const wordCount = filteredStory.reduce(
       (acc, i) => {
         if (wordList.wordForms.includes(i)) {
@@ -74,10 +74,7 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
               ) {
                 acc.intermediateWordsArr.push(wordList.wordForms[index]);
               }
-            } else if (
-              (index >= intermediateRank && index <= tooAdvancedRank) ||
-              cocaIndex !== -1
-            ) {
+            } else if (cocaIndex !== -1) {
               acc.advanced += 1;
               if (!acc?.advancedWordsArr.includes(wordList.wordForms[index])) {
                 acc.advancedWordsArr.push(wordList.wordForms[index]);

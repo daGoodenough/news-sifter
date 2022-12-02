@@ -97,6 +97,9 @@ small {
   margin: 2%;
 }
 
+.highlight-button{
+  margin-top: 15%;
+}
 
 
 .save-button {
@@ -145,7 +148,7 @@ article img {
 }
 
 .back-button {
-  margin-bottom: 50%;
+  margin: 1%;
 }
 
 @media screen and (max-width: 480px) {
