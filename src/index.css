@@ -1,5 +1,6 @@
 .App {
   background-color: rgba(245, 245, 245, 0.3);
+  margin-bottom: 200px;
 }
 
 .search-results-box {
@@ -91,16 +92,26 @@ small {
 .fa-star:hover {
   cursor: pointer;
 }
-
+.sidebar-left{
+  display: flex;
+  flex-direction: column;
+  float: left;
+  margin: 2%;
+  
+}
 
 .save-button{
   float:right;
-  margin-right: 1%;
+  margin: 2%;
   color: #0d6efd;
   text-decoration: underline;
 }
 .save-button:hover {
   cursor: pointer;
+  color: #0a58ca;
+}
+
+.saved {
   color: #0a58ca;
 }
 
@@ -129,8 +140,7 @@ article img {
 }
 
 .back-button {
-  margin-left: 1%;
-  float: left;
+  margin-bottom: 50%;
 }
 
 @media screen and (max-width: 480px) {

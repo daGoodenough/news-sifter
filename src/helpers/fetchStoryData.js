@@ -63,7 +63,9 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
               acc.intermediate += 1;
             } else if (index >= intermediateRank && index <= tooAdvancedRank) {
               acc.advanced += 1;
-              acc.wordsToShow.push(wordList.wordForms[index]);
+              if (!acc?.wordsToShow.includes(wordList.wordForms[index])) {
+                acc.wordsToShow.push(wordList.wordForms[index]);
+              }
             }
           }
         }
