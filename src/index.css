@@ -34,8 +34,6 @@ td img {
   cursor: pointer;
 }
 
-
-
 .reading-level-box {
   border-radius: 8px;
   border: 0.1px solid black;
@@ -44,12 +42,12 @@ td img {
   backdrop-filter: blur(2px) !important;
 }
 
-.extra-reading-level-info{
+.extra-reading-level-info {
   position: absolute;
-  right:102%;
+  right: 102%;
   background-color: aquamarine;
   width: 180px;
-  height: fit-content; 
+  height: fit-content;
   padding: 3%;
   border-radius: 8px;
 }
@@ -92,16 +90,15 @@ small {
 .fa-star:hover {
   cursor: pointer;
 }
-.sidebar-left{
+.sidebar-left {
   display: flex;
   flex-direction: column;
   float: left;
   margin: 2%;
-  
 }
 
-.save-button{
-  float:right;
+.save-button {
+  float: right;
   margin: 2%;
   color: #0d6efd;
   text-decoration: underline;
@@ -177,4 +174,22 @@ article img {
 
 .history-message {
   margin-left: 15%;
+}
+
+.loader {
+  border: 5px solid #f3f3f3; /* Light grey */
+  border-top: 5px solid aquamarine; /* Blue */
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
