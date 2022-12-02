@@ -1,3 +1,5 @@
+/* eslint-disable react/no-danger */
+/* eslint-disable react/prop-types */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
@@ -6,7 +8,7 @@
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
