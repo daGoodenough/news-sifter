@@ -2,9 +2,7 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable default-param-last */
 
-import axios from 'axios';
 import { ADD_STORIES } from '../actions';
-import { fetchStories } from '../helpers/fetchStoryData';
 
 const DEFAULT_STATE = {
   // 54654654654: {

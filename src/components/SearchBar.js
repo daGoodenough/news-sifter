@@ -1,5 +1,5 @@
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
