@@ -4,6 +4,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
+import Button from 'react-bootstrap/Button';
 import { deleteSaved } from '../actions';
 import SavedListItem from './SavedListItem';
 
@@ -21,9 +22,9 @@ const Saved = ({ history }) => {
 
   return (
     <>
-      <h5 className="back-button">
-        <Link to="/">Back</Link>
-      </h5>
+      <Button as={Link} to="/" className="back-button">
+        Back
+      </Button>
       {_.isEmpty(stories) ? (
         <h5 className="history-message">No saved articles...</h5>
       ) : (
