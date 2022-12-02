@@ -4,6 +4,7 @@ import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { fetchStories } from '../helpers/fetchStoryData';
+import { getNewWords, getCocaWords } from '../helpers/getWords';
 import {
   addStories,
   changeDifficulty,
@@ -12,60 +13,6 @@ import {
 } from '../actions';
 
 /* eslint-disable no-unused-vars */
-async function getWordList() {
-  const lemmas = [];
-  const lemRanks = [];
-  const wordForms = [];
-  const response = await fetch('wordForms.csv');
-  const data = await response.text();
-  const table = data.split(/\r?\n/).slice(1);
-  table.forEach((row) => {
-    const columns = row.split(',');
-    const lemRank = columns[0];
-    const lemma = columns[1];
-    const wordForm = columns[5];
-    lemRanks.push(parseFloat(lemRank));
-    lemmas.push(lemma);
-    wordForms.push(wordForm);
-  });
-  const wordList = {};
-  wordList.lemmas = lemmas;
-  wordList.lemRanks = lemRanks;
-  wordList.wordForms = wordForms;
-  return wordList;
-}
-
-async function getNewWords() {
-  const lemmas = [];
-  const wordForms = [];
-  const response = await fetch('ANCallcount.csv');
-  const data = await response.text();
-  const table = data.split(/\r?\n/).slice(1);
-  table.forEach((row) => {
-    const columns = row.split(',');
-    const lemma = columns[1];
-    const wordForm = columns[0];
-    lemmas.push(lemma);
-    wordForms.push(wordForm);
-  });
-  const wordList = {};
-  wordList.lemmas = lemmas;
-  wordList.wordForms = wordForms;
-  return wordList;
-}
-
-async function getCocaWords() {
-  const cocaWords = [];
-  const response = await fetch('COCA60K.csv');
-  const data = await response.text();
-  const table = data.split(/\r?\n/).slice(1);
-  table.forEach((row) => {
-    const columns = row.split(',');
-    const cocaWord = columns[0];
-    cocaWords.push(cocaWord);
-  });
-  return cocaWords;
-}
 
 const SearchBar = () => {
   const [query, setQuery] = useState('');
@@ -89,7 +36,6 @@ const SearchBar = () => {
   };
 
   const handleReadingLevelChange = (e) => {
-    // setReadingLevel(e.target.value);
     dispatch(changeDifficulty(e.target.value));
   };
 

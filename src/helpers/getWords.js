@@ -14,10 +14,10 @@ export async function getWordList() {
     lemmas.push(lemma);
     wordForms.push(wordForm);
   });
-  const wordList = {};
-  wordList.lemmas = lemmas;
-  wordList.lemRanks = lemRanks;
-  wordList.wordForms = wordForms;
+  const wordList = { lemmas, lemRanks, wordForms };
+  // wordList.lemmas = lemmas;
+  // wordList.lemRanks = lemRanks;
+  // wordList.wordForms = wordForms;
   return wordList;
 }
 
@@ -34,9 +34,9 @@ export async function getNewWords() {
     lemmas.push(lemma);
     wordForms.push(wordForm);
   });
-  const wordList = {};
-  wordList.lemmas = lemmas;
-  wordList.wordForms = wordForms;
+  const wordList = { lemmas, wordForms };
+  // wordList.lemmas = lemmas;
+  // wordList.wordForms = wordForms;
   return wordList;
 }
 
