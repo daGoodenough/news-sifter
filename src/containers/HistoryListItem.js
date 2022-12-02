@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 
 const HistoryListItem = ({ id, history }) => {
   const clickHandler = () => {
-    history.push(`/${stories[id].id}`);
+    history.push(`/history/${stories[id].id}`);
   };
 
   const stories = useSelector((state) => state.history);
