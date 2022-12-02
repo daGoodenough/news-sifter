@@ -3,7 +3,6 @@ import Saved from './Saved';
 import Home from './Home';
 import Article from '../containers/Article';
 import History from './History';
-import HistoryArticle from '../containers/HistoryArticle.js';
 
 const Main = () => (
   <Switch>
