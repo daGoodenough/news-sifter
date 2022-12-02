@@ -53,11 +53,11 @@ const ArticleListItem = ({ id, history }) => {
             >
               <div className="extra-reading-level-info-text">
                 <h5>Advanced words:</h5>
-                <span>{stories[id]?.wordsToShow} </span>
+                <span>{stories[id]?.advancedWordsString} </span>
                 <span
                   style={{
                     display:
-                      stories[id].wordsToShow?.length >= 120
+                      stories[id].advancedWordsString?.length >= 120
                         ? 'inline-block'
                         : 'none',
                   }}

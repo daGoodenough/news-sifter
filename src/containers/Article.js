@@ -45,15 +45,6 @@ const Article = () => {
     }
   };
 
-  // let articleWithHighlightedWords;
-
-  // useEffect(() => {
-  //   articleWithHighlightedWords = highlightText(
-  //     thisArticle.wordsNotToShow,
-  //     thisArticle.htmlContent
-  //   );
-  // }, []);
-
   const handleHighlightClick = () => {
     if (isHighlighted) setIsHighlighted(false);
     else setIsHighlighted(true);
@@ -114,7 +105,7 @@ const Article = () => {
         <article
           dangerouslySetInnerHTML={{
             __html: highlightText(
-              thisArticle.wordsNotToShow,
+              thisArticle.advancedWordsArr,
               thisArticle.htmlContent
             ),
           }}
