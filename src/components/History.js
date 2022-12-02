@@ -4,6 +4,7 @@ import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 import HistoryListItem from '../containers/HistoryListItem';
 import { deleteHistory } from '../actions';
 
@@ -25,9 +26,9 @@ const History = ({ history }) => {
 
   return (
     <>
-      <h5 className="back-button">
-        <Link to="/">Back</Link>
-      </h5>
+      <Button as={Link} to="/" className="back-button">
+        Back
+      </Button>
       {_.isEmpty(stories) ? (
         <h5 className="history-message">No Search History...</h5>
       ) : (

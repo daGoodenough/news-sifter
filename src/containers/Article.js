@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import { useState } from 'react';
 import _ from 'lodash';
@@ -27,13 +28,13 @@ const Article = (props) => {
 
   return (
     <div>
-      <h5 className="back-button">
-        <Link to="/">Back</Link>
-      </h5>
+      <Button as={Link} to="/" varian="primary" className="back-button">
+        Back
+      </Button>
       {Object.hasOwn(savedStories, thisArticle.id) ? null : (
-        <h5 onClick={handleSaveClick} className="save-button">
+        <Button onClick={handleSaveClick} className="save-button">
           Save
-        </h5>
+        </Button>
       )}
       <div className="article-box">
         <h2>{thisArticle.title}</h2>

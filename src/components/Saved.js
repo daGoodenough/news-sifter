@@ -2,6 +2,7 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
 import { useSelector, useDispatch } from 'react-redux';
 import _ from 'lodash';
 import { deleteSaved } from '../actions';
@@ -21,9 +22,9 @@ const Saved = ({ history }) => {
 
   return (
     <>
-      <h5 className="back-button">
-        <Link to="/">Back</Link>
-      </h5>
+      <Button as={Link} to="/" varian="primary" className="back-button">
+        Back
+      </Button>
       {_.isEmpty(stories) ? (
         <h5 className="history-message">No saved articles...</h5>
       ) : (
