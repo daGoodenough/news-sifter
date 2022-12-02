@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
 import { useState } from 'react';
-import Button from 'react-bootstrap/Button';
+
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
 import { addSaved, removeSaved } from '../actions';
@@ -30,9 +30,9 @@ const Article = ({ articleLocation }) => {
     return (
       <Row>
         <Col>
-          <Button as={Link} to="/" className="back-button">
-            Back
-          </Button>
+          <h5 className="back-button">
+            <Link to="/">Back</Link>
+          </h5>
           <h5 className="missing-article-message">
             This article could not be found...
           </h5>
@@ -105,9 +105,9 @@ const Article = ({ articleLocation }) => {
   return (
     <div>
       <div className="sidebar-left">
-        <Button as={Link} to="/" className="back-button">
-          Back
-        </Button>
+        <h5 className="back-button">
+          <Link to="/">Back</Link>
+        </h5>
         <button
           onClick={handleHighlightIntermediateClick}
           type="button"
@@ -143,13 +143,13 @@ const Article = ({ articleLocation }) => {
       </div>
 
       {Object.hasOwn(savedStories, thisArticle.id) ? (
-        <Button onClick={handleSaveClick} className="save-button saved">
+        <h5 onClick={handleSaveClick} className="save-button saved">
           Saved
-        </Button>
+        </h5>
       ) : (
-        <Button onClick={handleSaveClick} className="save-button">
+        <h5 onClick={handleSaveClick} className="save-button">
           Save
-        </Button>
+        </h5>
       )}
       <div className="article-box">
         <h2>{thisArticle.title}</h2>
