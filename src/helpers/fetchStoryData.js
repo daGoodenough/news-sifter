@@ -7,10 +7,10 @@ import axios from 'axios';
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const fetchStories = async (query, wordList, cocaWords) => {
-  // const results = await axios.get(
-  //   `https://newsapi.org/v2/everything?q=${query}&pageSize=100&apiKey=${API_KEY}`
-  // );
-  const results = await axios.get('./data.json');
+  const results = await axios.get(
+    `https://newsapi.org/v2/everything?q=${query}&pageSize=50&apiKey=${API_KEY}`
+  );
+  // const results = await axios.get('./data.json');
   const { articles } = results.data;
   const formattedData = await formatData(articles, wordList, cocaWords);
   console.log('Formatted: ', formattedData);
@@ -50,7 +50,7 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
     const noHyphens = splitStory.replaceAll('—', ' ').split(' ');
     const filteredStory = noHyphens.filter((el) => el !== '');
     const [beginnerRank, intermediateRank, tooAdvancedRank] = [
-      2000, 10000, 30000,
+      2000, 8000, 30000,
     ];
     const wordCount = filteredStory.reduce(
       (acc, i) => {

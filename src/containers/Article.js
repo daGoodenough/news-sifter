@@ -22,7 +22,6 @@ const Article = () => {
 
   const [isHighlighted, setIsHighlighted] = useState(false);
 
-
   if (thisArticle === undefined) {
     return (
       <Row>
@@ -37,7 +36,6 @@ const Article = () => {
       </Row>
     );
   }
-
 
   const handleSaveClick = () => {
     if (Object.hasOwn(savedStories, thisArticle.id)) {
