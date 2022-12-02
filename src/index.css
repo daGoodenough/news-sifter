@@ -93,16 +93,12 @@ small {
 
 .save-button {
   float: right;
-  margin-right: 1%;
-  color: #0d6efd;
+  margin-right: 5%;
+  color: gold;
   text-decoration: underline;
 }
 .save-button:hover {
   cursor: pointer;
-  color: #0a58ca;
-}
-
-.saved {
   color: #0a58ca;
 }
 

@@ -28,20 +28,10 @@ const Article = (props) => {
 
   return (
     <div>
-      <div className="sidebar-left">
-        <Button as={Link} to="/" varian="primary" className="back-button">
-          Back
-        </Button>
-        <button type="button" className="highlight-button btn btn-warning">
-          Highlight Advanced Words
-        </button>
-      </div>
-
-      {Object.hasOwn(savedStories, thisArticle.id) ? (
-        <h5 onClick={handleSaveClick} className="save-button saved">
-          Saved
-        </h5>
-      ) : (
+      <Button as={Link} to="/" varian="primary" className="back-button">
+        Back
+      </Button>
+      {Object.hasOwn(savedStories, thisArticle.id) ? null : (
         <Button onClick={handleSaveClick} className="save-button">
           Save
         </Button>
