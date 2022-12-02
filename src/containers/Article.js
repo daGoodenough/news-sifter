@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable no-useless-escape */
 
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import _ from 'lodash';
 import { addSaved, removeSaved } from '../actions';
 
@@ -15,7 +16,7 @@ const Article = (props) => {
   const id = parseInt(thisURL.substring(thisURL.lastIndexOf('/') + 1));
   const thisArticle = _.find(stories, (element) => element.id === id);
   const dispatch = useDispatch();
-  console.log(thisArticle);
+  const [isHighlighted, setIsHighlighted] = useState(false);
 
   const handleSaveClick = () => {
     if (Object.hasOwn(savedStories, thisArticle.id)) {
@@ -25,13 +26,47 @@ const Article = (props) => {
     }
   };
 
+  // let articleWithHighlightedWords;
+
+  // useEffect(() => {
+  //   articleWithHighlightedWords = highlightText(
+  //     thisArticle.wordsNotToShow,
+  //     thisArticle.htmlContent
+  //   );
+  // }, []);
+
+  const handleHighlightClick = () => {
+    if (isHighlighted) setIsHighlighted(false);
+    else setIsHighlighted(true);
+  };
+
+  function highlightText(arr, article) {
+    const spaced = article
+      .replaceAll('<', ' <')
+      .replaceAll('>', '> ')
+      .replaceAll('—', ', ');
+    const splitUp = spaced.split(' ');
+    const highlightedArticle = splitUp.map((i) => {
+      if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
+        return ` <span class="advanced-words-highlighted"> ${i} </span> `;
+      }
+      return i;
+    });
+    const joined = highlightedArticle.join(' ');
+    return joined.replaceAll(' <', '<').replaceAll('> ', '>');
+  }
+
   return (
     <div>
       <div className="sidebar-left">
         <h5 className="back-button">
           <Link to="/">Back</Link>
         </h5>
-        <button type="button" className="highlight-button btn btn-warning">
+        <button
+          onClick={handleHighlightClick}
+          type="button"
+          className="highlight-button btn btn-warning"
+        >
           Highlight Advanced Words
         </button>
       </div>
@@ -53,6 +88,20 @@ const Article = (props) => {
         </div>
         <article
           dangerouslySetInnerHTML={{ __html: thisArticle.htmlContent }}
+          style={{
+            display: isHighlighted === false ? 'block' : 'none',
+          }}
+        />
+        <article
+          dangerouslySetInnerHTML={{
+            __html: highlightText(
+              thisArticle.wordsNotToShow,
+              thisArticle.htmlContent
+            ),
+          }}
+          style={{
+            display: isHighlighted === true ? 'block' : 'none',
+          }}
         />
       </div>
     </div>

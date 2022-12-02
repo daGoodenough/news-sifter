@@ -85,8 +85,6 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
 }
 
 const formatData = async (articles, wordList, cocaWords) => {
-  console.log('wordList', wordList);
-  console.log('cocaWords', cocaWords);
   const pulledURLS = pullURLS(articles);
   const extractedArticles = await extractArticles(pulledURLS);
   const storiesDifficulty = await getReadingLevelInfo(
@@ -109,7 +107,9 @@ const formatData = async (articles, wordList, cocaWords) => {
       description: articles[index].description,
       source: articles[index].source.name,
       htmlContent: extractedHTML[index],
-      wordsToShow: storiesDifficulty[index].wordsToShow.join(', '),
+      wordsToShow:
+        storiesDifficulty[index].wordsToShow.join(', ').substring(0, 130) || '',
+      wordsNotToShow: storiesDifficulty[index].wordsToShow,
       wordCount: storiesDifficulty[index].total,
       beginnerWords:
         storiesDifficulty[index].beginner / storiesDifficulty[index].total,
