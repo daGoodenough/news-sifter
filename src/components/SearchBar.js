@@ -73,12 +73,12 @@ const SearchBar = () => {
 
   let wordList = {};
   let cocaWords = [];
+  wordList = getNewWords();
+  cocaWords = getCocaWords();
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {
     setIsLoading(true);
-    wordList = getNewWords();
-    cocaWords = getCocaWords();
     const storiesData = await fetchStories(
       query,
       await wordList,

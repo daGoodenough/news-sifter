@@ -20,7 +20,9 @@ const Article = () => {
   const thisArticle = _.find(stories, (element) => element.id === id);
   const dispatch = useDispatch();
 
-  const [isHighlighted, setIsHighlighted] = useState(false);
+  const [isAdvancedHighlighted, setIsAdvancedHighlighted] = useState(false);
+  const [isIntermediateHighlighted, setIsIntermediateHighlighted] =
+    useState(false);
 
   if (thisArticle === undefined) {
     return (
@@ -45,12 +47,23 @@ const Article = () => {
     }
   };
 
-  const handleHighlightClick = () => {
-    if (isHighlighted) setIsHighlighted(false);
-    else setIsHighlighted(true);
+  const handleHighlightAdvancedClick = () => {
+    if (isAdvancedHighlighted) setIsAdvancedHighlighted(false);
+    else {
+      setIsAdvancedHighlighted(true);
+      setIsIntermediateHighlighted(false);
+    }
   };
 
-  function highlightText(arr, article) {
+  const handleHighlightIntermediateClick = () => {
+    if (isIntermediateHighlighted) setIsIntermediateHighlighted(false);
+    else {
+      setIsIntermediateHighlighted(true);
+      setIsAdvancedHighlighted(false);
+    }
+  };
+
+  function highlightAdvanced(arr, article) {
     const spaced = article
       .replaceAll('<', ' <')
       .replaceAll('>', '> ')
@@ -66,6 +79,27 @@ const Article = () => {
     return joined.replaceAll(' <', '<').replaceAll('> ', '>');
   }
 
+  function highlightIntermediate(arr, article) {
+    const spaced = article
+      .replaceAll('<', ' <')
+      .replaceAll('>', '> ')
+      .replaceAll('—', ', ');
+    const splitUp = spaced.split(' ');
+    const highlightedArticle = splitUp.map((i) => {
+      if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
+        return ` <span class="intermediate-words-highlighted"> ${i} </span> `;
+      }
+      return i;
+    });
+    const joined = highlightedArticle.join(' ');
+    return joined.replaceAll(' <', '<').replaceAll('> ', '>');
+  }
+
+  function wordArrToList(arr) {
+    const newArr = arr.map((i) => `<li>${i}</li>`);
+    return newArr.join('');
+  }
+
   return (
     <div>
       <div className="sidebar-left">
@@ -73,12 +107,37 @@ const Article = () => {
           <Link to="/">Back</Link>
         </h5>
         <button
-          onClick={handleHighlightClick}
+          onClick={handleHighlightIntermediateClick}
+          type="button"
+          className="highlight-button btn btn-info"
+        >
+          Highlight Intermediate Words
+        </button>
+        <button
+          onClick={handleHighlightAdvancedClick}
           type="button"
           className="highlight-button btn btn-warning"
         >
           Highlight Advanced Words
         </button>
+        <ul
+          className="sidebar-intermediate-word-list"
+          dangerouslySetInnerHTML={{
+            __html: wordArrToList(thisArticle.intermediateWordsArr),
+          }}
+          style={{
+            display: isIntermediateHighlighted === true ? 'block' : 'none',
+          }}
+        />
+        <ul
+          className="sidebar-advanced-word-list"
+          dangerouslySetInnerHTML={{
+            __html: wordArrToList(thisArticle.advancedWordsArr),
+          }}
+          style={{
+            display: isAdvancedHighlighted === true ? 'block' : 'none',
+          }}
+        />
       </div>
 
       {Object.hasOwn(savedStories, thisArticle.id) ? (
@@ -99,18 +158,32 @@ const Article = () => {
         <article
           dangerouslySetInnerHTML={{ __html: thisArticle.htmlContent }}
           style={{
-            display: isHighlighted === false ? 'block' : 'none',
+            display:
+              isAdvancedHighlighted || isIntermediateHighlighted === true
+                ? 'none'
+                : 'block',
           }}
         />
         <article
           dangerouslySetInnerHTML={{
-            __html: highlightText(
+            __html: highlightAdvanced(
               thisArticle.advancedWordsArr,
               thisArticle.htmlContent
             ),
           }}
           style={{
-            display: isHighlighted === true ? 'block' : 'none',
+            display: isAdvancedHighlighted === true ? 'block' : 'none',
+          }}
+        />
+        <article
+          dangerouslySetInnerHTML={{
+            __html: highlightIntermediate(
+              thisArticle.intermediateWordsArr,
+              thisArticle.htmlContent
+            ),
+          }}
+          style={{
+            display: isIntermediateHighlighted === true ? 'block' : 'none',
           }}
         />
       </div>

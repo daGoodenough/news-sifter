@@ -97,10 +97,26 @@ small {
   margin: 2%;
 }
 
+
 .highlight-button{
   margin-top: 15%;
 }
 
+
+
+.sidebar-intermediate-word-list{
+  background-color: #31D2F2;
+  border-radius: 8px;
+  margin-top: 5%;
+  font-weight: 500;
+}
+
+.sidebar-advanced-word-list {
+  background-color: #FDCA2D;
+  border-radius: 8px;
+  margin-top: 5%;
+  font-weight: 500;
+}
 
 .save-button {
   float: right;
@@ -128,8 +144,15 @@ small {
 
 .advanced-words-highlighted{
   font-weight: 500;
-  background-color: yellow;
+  background-color: #FDCA2D;
   border: .1px solid rgba(0, 0, 0, 0.067);
+}
+
+.intermediate-words-highlighted{
+  font-weight: 500;
+  background-color: #31D2F2;
+  border: .1px solid rgba(0, 0, 0, 0.067);
+
 }
 
 article img {
