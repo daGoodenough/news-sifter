@@ -5,18 +5,39 @@
 
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
+
 import { useEffect, useState } from 'react';
+
 import _ from 'lodash';
+import { Row, Col } from 'react-bootstrap';
 import { addSaved, removeSaved } from '../actions';
 
-const Article = (props) => {
+const Article = () => {
   const stories = useSelector((state) => state.articles);
   const savedStories = useSelector((state) => state.saved);
   const thisURL = window.location.href;
   const id = parseInt(thisURL.substring(thisURL.lastIndexOf('/') + 1));
   const thisArticle = _.find(stories, (element) => element.id === id);
   const dispatch = useDispatch();
+
   const [isHighlighted, setIsHighlighted] = useState(false);
+
+
+  if (thisArticle === undefined) {
+    return (
+      <Row>
+        <Col>
+          <h5 className="back-button">
+            <Link to="/">Back</Link>
+          </h5>
+          <h5 className="missing-article-message">
+            This article could not be found...
+          </h5>
+        </Col>
+      </Row>
+    );
+  }
+
 
   const handleSaveClick = () => {
     if (Object.hasOwn(savedStories, thisArticle.id)) {
