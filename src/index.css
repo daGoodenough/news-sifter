@@ -99,12 +99,8 @@ small {
 
 
 
-.save-button{
-  float:right;
-
 .save-button {
   float: right;
-
   margin: 2%;
   color: #0d6efd;
   text-decoration: underline;
@@ -128,7 +124,9 @@ small {
 }
 
 .advanced-words-highlighted{
-  font-weight: bold;
+  font-weight: 500;
+  background-color: yellow;
+  border: .1px solid rgba(0, 0, 0, 0.067);
 }
 
 article img {
