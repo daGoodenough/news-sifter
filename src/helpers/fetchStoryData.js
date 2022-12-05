@@ -21,10 +21,10 @@ function pullURLS(data) {
   const pulled = data.map((i) => i.url);
   return pulled;
 }
-
+let articlePromises;
 async function extractArticles(data) {
   const extractedArticles = [];
-  const articlePromises = await data.map((i) => extract(i));
+  articlePromises = await data.map((i) => extract(i));
   await Promise.allSettled(articlePromises).then((data) => {
     data.map((article) => {
       if (article.status === 'rejected') return;
@@ -35,10 +35,6 @@ async function extractArticles(data) {
     });
   });
   return extractedArticles;
-}
-
-function extractHTML(data) {
-  return data.map((i) => extract(i).then((article) => article?.content));
 }
 
 async function getReadingLevelInfo(stories, wordList, cocaWords) {
@@ -107,9 +103,8 @@ const formatData = async (articles, wordList, cocaWords) => {
     wordList,
     cocaWords
   );
-  const promisedHTML = extractHTML(pulledURLS);
   let extractedHTML;
-  await Promise.allSettled(promisedHTML).then((data) => {
+  await Promise.allSettled(articlePromises).then((data) => {
     if (data.status === 'rejected') return;
     extractedHTML = data;
   });
