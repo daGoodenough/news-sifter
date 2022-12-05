@@ -25,9 +25,10 @@ function pullURLS(data) {
 async function extractArticles(data) {
   const extractedArticles = [];
   const articlePromises = await data.map((i) => extract(i));
-  await Promise.all(articlePromises).then((data) => {
+  await Promise.allSettled(articlePromises).then((data) => {
     data.map((article) => {
-      const content = article.content.replaceAll('<', ' <');
+      if (article.status === 'rejected') return;
+      const content = article.value.content.replaceAll('<', ' <');
       const parser = new DOMParser();
       const parsedArticle = parser.parseFromString(content, 'text/html');
       extractedArticles.push(parsedArticle.all[0].textContent);
@@ -37,7 +38,7 @@ async function extractArticles(data) {
 }
 
 function extractHTML(data) {
-  return data.map((i) => extract(i).then((article) => article.content));
+  return data.map((i) => extract(i).then((article) => article?.content));
 }
 
 async function getReadingLevelInfo(stories, wordList, cocaWords) {
@@ -108,55 +109,45 @@ const formatData = async (articles, wordList, cocaWords) => {
   );
   const promisedHTML = extractHTML(pulledURLS);
   let extractedHTML;
-  await Promise.all(promisedHTML).then((data) => {
+  await Promise.allSettled(promisedHTML).then((data) => {
+    if (data.status === 'rejected') return;
     extractedHTML = data;
   });
   const storiesWithInfo = storiesDifficulty.reduce((acc, item, index) => {
     acc[Date.parse(articles[index].publishedAt)] = {
-      id: Date.parse(articles[index].publishedAt),
-      url: articles[index].url,
-      title: articles[index].title,
-      author: articles[index].author,
-      image: articles[index].urlToImage,
-      description: articles[index].description,
-      source: articles[index].source.name,
-      htmlContent: extractedHTML[index],
+      id: Date.parse(articles[index].publishedAt) || '',
+      url: articles[index].url || '',
+      title: articles[index].title || '',
+      author: articles[index].author || '',
+      image: articles[index].urlToImage || '',
+      description: articles[index].description || '',
+      source: articles[index].source.name || '',
+      htmlContent: extractedHTML[index] || '',
       advancedWordsString:
         storiesDifficulty[index].advancedWordsArr
           .join(', ')
           .substring(0, 130) || '',
-      advancedWordsArr: storiesDifficulty[index].advancedWordsArr,
-      intermediateWordsArr: storiesDifficulty[index].intermediateWordsArr,
-      wordCount: storiesDifficulty[index].total,
+      advancedWordsArr: storiesDifficulty[index].advancedWordsArr || '',
+      intermediateWordsArr: storiesDifficulty[index].intermediateWordsArr || '',
+      wordCount: storiesDifficulty[index].total || '',
       beginnerWords:
-        storiesDifficulty[index].beginner / storiesDifficulty[index].total,
+        storiesDifficulty[index].beginner / storiesDifficulty[index].total ||
+        '',
       intermediateWords:
-        storiesDifficulty[index].intermediate / storiesDifficulty[index].total,
+        storiesDifficulty[index].intermediate /
+          storiesDifficulty[index].total || '',
       advancedWords:
-        storiesDifficulty[index].advanced / storiesDifficulty[index].total,
-      super: storiesDifficulty[index].super / storiesDifficulty[index].total,
+        storiesDifficulty[index].advanced / storiesDifficulty[index].total ||
+        '',
+      super:
+        storiesDifficulty[index].super / storiesDifficulty[index].total || '',
       intermediateAndAdvancedWords:
         (storiesDifficulty[index].intermediate +
           storiesDifficulty[index].advanced) /
-        storiesDifficulty[index].total,
+          storiesDifficulty[index].total || '',
     };
     return acc;
   }, {});
   const notPromiesed = storiesWithInfo;
   return notPromiesed;
 };
-
-// const DEFAULT_STATE = {
-//   3453: {
-//     title: "Article Tile",
-//     author: "",
-//     image: "image url"
-//     textContent: "F"
-//     wordCount: 93843
-//     beginnerWords: 3828
-//     intermediateWords: 393
-//     advancedWords: 213
-//   }
-// }
-
-// export default reducer;
