@@ -117,7 +117,7 @@ const formatData = async (articles, wordList, cocaWords) => {
       image: articles[index].urlToImage || '',
       description: articles[index].description || '',
       source: articles[index].source.name || '',
-      htmlContent: extractedHTML[index].value.content || '',
+      htmlContent: extractedHTML[index].value?.content || '',
       advancedWordsString:
         storiesDifficulty[index].advancedWordsArr
           .join(', ')
@@ -143,7 +143,6 @@ const formatData = async (articles, wordList, cocaWords) => {
     };
     return acc;
   }, {});
-  console.log(storiesWithInfo);
   const notPromiesed = storiesWithInfo;
   return notPromiesed;
 };
