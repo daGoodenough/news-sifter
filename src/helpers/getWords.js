@@ -15,9 +15,6 @@ export async function getWordList() {
     wordForms.push(wordForm);
   });
   const wordList = { lemmas, lemRanks, wordForms };
-  // wordList.lemmas = lemmas;
-  // wordList.lemRanks = lemRanks;
-  // wordList.wordForms = wordForms;
   return wordList;
 }
 
@@ -35,8 +32,6 @@ export async function getNewWords() {
     wordForms.push(wordForm);
   });
   const wordList = { lemmas, wordForms };
-  // wordList.lemmas = lemmas;
-  // wordList.wordForms = wordForms;
   return wordList;
 }
 
