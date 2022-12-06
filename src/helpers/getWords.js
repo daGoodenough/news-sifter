@@ -1,22 +1,22 @@
-export async function getWordList() {
-  const lemmas = [];
-  const lemRanks = [];
-  const wordForms = [];
-  const response = await fetch('wordForms.csv');
-  const data = await response.text();
-  const table = data.split(/\r?\n/).slice(1);
-  table.forEach((row) => {
-    const columns = row.split(',');
-    const lemRank = columns[0];
-    const lemma = columns[1];
-    const wordForm = columns[5];
-    lemRanks.push(parseFloat(lemRank));
-    lemmas.push(lemma);
-    wordForms.push(wordForm);
-  });
-  const wordList = { lemmas, lemRanks, wordForms };
-  return wordList;
-}
+// export async function getWordList() {
+//   const lemmas = [];
+//   const lemRanks = [];
+//   const wordForms = [];
+//   const response = await fetch('wordForms.csv');
+//   const data = await response.text();
+//   const table = data.split(/\r?\n/).slice(1);
+//   table.forEach((row) => {
+//     const columns = row.split(',');
+//     const lemRank = columns[0];
+//     const lemma = columns[1];
+//     const wordForm = columns[5];
+//     lemRanks.push(parseFloat(lemRank));
+//     lemmas.push(lemma);
+//     wordForms.push(wordForm);
+//   });
+//   const wordList = { lemmas, lemRanks, wordForms };
+//   return wordList;
+// }
 
 export async function getNewWords() {
   const lemmas = [];
@@ -32,6 +32,7 @@ export async function getNewWords() {
     wordForms.push(wordForm);
   });
   const wordList = { lemmas, wordForms };
+  console.log('just got word list');
   return wordList;
 }
 
@@ -45,5 +46,6 @@ export async function getCocaWords() {
     const cocaWord = columns[0];
     cocaWords.push(cocaWord);
   });
+  console.log('just got coca words');
   return cocaWords;
 }

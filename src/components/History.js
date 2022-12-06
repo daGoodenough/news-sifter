@@ -29,7 +29,7 @@ const History = ({ history }) => {
         <h5 className="history-message">No Search History...</h5>
       ) : (
         <button
-          className="clear-history-button"
+          className="clear-history-button btn btn-info"
           type="button"
           onClick={deleteHandler}
         >
