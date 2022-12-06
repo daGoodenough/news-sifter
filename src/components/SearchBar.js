@@ -1,10 +1,10 @@
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { fetchStories } from '../helpers/fetchStoryData';
-import { getNewWords, getCocaWords } from '../helpers/getWords';
+// import { getNewWords, getCocaWords } from '../helpers/getWords';
 import {
   addStories,
   changeDifficulty,
@@ -14,14 +14,12 @@ import {
 
 /* eslint-disable no-unused-vars */
 
-const SearchBar = () => {
+const SearchBar = ({ wordList, cocaWords }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  let wordList = {};
-  let cocaWords = [];
-  wordList = getNewWords();
-  cocaWords = getCocaWords();
+  console.log('in search bar', wordList, cocaWords);
+
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {

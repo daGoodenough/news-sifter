@@ -29,7 +29,7 @@ const Saved = ({ history }) => {
         <h5 className="history-message">No saved articles...</h5>
       ) : (
         <button
-          className="clear-history-button"
+          className="clear-history-button btn btn-info"
           type="button"
           onClick={deleteHandler}
         >
