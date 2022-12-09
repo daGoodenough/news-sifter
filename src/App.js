@@ -49,13 +49,17 @@ function App() {
 
   const initialLoad = async () => {
     setIsLoading(true);
-    const a = await getCocaWords();
-    const b = await getNewWords();
-    setCocaWords(a);
-    setWordList(b);
-    const storiesData = await fetchStories('news', b, a);
-
-    dispatch(addStories(storiesData));
+    try {
+      const a = await getCocaWords();
+      const b = await getNewWords();
+      setCocaWords(a);
+      setWordList(b);
+      const storiesData = await fetchStories('news', b, a);
+      dispatch(addStories(storiesData));
+    } catch (e) {
+      console.error('Error getting story data: ', e);
+      dispatch(addStories(null));
+    }
     setIsLoading(false);
   };
 

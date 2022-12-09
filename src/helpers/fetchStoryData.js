@@ -8,13 +8,21 @@ import axios from 'axios';
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const fetchStories = async (query, wordList, cocaWords) => {
-  // const results = await axios.get(
-  //   `https://newsapi.org/v2/everything?q=${query}&pageSize=10&apiKey=${API_KEY}`
-  // );
-  const results = await axios.get('./data.json');
-  const { articles } = results.data;
-  const formattedData = await formatData(articles, wordList, cocaWords);
-  return formattedData;
+  try {
+    const results = await axios.get(
+      `https://newsapi.org/v2/everything?q=${query}&pageSize=25&apiKey=${`${API_KEY}sdfk`}`
+    );
+    // const results = await axios.get('./data.json');
+
+    const { articles } = results.data;
+
+    const formattedData = await formatData(articles, wordList, cocaWords);
+
+    return formattedData;
+  } catch (e) {
+    console.error('Error in fetching news articles: ', e);
+    throw e;
+  }
 };
 
 function pullURLS(data) {
