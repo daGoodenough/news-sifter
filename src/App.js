@@ -29,7 +29,6 @@ function App() {
       wordForms.push(wordForm);
     });
     const results = { lemmas, wordForms };
-    console.log('just got word list');
     return results;
   }
 
@@ -43,7 +42,6 @@ function App() {
       const cocaWord = columns[0];
       results.push(cocaWord);
     });
-    console.log('just got coca words');
     return results;
   }
 
