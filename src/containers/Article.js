@@ -8,7 +8,7 @@
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
@@ -73,13 +73,15 @@ const Article = ({ articleLocation }) => {
     const splitUp = spaced.split(' ');
     const highlightedArticle = splitUp.map((i) => {
       if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
-        return ` <span class="advanced-words-highlighted"> ${i} </span> `;
+        return ` <span class="advanced-words-highlighted article-word"> ${i} </span> `;
       }
-      return i;
+      return ` <span class="article-word">${i}</span> `;
     });
     const joined = highlightedArticle.join(' ');
     return joined.replaceAll(' <', '<').replaceAll('> ', '>');
   }
+
+  // i could just replace them all with spans around them before the article loads
 
   function highlightIntermediate(arr, article) {
     const spaced = article
@@ -89,9 +91,9 @@ const Article = ({ articleLocation }) => {
     const splitUp = spaced.split(' ');
     const highlightedArticle = splitUp.map((i) => {
       if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
-        return ` <span class="intermediate-words-highlighted"> ${i} </span> `;
+        return ` <span class="intermediate-words-highlighted article-word"> ${i} </span> `;
       }
-      return i;
+      return ` <span class="article-word">${i}</span> `;
     });
     const joined = highlightedArticle.join(' ');
     return joined.replaceAll(' <', '<').replaceAll('> ', '>');
@@ -101,6 +103,35 @@ const Article = ({ articleLocation }) => {
     const newArr = arr.map((i) => `<li>${i}</li>`);
     return newArr.join('');
   }
+
+  function wrapEachWordInSpan(str) {
+    const spaced = str
+      .replaceAll('<', ' <')
+      .replaceAll('>', '> ')
+      .replaceAll('—', ', ');
+    console.log(spaced);
+    const splitUp = spaced.split(' ');
+    const wrapped = splitUp.map(
+      (i) =>
+        `<span class="article-word">
+        ${i}
+      </span>`
+    );
+    const joined = wrapped.join(' ');
+    return joined.replaceAll(' <', '<').replaceAll('> ', '>');
+  }
+
+  const articleHTML = wrapEachWordInSpan(thisArticle.htmlContent);
+  const articleHTMLIntermediateHighlighted = highlightIntermediate(
+    thisArticle.intermediateWordsArr,
+    thisArticle.htmlContent
+  );
+  const articleHTMLAdvancedHighlighted = highlightAdvanced(
+    thisArticle.advancedWordsArr,
+    thisArticle.htmlContent
+  );
+  const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
+  const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
 
   return (
     <div>
@@ -125,7 +156,7 @@ const Article = ({ articleLocation }) => {
         <ul
           className="sidebar-intermediate-word-list"
           dangerouslySetInnerHTML={{
-            __html: wordArrToList(thisArticle.intermediateWordsArr),
+            __html: intermediateSidebar,
           }}
           style={{
             display: isIntermediateHighlighted === true ? 'block' : 'none',
@@ -134,7 +165,7 @@ const Article = ({ articleLocation }) => {
         <ul
           className="sidebar-advanced-word-list"
           dangerouslySetInnerHTML={{
-            __html: wordArrToList(thisArticle.advancedWordsArr),
+            __html: advancedSidebar,
           }}
           style={{
             display: isAdvancedHighlighted === true ? 'block' : 'none',
@@ -158,7 +189,9 @@ const Article = ({ articleLocation }) => {
           <h6>{thisArticle.author} | </h6> <h6> {thisArticle.source}</h6>
         </div>
         <article
-          dangerouslySetInnerHTML={{ __html: thisArticle.htmlContent }}
+          dangerouslySetInnerHTML={{
+            __html: articleHTML,
+          }}
           style={{
             display:
               isAdvancedHighlighted || isIntermediateHighlighted === true
@@ -168,10 +201,7 @@ const Article = ({ articleLocation }) => {
         />
         <article
           dangerouslySetInnerHTML={{
-            __html: highlightAdvanced(
-              thisArticle.advancedWordsArr,
-              thisArticle.htmlContent
-            ),
+            __html: articleHTMLAdvancedHighlighted,
           }}
           style={{
             display: isAdvancedHighlighted === true ? 'block' : 'none',
@@ -179,10 +209,7 @@ const Article = ({ articleLocation }) => {
         />
         <article
           dangerouslySetInnerHTML={{
-            __html: highlightIntermediate(
-              thisArticle.intermediateWordsArr,
-              thisArticle.htmlContent
-            ),
+            __html: articleHTMLIntermediateHighlighted,
           }}
           style={{
             display: isIntermediateHighlighted === true ? 'block' : 'none',
