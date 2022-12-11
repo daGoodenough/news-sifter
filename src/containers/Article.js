@@ -66,38 +66,52 @@ const Article = ({ articleLocation }) => {
     }
   };
 
-  function highlightAdvanced(arr, article) {
+  function highlightAdvanced(arr, article, allWordsArr) {
     const spaced = article
       .replaceAll('<', ' <')
       .replaceAll('>', '> ')
-      .replaceAll('—', ', ');
+      .replaceAll('—', ' - ');
     const splitUp = spaced.split(' ');
     const highlightedArticle = splitUp.map((i) => {
-      if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
+      if (i.includes('<source')) {
+        return `<div class="hide-source">${i}</div>`;
+      } else if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
         return ` <span class="advanced-words-highlighted article-word"> ${i} </span> `;
-      }
-      return ` <span class="article-word">${i}</span> `;
+      } else if (
+        allWordsArr.includes(
+          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+        )
+      )
+        return `<span class="article-word">${i}</span>`;
+      else return i;
     });
     const joined = highlightedArticle.join(' ');
-    return joined.replaceAll(' <', '<').replaceAll('> ', '>');
+    return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
 
   // i could just replace them all with spans around them before the article loads
 
-  function highlightIntermediate(arr, article) {
+  function highlightIntermediate(arr, article, allWordsArr) {
     const spaced = article
       .replaceAll('<', ' <')
       .replaceAll('>', '> ')
-      .replaceAll('—', ', ');
+      .replaceAll('—', ' - ');
     const splitUp = spaced.split(' ');
     const highlightedArticle = splitUp.map((i) => {
-      if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
+      if (i.includes('<source')) {
+        return `<div class="hide-source">${i}</div>`;
+      } else if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
         return ` <span class="intermediate-words-highlighted article-word"> ${i} </span> `;
-      }
-      return ` <span class="article-word">${i}</span> `;
+      } else if (
+        allWordsArr.includes(
+          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+        )
+      )
+        return `<span class="article-word">${i}</span>`;
+      else return i;
     });
     const joined = highlightedArticle.join(' ');
-    return joined.replaceAll(' <', '<').replaceAll('> ', '>');
+    return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
 
   function wordArrToList(arr) {
@@ -105,50 +119,55 @@ const Article = ({ articleLocation }) => {
     return newArr.join('');
   }
 
-  function containsNumberOrLink(str) {
-    const pattern = /[0-9]/;
-    return pattern.test(str);
-  }
-
-  function wrapEachWordInSpan(str) {
+  function wrapEachWordInSpan(str, arr) {
     const spaced = str
       .replaceAll('<', ' <')
       .replaceAll('>', '> ')
-      .replaceAll('—', ', ');
-    console.log('spaced', spaced);
+      .replaceAll('—', ' - ');
     const splitUp = spaced.split(' ');
-    console.log('splitup', splitUp);
     const wrapped = splitUp.map((i) => {
-      if (i.includes('target=')) {
-        return i;
-      } else if (i.includes('href=')) {
-        return `<a ${i}`;
-      } else if (i.includes('src=')) {
-        return `<img ${i}`;
-      } else if (i.includes('<source') || i.includes('id=')) {
+      if (i.includes('<source')) {
         return `<div class="hide-source">${i}</div>`;
-      } else {
+      } else if (
+        arr.includes(
+          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+        )
+      )
+        // if (i.includes('target=')) {
+        //   return i;
+        // } else if (i.includes('href=')) {
+        //   return `<a ${i}`;
+        // } else if (i.includes('src=')) {
+        //   return `<img ${i}`;
+        // } else if (i.includes('<source') || i.includes('id=')) {
+        //   return `<div class="hide-source">${i}</div>`;
+        // } else {
         return `<span class="article-word">${i}</span>`;
-      }
+      else return i;
     });
-    console.log('wrapped', wrapped);
     const joined = wrapped.join(' ');
-    console.log('joined', joined);
     return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
 
-  const articleHTML = wrapEachWordInSpan(thisArticle.htmlContent);
+  const articleHTML = wrapEachWordInSpan(
+    thisArticle.htmlContent,
+    thisArticle.allWordsArr
+  );
   const articleHTMLIntermediateHighlighted = highlightIntermediate(
     thisArticle.intermediateWordsArr,
-    thisArticle.htmlContent
+    thisArticle.htmlContent,
+    thisArticle.allWordsArr
   );
   const articleHTMLAdvancedHighlighted = highlightAdvanced(
     thisArticle.advancedWordsArr,
-    thisArticle.htmlContent
+    thisArticle.htmlContent,
+    thisArticle.allWordsArr
   );
   const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
   const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
 
+  console.log('allwords', thisArticle.allWordsArr);
+  console.log('thisArticle', thisArticle);
   return (
     <div>
       <div className="sidebar-left">
