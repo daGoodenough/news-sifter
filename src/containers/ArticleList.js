@@ -5,13 +5,17 @@ import _ from 'lodash';
 import ArticleListItem from './ArticleListItem';
 import sortArticles from '../helpers/sortArticleData';
 import ErrorPage from '../components/ErrorPage';
+import NoResults from '../components/NoResults';
 /* eslint-disable react/prop-types */
 
 const ArticleList = ({ history }) => {
   const stories = useSelector((state) => state.articles);
   const sort = useSelector((state) => state.sort);
-
   if (stories === null) {
+    return <NoResults />;
+  }
+
+  if (stories === undefined) {
     return <ErrorPage />;
   }
 
