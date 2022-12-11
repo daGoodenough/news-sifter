@@ -4,6 +4,7 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-useless-escape */
+/* eslint-disable no-else-return */
 
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -104,21 +105,36 @@ const Article = ({ articleLocation }) => {
     return newArr.join('');
   }
 
+  function containsNumberOrLink(str) {
+    const pattern = /[0-9]/;
+    return pattern.test(str);
+  }
+
   function wrapEachWordInSpan(str) {
     const spaced = str
       .replaceAll('<', ' <')
       .replaceAll('>', '> ')
       .replaceAll('—', ', ');
-    console.log(spaced);
+    console.log('spaced', spaced);
     const splitUp = spaced.split(' ');
-    const wrapped = splitUp.map(
-      (i) =>
-        `<span class="article-word">
-        ${i}
-      </span>`
-    );
+    console.log('splitup', splitUp);
+    const wrapped = splitUp.map((i) => {
+      if (i.includes('target=')) {
+        return i;
+      } else if (i.includes('href=')) {
+        return `<a ${i}`;
+      } else if (i.includes('src=')) {
+        return `<img ${i}`;
+      } else if (i.includes('<source') || i.includes('id=')) {
+        return `<div class="hide-source">${i}</div>`;
+      } else {
+        return `<span class="article-word">${i}</span>`;
+      }
+    });
+    console.log('wrapped', wrapped);
     const joined = wrapped.join(' ');
-    return joined.replaceAll(' <', '<').replaceAll('> ', '>');
+    console.log('joined', joined);
+    return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
 
   const articleHTML = wrapEachWordInSpan(thisArticle.htmlContent);
