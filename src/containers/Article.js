@@ -26,6 +26,25 @@ const Article = ({ articleLocation }) => {
   const [isAdvancedHighlighted, setIsAdvancedHighlighted] = useState(false);
   const [isIntermediateHighlighted, setIsIntermediateHighlighted] =
     useState(false);
+  const [articleState, setArticleState] = useState('');
+  const [isHovering, setIsHovering] = useState(false);
+  const [dictionaryPosition, setDictionaryPosition] = useState({});
+  const addEventListeners = () => {
+    const articleWords = document.querySelectorAll('.article-word');
+    articleWords.forEach((articleWord) => {
+      articleWord.addEventListener('mouseover', () => {
+        setIsHovering(true);
+        const rect = articleWord.getBoundingClientRect();
+        setDictionaryPosition({
+          left: rect.left - articleWord.offsetWidth,
+          top: rect.top - articleWord.offsetHeight,
+        });
+      });
+      articleWord.addEventListener('mouseout', () => {
+        setIsHovering(false);
+      });
+    });
+  };
 
   if (thisArticle === undefined) {
     return (
@@ -89,8 +108,6 @@ const Article = ({ articleLocation }) => {
     return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
 
-  // i could just replace them all with spans around them before the article loads
-
   function highlightIntermediate(arr, article, allWordsArr) {
     const spaced = article
       .replaceAll('<', ' <')
@@ -133,15 +150,6 @@ const Article = ({ articleLocation }) => {
           i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
         )
       )
-        // if (i.includes('target=')) {
-        //   return i;
-        // } else if (i.includes('href=')) {
-        //   return `<a ${i}`;
-        // } else if (i.includes('src=')) {
-        //   return `<img ${i}`;
-        // } else if (i.includes('<source') || i.includes('id=')) {
-        //   return `<div class="hide-source">${i}</div>`;
-        // } else {
         return `<span class="article-word">${i}</span>`;
       else return i;
     });
@@ -153,6 +161,8 @@ const Article = ({ articleLocation }) => {
     thisArticle.htmlContent,
     thisArticle.allWordsArr
   );
+  addEventListeners();
+
   const articleHTMLIntermediateHighlighted = highlightIntermediate(
     thisArticle.intermediateWordsArr,
     thisArticle.htmlContent,
@@ -166,8 +176,6 @@ const Article = ({ articleLocation }) => {
   const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
   const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
 
-  console.log('allwords', thisArticle.allWordsArr);
-  console.log('thisArticle', thisArticle);
   return (
     <div>
       <div className="sidebar-left">
@@ -223,6 +231,15 @@ const Article = ({ articleLocation }) => {
         <div className="title-and-author">
           <h6>{thisArticle.author} | </h6> <h6> {thisArticle.source}</h6>
         </div>
+        <div
+          className="dictionary-box"
+          style={{
+            display: isHovering === true ? 'block' : 'none',
+            position: 'absolute',
+            left: `${dictionaryPosition.left}px`,
+            top: `${dictionaryPosition.top}px`,
+          }}
+        />
         <article
           dangerouslySetInnerHTML={{
             __html: articleHTML,
