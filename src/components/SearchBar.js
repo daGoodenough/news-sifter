@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
 import { useDispatch } from 'react-redux';
@@ -17,8 +18,6 @@ import {
 const SearchBar = ({ wordList, cocaWords }) => {
   const [query, setQuery] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-
-  // console.log('in search bar', wordList, cocaWords);
 
   const dispatch = useDispatch();
 

@@ -4,11 +4,12 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-useless-escape */
+/* eslint-disable no-else-return */
 
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
@@ -25,6 +26,25 @@ const Article = ({ articleLocation }) => {
   const [isAdvancedHighlighted, setIsAdvancedHighlighted] = useState(false);
   const [isIntermediateHighlighted, setIsIntermediateHighlighted] =
     useState(false);
+  const [articleState, setArticleState] = useState('');
+  const [isHovering, setIsHovering] = useState(false);
+  const [dictionaryPosition, setDictionaryPosition] = useState({});
+  const addEventListeners = () => {
+    const articleWords = document.querySelectorAll('.article-word');
+    articleWords.forEach((articleWord) => {
+      articleWord.addEventListener('mouseover', () => {
+        setIsHovering(true);
+        const rect = articleWord.getBoundingClientRect();
+        setDictionaryPosition({
+          left: rect.left - articleWord.offsetWidth,
+          top: rect.top - articleWord.offsetHeight,
+        });
+      });
+      articleWord.addEventListener('mouseout', () => {
+        setIsHovering(false);
+      });
+    });
+  };
 
   if (thisArticle === undefined) {
     return (
@@ -65,42 +85,96 @@ const Article = ({ articleLocation }) => {
     }
   };
 
-  function highlightAdvanced(arr, article) {
+  function highlightAdvanced(arr, article, allWordsArr) {
     const spaced = article
       .replaceAll('<', ' <')
       .replaceAll('>', '> ')
-      .replaceAll('—', ', ');
+      .replaceAll('—', ' - ');
     const splitUp = spaced.split(' ');
     const highlightedArticle = splitUp.map((i) => {
-      if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
-        return ` <span class="advanced-words-highlighted"> ${i} </span> `;
-      }
-      return i;
+      if (i.includes('<source')) {
+        return `<div class="hide-source">${i}</div>`;
+      } else if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
+        return ` <span class="advanced-words-highlighted article-word"> ${i} </span> `;
+      } else if (
+        allWordsArr.includes(
+          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+        )
+      )
+        return `<span class="article-word">${i}</span>`;
+      else return i;
     });
     const joined = highlightedArticle.join(' ');
-    return joined.replaceAll(' <', '<').replaceAll('> ', '>');
+    return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
 
-  function highlightIntermediate(arr, article) {
+  function highlightIntermediate(arr, article, allWordsArr) {
     const spaced = article
       .replaceAll('<', ' <')
       .replaceAll('>', '> ')
-      .replaceAll('—', ', ');
+      .replaceAll('—', ' - ');
     const splitUp = spaced.split(' ');
     const highlightedArticle = splitUp.map((i) => {
-      if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
-        return ` <span class="intermediate-words-highlighted"> ${i} </span> `;
-      }
-      return i;
+      if (i.includes('<source')) {
+        return `<div class="hide-source">${i}</div>`;
+      } else if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
+        return ` <span class="intermediate-words-highlighted article-word"> ${i} </span> `;
+      } else if (
+        allWordsArr.includes(
+          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+        )
+      )
+        return `<span class="article-word">${i}</span>`;
+      else return i;
     });
     const joined = highlightedArticle.join(' ');
-    return joined.replaceAll(' <', '<').replaceAll('> ', '>');
+    return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
 
   function wordArrToList(arr) {
     const newArr = arr.map((i) => `<li>${i}</li>`);
     return newArr.join('');
   }
+
+  function wrapEachWordInSpan(str, arr) {
+    const spaced = str
+      .replaceAll('<', ' <')
+      .replaceAll('>', '> ')
+      .replaceAll('—', ' - ');
+    const splitUp = spaced.split(' ');
+    const wrapped = splitUp.map((i) => {
+      if (i.includes('<source')) {
+        return `<div class="hide-source">${i}</div>`;
+      } else if (
+        arr.includes(
+          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+        )
+      )
+        return `<span class="article-word">${i}</span>`;
+      else return i;
+    });
+    const joined = wrapped.join(' ');
+    return joined.replaceAll('<', ' <').replaceAll('>', '> ');
+  }
+
+  const articleHTML = wrapEachWordInSpan(
+    thisArticle.htmlContent,
+    thisArticle.allWordsArr
+  );
+  addEventListeners();
+
+  const articleHTMLIntermediateHighlighted = highlightIntermediate(
+    thisArticle.intermediateWordsArr,
+    thisArticle.htmlContent,
+    thisArticle.allWordsArr
+  );
+  const articleHTMLAdvancedHighlighted = highlightAdvanced(
+    thisArticle.advancedWordsArr,
+    thisArticle.htmlContent,
+    thisArticle.allWordsArr
+  );
+  const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
+  const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
 
   return (
     <div>
@@ -125,7 +199,7 @@ const Article = ({ articleLocation }) => {
         <ul
           className="sidebar-intermediate-word-list"
           dangerouslySetInnerHTML={{
-            __html: wordArrToList(thisArticle.intermediateWordsArr),
+            __html: intermediateSidebar,
           }}
           style={{
             display: isIntermediateHighlighted === true ? 'block' : 'none',
@@ -134,7 +208,7 @@ const Article = ({ articleLocation }) => {
         <ul
           className="sidebar-advanced-word-list"
           dangerouslySetInnerHTML={{
-            __html: wordArrToList(thisArticle.advancedWordsArr),
+            __html: advancedSidebar,
           }}
           style={{
             display: isAdvancedHighlighted === true ? 'block' : 'none',
@@ -157,8 +231,19 @@ const Article = ({ articleLocation }) => {
         <div className="title-and-author">
           <h6>{thisArticle.author} | </h6> <h6> {thisArticle.source}</h6>
         </div>
+        <div
+          className="dictionary-box"
+          style={{
+            display: isHovering === true ? 'block' : 'none',
+            position: 'absolute',
+            left: `${dictionaryPosition.left}px`,
+            top: `${dictionaryPosition.top}px`,
+          }}
+        />
         <article
-          dangerouslySetInnerHTML={{ __html: thisArticle.htmlContent }}
+          dangerouslySetInnerHTML={{
+            __html: articleHTML,
+          }}
           style={{
             display:
               isAdvancedHighlighted || isIntermediateHighlighted === true
@@ -168,10 +253,7 @@ const Article = ({ articleLocation }) => {
         />
         <article
           dangerouslySetInnerHTML={{
-            __html: highlightAdvanced(
-              thisArticle.advancedWordsArr,
-              thisArticle.htmlContent
-            ),
+            __html: articleHTMLAdvancedHighlighted,
           }}
           style={{
             display: isAdvancedHighlighted === true ? 'block' : 'none',
@@ -179,10 +261,7 @@ const Article = ({ articleLocation }) => {
         />
         <article
           dangerouslySetInnerHTML={{
-            __html: highlightIntermediate(
-              thisArticle.intermediateWordsArr,
-              thisArticle.htmlContent
-            ),
+            __html: articleHTMLIntermediateHighlighted,
           }}
           style={{
             display: isIntermediateHighlighted === true ? 'block' : 'none',

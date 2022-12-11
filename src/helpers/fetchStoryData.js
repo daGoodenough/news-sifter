@@ -70,6 +70,9 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
             const cocaIndex = cocaWords.indexOf(wordList.lemmas[index]);
             if (cocaIndex <= cocaBeginnerRank) {
               acc.beginner += 1;
+              if (!acc?.beginnerWordsArr.includes(wordList.wordForms[index])) {
+                acc.beginnerWordsArr.push(wordList.wordForms[index]);
+              }
             } else if (cocaIndex <= cocaIntermediateRank) {
               acc.intermediate += 1;
               if (
@@ -91,6 +94,7 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
         beginner: 0,
         intermediate: 0,
         advanced: 0,
+        beginnerWordsArr: [],
         intermediateWordsArr: [],
         advancedWordsArr: [],
         total: filteredStory.length + 1,
@@ -132,6 +136,10 @@ const formatData = async (articles, wordList, cocaWords) => {
         advancedWordsArr: storiesDifficulty[index].advancedWordsArr || '',
         intermediateWordsArr:
           storiesDifficulty[index].intermediateWordsArr || '',
+        allWordsArr: storiesDifficulty[index].beginnerWordsArr.concat(
+          storiesDifficulty[index].intermediateWordsArr,
+          storiesDifficulty[index].advancedWordsArr
+        ),
         wordCount: storiesDifficulty[index].total || '',
         beginnerWords:
           storiesDifficulty[index].beginner / storiesDifficulty[index].total ||
@@ -151,8 +159,7 @@ const formatData = async (articles, wordList, cocaWords) => {
       };
       return acc;
     }, {});
-    const notPromiesed = storiesWithInfo;
-    return notPromiesed;
+    return storiesWithInfo
   } catch (e) {
     console.error('Error in formatting data: ', e);
     throw e;

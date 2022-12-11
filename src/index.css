@@ -120,11 +120,10 @@ small {
   margin: 2%;
   color: black;
   background-color: #fdca2d;
-  text-decoration: underline;
+  border: none;
 }
 .save-button:hover {
   cursor: pointer;
-  color: #0a58ca;
 }
 
 .saved {
@@ -138,6 +137,22 @@ small {
   margin-top: 2%;
   margin-left: 20%;
   margin-right: 20%;
+}
+
+.article-word:hover {
+  background-color: aquamarine;
+}
+
+.dictionary-box {
+  border: aquamarine solid .2px;
+  border-radius: 8px;
+  background-color: #f3f3f3;
+  height: 240px;
+  width: 220px;
+}
+
+.hide-source {
+  font-size: 0;
 }
 
 .advanced-words-highlighted {
