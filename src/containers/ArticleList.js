@@ -1,11 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import _ from 'lodash';
 
 import ArticleListItem from './ArticleListItem';
 import sortArticles from '../helpers/sortArticleData';
 import ErrorPage from '../components/ErrorPage';
-import NoResults from '../components/NoResults';
 /* eslint-disable react/prop-types */
 
 const ArticleList = ({ history }) => {
