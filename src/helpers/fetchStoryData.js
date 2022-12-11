@@ -13,8 +13,11 @@ export const fetchStories = async (query, wordList, cocaWords) => {
       `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=${API_KEY}`
     );
     // const results = await axios.get('./data.json');
-
     const { articles } = results.data;
+
+    if (articles.length === 0) {
+      return null;
+    }
 
     const formattedData = await formatData(articles, wordList, cocaWords);
 
