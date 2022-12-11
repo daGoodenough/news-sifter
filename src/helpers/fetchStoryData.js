@@ -8,32 +8,47 @@ import axios from 'axios';
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const fetchStories = async (query, wordList, cocaWords) => {
-  // const results = await axios.get(
-  //   `https://newsapi.org/v2/everything?q=${query}&pageSize=10&apiKey=${API_KEY}`
-  // );
-  const results = await axios.get('./data.json');
-  const { articles } = results.data;
-  const formattedData = await formatData(articles, wordList, cocaWords);
-  return formattedData;
+  try {
+    // const results = await axios.get(
+    //   `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=${API_KEY}`
+    // );
+    const results = await axios.get('./data.json');
+    const { articles } = results.data;
+
+    if (articles.length === 0) {
+      return null;
+    }
+
+    const formattedData = await formatData(articles, wordList, cocaWords);
+
+    return formattedData;
+  } catch (e) {
+    console.error('Error in fetching news articles: ', e);
+    throw e;
+  }
 };
 
 function pullURLS(data) {
   const pulled = data.map((i) => i.url);
   return pulled;
 }
+
 let articlePromises;
 async function extractArticles(data) {
-  const extractedArticles = [];
   articlePromises = await data.map((i) => extract(i));
-  await Promise.allSettled(articlePromises).then((data) => {
-    data.map((article) => {
-      if (article.status === 'rejected') return;
-      const content = article.value.content.replaceAll('<', ' <');
-      const parser = new DOMParser();
-      const parsedArticle = parser.parseFromString(content, 'text/html');
-      extractedArticles.push(parsedArticle.all[0].textContent);
+
+  const extractedArticles = await Promise.allSettled(articlePromises)
+    .then((data) =>
+      data.map((article) => {
+        const content = article.value.content.replaceAll('<', ' <');
+        const parser = new DOMParser();
+        const parsedArticle = parser.parseFromString(content, 'text/html');
+        return parsedArticle.all[0].textContent;
+      })
+    )
+    .catch((err) => {
+      throw err;
     });
-  });
   return extractedArticles;
 }
 
@@ -91,57 +106,62 @@ async function getReadingLevelInfo(stories, wordList, cocaWords) {
 }
 
 const formatData = async (articles, wordList, cocaWords) => {
-  const pulledURLS = pullURLS(articles);
-  const extractedArticles = await extractArticles(pulledURLS);
-  const storiesDifficulty = await getReadingLevelInfo(
-    extractedArticles,
-    wordList,
-    cocaWords
-  );
-  let extractedHTML;
-  await Promise.allSettled(articlePromises).then((data) => {
-    if (data.status === 'rejected') return;
-    extractedHTML = data;
-  });
-  const storiesWithInfo = storiesDifficulty.reduce((acc, item, index) => {
-    acc[Date.parse(articles[index].publishedAt)] = {
-      id: Date.parse(articles[index].publishedAt) || '',
-      url: articles[index].url || '',
-      title: articles[index].title || '',
-      author: articles[index].author || '',
-      image: articles[index].urlToImage || '',
-      description: articles[index].description || '',
-      source: articles[index].source.name || '',
-      htmlContent: extractedHTML[index].value?.content || '',
-      advancedWordsString:
-        storiesDifficulty[index].advancedWordsArr
-          .join(', ')
-          .substring(0, 130) || '',
-      advancedWordsArr: storiesDifficulty[index].advancedWordsArr || '',
-      intermediateWordsArr: storiesDifficulty[index].intermediateWordsArr || '',
-      allWordsArr: storiesDifficulty[index].beginnerWordsArr.concat(
-        storiesDifficulty[index].intermediateWordsArr,
-        storiesDifficulty[index].advancedWordsArr
-      ),
-      wordCount: storiesDifficulty[index].total || '',
-      beginnerWords:
-        storiesDifficulty[index].beginner / storiesDifficulty[index].total ||
-        '',
-      intermediateWords:
-        storiesDifficulty[index].intermediate /
-          storiesDifficulty[index].total || '',
-      advancedWords:
-        storiesDifficulty[index].advanced / storiesDifficulty[index].total ||
-        '',
-      super:
-        storiesDifficulty[index].super / storiesDifficulty[index].total || '',
-      intermediateAndAdvancedWords:
-        (storiesDifficulty[index].intermediate +
-          storiesDifficulty[index].advanced) /
-          storiesDifficulty[index].total || '',
-    };
-    return acc;
-  }, {});
-  const notPromiesed = storiesWithInfo;
-  return notPromiesed;
+  try {
+    const pulledURLS = pullURLS(articles);
+    const extractedArticles = await extractArticles(pulledURLS);
+    const storiesDifficulty = await getReadingLevelInfo(
+      extractedArticles,
+      wordList,
+      cocaWords
+    );
+    let extractedHTML;
+    await Promise.allSettled(articlePromises).then((data) => {
+      if (data.status === 'rejected') return;
+      extractedHTML = data;
+    });
+    const storiesWithInfo = storiesDifficulty.reduce((acc, item, index) => {
+      acc[Date.parse(articles[index].publishedAt)] = {
+        id: Date.parse(articles[index].publishedAt) || '',
+        url: articles[index].url || '',
+        title: articles[index].title || '',
+        author: articles[index].author || '',
+        image: articles[index].urlToImage || '',
+        description: articles[index].description || '',
+        source: articles[index].source.name || '',
+        htmlContent: extractedHTML[index].value?.content || '',
+        advancedWordsString:
+          storiesDifficulty[index].advancedWordsArr
+            .join(', ')
+            .substring(0, 130) || '',
+        advancedWordsArr: storiesDifficulty[index].advancedWordsArr || '',
+        intermediateWordsArr:
+          storiesDifficulty[index].intermediateWordsArr || '',
+        allWordsArr: storiesDifficulty[index].beginnerWordsArr.concat(
+          storiesDifficulty[index].intermediateWordsArr,
+          storiesDifficulty[index].advancedWordsArr
+        ),
+        wordCount: storiesDifficulty[index].total || '',
+        beginnerWords:
+          storiesDifficulty[index].beginner / storiesDifficulty[index].total ||
+          '',
+        intermediateWords:
+          storiesDifficulty[index].intermediate /
+            storiesDifficulty[index].total || '',
+        advancedWords:
+          storiesDifficulty[index].advanced / storiesDifficulty[index].total ||
+          '',
+        super:
+          storiesDifficulty[index].super / storiesDifficulty[index].total || '',
+        intermediateAndAdvancedWords:
+          (storiesDifficulty[index].intermediate +
+            storiesDifficulty[index].advanced) /
+            storiesDifficulty[index].total || '',
+      };
+      return acc;
+    }, {});
+    return storiesWithInfo
+  } catch (e) {
+    console.error('Error in formatting data: ', e);
+    throw e;
+  }
 };

@@ -22,14 +22,20 @@ const SearchBar = ({ wordList, cocaWords }) => {
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {
-    setIsLoading(true);
-    const storiesData = await fetchStories(
-      query,
-      await wordList,
-      await cocaWords
-    );
-    dispatch(addStories(storiesData));
-    setIsLoading(false);
+    try {
+      setIsLoading(true);
+      const storiesData = await fetchStories(
+        query,
+        await wordList,
+        await cocaWords
+      );
+      dispatch(addStories(storiesData));
+    } catch (e) {
+      console.error(e);
+      dispatch(addStories(null));
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleReadingLevelChange = (e) => {
