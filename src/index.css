@@ -143,6 +143,14 @@ small {
   background-color: aquamarine;
 }
 
+.dictionary-box {
+  border: aquamarine solid .2px;
+  border-radius: 8px;
+  background-color: #f3f3f3;
+  height: 240px;
+  width: 220px;
+}
+
 .hide-source {
   font-size: 0;
 }
