@@ -1,4 +1,5 @@
 export const ADD_STORIES = 'ADD_STORIES';
+export const REMOVE_ALL_STORIES = 'REMOVE_ALL_STORIES';
 export const ADD_SAVED = 'ADD_SAVED';
 export const DELETE_SAVED = 'DELETE_SAVED';
 export const ADD_HISTORY = 'ADD_HISTORY';
@@ -13,6 +14,12 @@ export function addStories(storiesData) {
   return {
     type: ADD_STORIES,
     payload: storiesData,
+  };
+}
+
+export function removeAllStories() {
+  return {
+    type: REMOVE_ALL_STORIES,
   };
 }
 
