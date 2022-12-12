@@ -54,8 +54,8 @@ function App() {
       setCocaWords(a);
       setWordList(b);
 
-      const storiesData = await fetchStories('news', b, a);
-      dispatch(addStories(storiesData));
+      // const storiesData = await fetchStories('news', b, a);
+      // dispatch(addStories(storiesData));
     } catch (e) {
       console.error('Error getting story data: ', e);
 
