@@ -4,6 +4,7 @@ import axios from 'axios';
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-shadow */
 /* eslint-disable array-callback-return */
+/* eslint-disable prettier/prettier */
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
