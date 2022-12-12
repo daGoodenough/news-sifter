@@ -24,12 +24,15 @@ const SearchBar = ({ wordList, cocaWords }) => {
   const handleSubmitClick = async () => {
     try {
       setIsLoading(true);
-      const storiesData = await fetchStories(
-        query,
-        await wordList,
-        await cocaWords
-      );
-      dispatch(addStories(storiesData));
+      for (let i = 0; i < 10; i += 1) {
+        const storiesData = await fetchStories(
+          query,
+          await wordList,
+          await cocaWords,
+          i
+        );
+        dispatch(addStories(storiesData));
+      }
     } catch (e) {
       console.error(e);
       dispatch(addStories(null));
