@@ -9,7 +9,7 @@
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
@@ -26,7 +26,6 @@ const Article = ({ articleLocation }) => {
   const [isAdvancedHighlighted, setIsAdvancedHighlighted] = useState(false);
   const [isIntermediateHighlighted, setIsIntermediateHighlighted] =
     useState(false);
-  const [articleState, setArticleState] = useState('');
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
   const addEventListeners = () => {
@@ -35,9 +34,12 @@ const Article = ({ articleLocation }) => {
       articleWord.addEventListener('mouseover', () => {
         setIsHovering(true);
         const rect = articleWord.getBoundingClientRect();
+        // console.log('rect', rect);
+        // console.log('offset height', articleWord.offsetHeight);
+        // console.log('article word', articleWord);
         setDictionaryPosition({
           left: rect.left - articleWord.offsetWidth,
-          top: rect.top - articleWord.offsetHeight,
+          top: rect.top - 250,
         });
       });
       articleWord.addEventListener('mouseout', () => {
@@ -68,75 +70,52 @@ const Article = ({ articleLocation }) => {
       dispatch(addSaved(thisArticle));
     }
   };
-
+  const intermediateWords = document.querySelectorAll(
+    '.intermediate-words-highlighted'
+  );
+  const advancedWords = document.querySelectorAll(
+    '.advanced-words-highlighted'
+  );
   const handleHighlightAdvancedClick = () => {
-    if (isAdvancedHighlighted) setIsAdvancedHighlighted(false);
-    else {
+    if (isAdvancedHighlighted) {
+      setIsAdvancedHighlighted(false);
+      advancedWords.forEach((word) =>
+        word.classList.remove('adv-highlight-on')
+      );
+    } else {
       setIsAdvancedHighlighted(true);
       setIsIntermediateHighlighted(false);
+      advancedWords.forEach((word) => word.classList.add('adv-highlight-on'));
+      intermediateWords.forEach((word) =>
+        word.classList.remove('inter-highlight-on')
+      );
     }
   };
 
   const handleHighlightIntermediateClick = () => {
-    if (isIntermediateHighlighted) setIsIntermediateHighlighted(false);
-    else {
+    if (isIntermediateHighlighted) {
+      setIsIntermediateHighlighted(false);
+      intermediateWords.forEach((word) =>
+        word.classList.remove('inter-highlight-on')
+      );
+    } else {
       setIsIntermediateHighlighted(true);
       setIsAdvancedHighlighted(false);
+      intermediateWords.forEach((word) =>
+        word.classList.add('inter-highlight-on')
+      );
+      advancedWords.forEach((word) =>
+        word.classList.remove('adv-highlight-on')
+      );
     }
   };
-
-  function highlightAdvanced(arr, article, allWordsArr) {
-    const spaced = article
-      .replaceAll('<', ' <')
-      .replaceAll('>', '> ')
-      .replaceAll('—', ' - ');
-    const splitUp = spaced.split(' ');
-    const highlightedArticle = splitUp.map((i) => {
-      if (i.includes('<source')) {
-        return `<div class="hide-source">${i}</div>`;
-      } else if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
-        return ` <span class="advanced-words-highlighted article-word"> ${i} </span> `;
-      } else if (
-        allWordsArr.includes(
-          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
-        )
-      )
-        return `<span class="article-word">${i}</span>`;
-      else return i;
-    });
-    const joined = highlightedArticle.join(' ');
-    return joined.replaceAll('<', ' <').replaceAll('>', '> ');
-  }
-
-  function highlightIntermediate(arr, article, allWordsArr) {
-    const spaced = article
-      .replaceAll('<', ' <')
-      .replaceAll('>', '> ')
-      .replaceAll('—', ' - ');
-    const splitUp = spaced.split(' ');
-    const highlightedArticle = splitUp.map((i) => {
-      if (i.includes('<source')) {
-        return `<div class="hide-source">${i}</div>`;
-      } else if (arr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))) {
-        return ` <span class="intermediate-words-highlighted article-word"> ${i} </span> `;
-      } else if (
-        allWordsArr.includes(
-          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
-        )
-      )
-        return `<span class="article-word">${i}</span>`;
-      else return i;
-    });
-    const joined = highlightedArticle.join(' ');
-    return joined.replaceAll('<', ' <').replaceAll('>', '> ');
-  }
 
   function wordArrToList(arr) {
     const newArr = arr.map((i) => `<li>${i}</li>`);
     return newArr.join('');
   }
 
-  function wrapEachWordInSpan(str, arr) {
+  function wrapEachWordInSpan(str, arr, intermediateArr, advancedArr) {
     const spaced = str
       .replaceAll('<', ' <')
       .replaceAll('>', '> ')
@@ -145,6 +124,14 @@ const Article = ({ articleLocation }) => {
     const wrapped = splitUp.map((i) => {
       if (i.includes('<source')) {
         return `<div class="hide-source">${i}</div>`;
+      } else if (
+        intermediateArr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))
+      ) {
+        return ` <span class="intermediate-words-highlighted article-word"> ${i} </span> `;
+      } else if (
+        advancedArr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))
+      ) {
+        return ` <span class="advanced-words-highlighted article-word"> ${i} </span> `;
       } else if (
         arr.includes(
           i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
@@ -159,20 +146,12 @@ const Article = ({ articleLocation }) => {
 
   const articleHTML = wrapEachWordInSpan(
     thisArticle.htmlContent,
-    thisArticle.allWordsArr
+    thisArticle.allWordsArr,
+    thisArticle.intermediateWordsArr,
+    thisArticle.advancedWordsArr
   );
   addEventListeners();
 
-  const articleHTMLIntermediateHighlighted = highlightIntermediate(
-    thisArticle.intermediateWordsArr,
-    thisArticle.htmlContent,
-    thisArticle.allWordsArr
-  );
-  const articleHTMLAdvancedHighlighted = highlightAdvanced(
-    thisArticle.advancedWordsArr,
-    thisArticle.htmlContent,
-    thisArticle.allWordsArr
-  );
   const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
   const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
 
@@ -243,28 +222,6 @@ const Article = ({ articleLocation }) => {
         <article
           dangerouslySetInnerHTML={{
             __html: articleHTML,
-          }}
-          style={{
-            display:
-              isAdvancedHighlighted || isIntermediateHighlighted === true
-                ? 'none'
-                : 'block',
-          }}
-        />
-        <article
-          dangerouslySetInnerHTML={{
-            __html: articleHTMLAdvancedHighlighted,
-          }}
-          style={{
-            display: isAdvancedHighlighted === true ? 'block' : 'none',
-          }}
-        />
-        <article
-          dangerouslySetInnerHTML={{
-            __html: articleHTMLIntermediateHighlighted,
-          }}
-          style={{
-            display: isIntermediateHighlighted === true ? 'block' : 'none',
           }}
         />
       </div>

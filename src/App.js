@@ -1,12 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useDispatch } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import { fetchStories } from './helpers/fetchStoryData';
 import SearchBar from './components/SearchBar';
 import Header from './components/Header';
 import Main from './components/Main';
-// import { getNewWords, getCocaWords } from './helpers/getWords';
 import { addStories } from './actions';
 
 function App() {

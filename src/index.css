@@ -155,13 +155,13 @@ small {
   font-size: 0;
 }
 
-.advanced-words-highlighted {
+.adv-highlight-on {
   font-weight: 500;
   background-color: #fdca2d;
   border: 0.1px solid rgba(0, 0, 0, 0.067);
 }
 
-.intermediate-words-highlighted {
+.inter-highlight-on {
   font-weight: 500;
   background-color: #31d2f2;
   border: 0.1px solid rgba(0, 0, 0, 0.067);
