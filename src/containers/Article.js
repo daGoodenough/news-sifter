@@ -13,6 +13,7 @@ import { useEffect, useState } from 'react';
 import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
+import axios from 'axios';
 import { addSaved, removeSaved } from '../actions';
 
 const Article = ({ articleLocation }) => {
@@ -28,24 +29,33 @@ const Article = ({ articleLocation }) => {
     useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
+
   const addEventListeners = () => {
     const articleWords = document.querySelectorAll('.article-word');
     articleWords.forEach((articleWord) => {
       articleWord.addEventListener('mouseover', () => {
         setIsHovering(true);
         const rect = articleWord.getBoundingClientRect();
-        // console.log('rect', rect);
-        // console.log('offset height', articleWord.offsetHeight);
-        // console.log('article word', articleWord);
+        const word = articleWord.innerHTML
+          .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
+          .trim();
+        getDefinition(word);
         setDictionaryPosition({
           left: rect.left - articleWord.offsetWidth,
-          top: rect.top - 250,
+          top: rect.top - 255 + window.scrollY,
         });
       });
       articleWord.addEventListener('mouseout', () => {
         setIsHovering(false);
       });
     });
+  };
+
+  const getDefinition = async (word) => {
+    const results = await axios.get(
+      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+    );
+    console.log(results.data);
   };
 
   if (thisArticle === undefined) {
@@ -125,16 +135,18 @@ const Article = ({ articleLocation }) => {
       if (i.includes('<source')) {
         return `<div class="hide-source">${i}</div>`;
       } else if (
-        intermediateArr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))
+        intermediateArr.includes(
+          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
+        )
       ) {
         return ` <span class="intermediate-words-highlighted article-word"> ${i} </span> `;
       } else if (
-        advancedArr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, ''))
+        advancedArr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, ''))
       ) {
         return ` <span class="advanced-words-highlighted article-word"> ${i} </span> `;
       } else if (
         arr.includes(
-          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()]/g, '').toLowerCase()
+          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '').toLowerCase()
         )
       )
         return `<span class="article-word">${i}</span>`;
