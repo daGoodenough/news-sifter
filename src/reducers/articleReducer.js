@@ -2,7 +2,7 @@
 /* eslint-disable no-case-declarations */
 /* eslint-disable default-param-last */
 
-import { ADD_STORIES } from '../actions';
+import { ADD_STORIES, REMOVE_ALL_STORIES } from '../actions';
 
 const DEFAULT_STATE = {
   // 54654654654: {
@@ -25,7 +25,9 @@ const DEFAULT_STATE = {
 const reducer = function (state = DEFAULT_STATE, action) {
   switch (action.type) {
     case ADD_STORIES:
-      return action.payload;
+      return { ...state, ...action.payload };
+    case REMOVE_ALL_STORIES:
+      return null;
     default:
       return state;
   }
