@@ -10,8 +10,12 @@
     "article-parser": "^7.2.5",
     "axios": "^1.2.0",
     "bootstrap": "^5.2.3",
+    "deepl-node": "^1.7.2",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
     "lodash": "^4.17.21",
     "middleware": "^1.0.0",
+    "node": "^19.2.0",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-bootstrap": "^2.6.0",
@@ -69,5 +73,10 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "prettier": "^2.7.1",
     "typescript": "^4.8.4"
+  },
+  "browser": {
+    "fs": false,
+    "os": false,
+    "path": false
   }
 }
