@@ -23,25 +23,26 @@ const Article = ({ articleLocation }) => {
   const id = parseInt(thisURL.substring(thisURL.lastIndexOf('/') + 1));
   const thisArticle = _.find(stories, (element) => element.id === id);
   const dispatch = useDispatch();
-
+  // const [thisArticle, setThisArticle] = useState(null);
   const [isAdvancedHighlighted, setIsAdvancedHighlighted] = useState(false);
   const [isIntermediateHighlighted, setIsIntermediateHighlighted] =
     useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
+  const [translations, setTranslations] = useState([]);
 
   const addEventListeners = () => {
     const articleWords = document.querySelectorAll('.article-word');
     articleWords.forEach((articleWord) => {
+      const rect = articleWord.getBoundingClientRect();
+      const word = articleWord.innerHTML
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
+        .trim();
       articleWord.addEventListener('mouseover', () => {
         setIsHovering(true);
-        const rect = articleWord.getBoundingClientRect();
-        const word = articleWord.innerHTML
-          .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
-          .trim();
         getDefinition(word);
         setDictionaryPosition({
-          left: rect.left - articleWord.offsetWidth,
+          left: rect.left - 10,
           top: rect.top - 255 + window.scrollY,
         });
       });
@@ -51,11 +52,23 @@ const Article = ({ articleLocation }) => {
     });
   };
 
+  // const initialLoad = async () => {
+  //   const test = await articleHTML;
+  //   console.log('test', test);
+
+  // };
+  // useEffect(() => {
+  //   initialLoad();
+  // }, []);
+
+  const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
+
   const getDefinition = async (word) => {
-    const results = await axios.get(
-      `https://api.dictionaryapi.dev/api/v2/entries/en/${word}`
+    const res = await axios.get(
+      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=DE`
     );
-    console.log(results.data);
+    setTranslations(res.data.translations);
+    console.log(res.data.translations);
   };
 
   if (thisArticle === undefined) {
@@ -152,6 +165,7 @@ const Article = ({ articleLocation }) => {
         return `<span class="article-word">${i}</span>`;
       else return i;
     });
+
     const joined = wrapped.join(' ');
     return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
@@ -163,7 +177,6 @@ const Article = ({ articleLocation }) => {
     thisArticle.advancedWordsArr
   );
   addEventListeners();
-
   const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
   const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
 
@@ -207,7 +220,7 @@ const Article = ({ articleLocation }) => {
         />
       </div>
 
-      {Object.hasOwn(savedStories, thisArticle.id) ? (
+      {Object.hasOwn(savedStories, thisArticle?.id) ? (
         <Button onClick={handleSaveClick} className="save-button saved">
           Saved
         </Button>
@@ -217,10 +230,10 @@ const Article = ({ articleLocation }) => {
         </Button>
       )}
       <div className="article-box">
-        <h2>{thisArticle.title}</h2>
-        <a href={thisArticle.url}>{thisArticle.url}</a>
+        <h2>{thisArticle?.title}</h2>
+        <a href={thisArticle?.url}>{thisArticle?.url}</a>
         <div className="title-and-author">
-          <h6>{thisArticle.author} | </h6> <h6> {thisArticle.source}</h6>
+          <h6>{thisArticle?.author} | </h6> <h6> {thisArticle?.source}</h6>
         </div>
         <div
           className="dictionary-box"
@@ -230,7 +243,13 @@ const Article = ({ articleLocation }) => {
             left: `${dictionaryPosition.left}px`,
             top: `${dictionaryPosition.top}px`,
           }}
-        />
+        >
+          <span>
+            {translations.map((i) => (
+              <span>{i.text}</span>
+            ))}
+          </span>
+        </div>
         <article
           dangerouslySetInnerHTML={{
             __html: articleHTML,
