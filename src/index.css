@@ -143,19 +143,11 @@ small {
   background-color: aquamarine;
 }
 
-.dictionary-box {
-  border: aquamarine solid .2px;
-  border-radius: 8px;
-  background-color: #f3f3f3;
-  height: 240px;
-  width: 220px;
-}
-
 .hide-source {
-  font-size: 0;
+  display: none;
 }
 
-.adv-highlight-on {
+.advanced-words-highlighted {
   font-weight: 500;
   background-color: #fdca2d;
   border: 0.1px solid rgba(0, 0, 0, 0.067);

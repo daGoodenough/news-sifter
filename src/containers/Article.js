@@ -14,6 +14,7 @@ import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
 import axios from 'axios';
+import parse, { domToReact, attributesToProps } from 'html-react-parser';
 import { addSaved, removeSaved } from '../actions';
 
 const Article = ({ articleLocation }) => {
@@ -23,34 +24,12 @@ const Article = ({ articleLocation }) => {
   const id = parseInt(thisURL.substring(thisURL.lastIndexOf('/') + 1));
   const thisArticle = _.find(stories, (element) => element.id === id);
   const dispatch = useDispatch();
-  // const [thisArticle, setThisArticle] = useState(null);
   const [isAdvancedHighlighted, setIsAdvancedHighlighted] = useState(false);
   const [isIntermediateHighlighted, setIsIntermediateHighlighted] =
     useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
   const [translations, setTranslations] = useState([]);
-
-  const addEventListeners = () => {
-    const articleWords = document.querySelectorAll('.article-word');
-    articleWords.forEach((articleWord) => {
-      const rect = articleWord.getBoundingClientRect();
-      const word = articleWord.innerHTML
-        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
-        .trim();
-      articleWord.addEventListener('mouseover', () => {
-        setIsHovering(true);
-        getDefinition(word);
-        setDictionaryPosition({
-          left: rect.left - 10,
-          top: rect.top - 255 + window.scrollY,
-        });
-      });
-      articleWord.addEventListener('mouseout', () => {
-        setIsHovering(false);
-      });
-    });
-  };
 
   // const initialLoad = async () => {
   //   const test = await articleHTML;
@@ -68,7 +47,6 @@ const Article = ({ articleLocation }) => {
       `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=DE`
     );
     setTranslations(res.data.translations);
-    console.log(res.data.translations);
   };
 
   if (thisArticle === undefined) {
@@ -138,6 +116,25 @@ const Article = ({ articleLocation }) => {
     return newArr.join('');
   }
 
+  function handleMouseEnter(e) {
+    console.log('hello', e);
+    const rectX = e.clientX;
+    const rectY = e.clientY;
+    const word = e.target.innerHTML
+      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
+      .trim();
+    setIsHovering(true);
+    getDefinition(word);
+    setDictionaryPosition({
+      left: rectX - 100,
+      top: rectY + window.scrollY - 260,
+    });
+  }
+
+  function handleMouseOut() {
+    setIsHovering(false);
+  }
+
   function wrapEachWordInSpan(str, arr, intermediateArr, advancedArr) {
     const spaced = str
       .replaceAll('<', ' <')
@@ -170,13 +167,35 @@ const Article = ({ articleLocation }) => {
     return joined.replaceAll('<', ' <').replaceAll('>', '> ');
   }
 
-  const articleHTML = wrapEachWordInSpan(
+  const htmlToParse = wrapEachWordInSpan(
     thisArticle.htmlContent,
     thisArticle.allWordsArr,
     thisArticle.intermediateWordsArr,
     thisArticle.advancedWordsArr
   );
-  addEventListeners();
+
+  const reactElements = parse(htmlToParse, {
+    replace: (node, index) => {
+      if (node?.attribs?.class) {
+        const classNames = node.attribs.class.split(' ');
+        if (
+          classNames.some((className) => className.includes('article-word'))
+        ) {
+          return (
+            <span
+              className={node.attribs.class}
+              onMouseEnter={(e) => handleMouseEnter(e)}
+              onMouseLeave={() => handleMouseOut()}
+            >
+              {node.children.map((child) => child.data).join('')}
+            </span>
+          );
+        }
+      }
+      return node;
+    },
+  });
+
   const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
   const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
 
@@ -250,11 +269,12 @@ const Article = ({ articleLocation }) => {
             ))}
           </span>
         </div>
-        <article
+        {/* <article
           dangerouslySetInnerHTML={{
             __html: articleHTML,
           }}
-        />
+        /> */}
+        <div>{reactElements}</div>
       </div>
     </div>
   );
