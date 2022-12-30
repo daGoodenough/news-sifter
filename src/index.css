@@ -144,7 +144,11 @@ small {
 }
 
 .hide-source {
-  display: none;
+  font-size: 0;
+}
+
+.article-box img {
+  max-width: 500px;
 }
 
 .advanced-words-highlighted {
