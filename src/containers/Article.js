@@ -15,9 +15,12 @@ import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import parse, { domToReact, attributesToProps } from 'html-react-parser';
+import Reverso from 'reverso-api';
+import classNames from 'classnames';
 import { addSaved, removeSaved } from '../actions';
 
 const Article = ({ articleLocation }) => {
+  const reverso = new Reverso();
   const stories = useSelector((state) => state[articleLocation]);
   const savedStories = useSelector((state) => state.saved);
   const thisURL = window.location.href;
@@ -31,20 +34,22 @@ const Article = ({ articleLocation }) => {
   const [dictionaryPosition, setDictionaryPosition] = useState({});
   const [translations, setTranslations] = useState([]);
 
-  // const initialLoad = async () => {
-  //   const test = await articleHTML;
-  //   console.log('test', test);
+  // reverso.getContext(
+  //   'meet me half way',
+  //   'english',
+  //   'russian',
+  //   (err, response) => {
+  //     if (err) throw new Error(err.message);
 
-  // };
-  // useEffect(() => {
-  //   initialLoad();
-  // }, []);
+  //     console.log(response);
+  //   }
+  // );
 
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
 
   const getDefinition = async (word) => {
     const res = await axios.get(
-      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=DE`
+      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=PT-BR`
     );
     setTranslations(res.data.translations);
   };
@@ -71,43 +76,20 @@ const Article = ({ articleLocation }) => {
       dispatch(addSaved(thisArticle));
     }
   };
-  const intermediateWords = document.querySelectorAll(
-    '.intermediate-words-highlighted'
-  );
-  const advancedWords = document.querySelectorAll(
-    '.advanced-words-highlighted'
-  );
+
   const handleHighlightAdvancedClick = () => {
     if (isAdvancedHighlighted) {
       setIsAdvancedHighlighted(false);
-      advancedWords.forEach((word) =>
-        word.classList.remove('adv-highlight-on')
-      );
     } else {
       setIsAdvancedHighlighted(true);
-      setIsIntermediateHighlighted(false);
-      advancedWords.forEach((word) => word.classList.add('adv-highlight-on'));
-      intermediateWords.forEach((word) =>
-        word.classList.remove('inter-highlight-on')
-      );
     }
   };
 
   const handleHighlightIntermediateClick = () => {
     if (isIntermediateHighlighted) {
       setIsIntermediateHighlighted(false);
-      intermediateWords.forEach((word) =>
-        word.classList.remove('inter-highlight-on')
-      );
     } else {
       setIsIntermediateHighlighted(true);
-      setIsAdvancedHighlighted(false);
-      intermediateWords.forEach((word) =>
-        word.classList.add('inter-highlight-on')
-      );
-      advancedWords.forEach((word) =>
-        word.classList.remove('adv-highlight-on')
-      );
     }
   };
 
@@ -117,7 +99,6 @@ const Article = ({ articleLocation }) => {
   }
 
   function handleMouseEnter(e) {
-    console.log('hello', e);
     const rectX = e.clientX;
     const rectY = e.clientY;
     const word = e.target.innerHTML
@@ -142,23 +123,16 @@ const Article = ({ articleLocation }) => {
       .replaceAll('—', ' - ');
     const splitUp = spaced.split(' ');
     const wrapped = splitUp.map((i) => {
+      const cleanWord = i
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
+        .toLowerCase();
       if (i.includes('<source')) {
         return `<div class="hide-source">${i}</div>`;
-      } else if (
-        intermediateArr.includes(
-          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
-        )
-      ) {
-        return ` <span class="intermediate-words-highlighted article-word"> ${i} </span> `;
-      } else if (
-        advancedArr.includes(i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, ''))
-      ) {
-        return ` <span class="advanced-words-highlighted article-word"> ${i} </span> `;
-      } else if (
-        arr.includes(
-          i.replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '').toLowerCase()
-        )
-      )
+      } else if (intermediateArr.includes(cleanWord)) {
+        return ` <span class="intermediate article-word">${i}</span> `;
+      } else if (advancedArr.includes(cleanWord)) {
+        return ` <span class="advanced article-word">${i}</span> `;
+      } else if (arr.includes(cleanWord))
         return `<span class="article-word">${i}</span>`;
       else return i;
     });
@@ -174,16 +148,84 @@ const Article = ({ articleLocation }) => {
     thisArticle.advancedWordsArr
   );
 
-  const reactElements = parse(htmlToParse, {
+  const noneHighlighted = parse(htmlToParse, {
     replace: (node, index) => {
       if (node?.attribs?.class) {
-        const classNames = node.attribs.class.split(' ');
-        if (
-          classNames.some((className) => className.includes('article-word'))
-        ) {
+        const classes = node.attribs.class.split(' ');
+        if (classes.some((el) => el.includes('article-word'))) {
           return (
             <span
               className={node.attribs.class}
+              onMouseEnter={(e) => handleMouseEnter(e)}
+              onMouseLeave={() => handleMouseOut()}
+            >
+              {node.children.map((child) => child.data).join('')}
+            </span>
+          );
+        }
+      }
+      return node;
+    },
+  });
+
+  const interHighlighted = parse(htmlToParse, {
+    replace: (node, index) => {
+      if (node?.attribs?.class) {
+        const classes = node.attribs.class.split(' ');
+        if (classes.some((el) => el.includes('intermediate'))) {
+          return (
+            <span
+              className={classNames(node.attribs.class, 'inter-highlight-on')}
+              onMouseEnter={(e) => handleMouseEnter(e)}
+              onMouseLeave={() => handleMouseOut()}
+            >
+              {node.children.map((child) => child.data).join('')}
+            </span>
+          );
+        }
+      }
+      return node;
+    },
+  });
+
+  const advHighlighted = parse(htmlToParse, {
+    replace: (node, index) => {
+      if (node?.attribs?.class) {
+        const classes = node.attribs.class.split(' ');
+        if (classes.some((el) => el.includes('advanced'))) {
+          return (
+            <span
+              className={classNames(node.attribs.class, 'adv-highlight-on')}
+              onMouseEnter={(e) => handleMouseEnter(e)}
+              onMouseLeave={() => handleMouseOut()}
+            >
+              {node.children.map((child) => child.data).join('')}
+            </span>
+          );
+        }
+      }
+      return node;
+    },
+  });
+
+  const bothHighlighted = parse(htmlToParse, {
+    replace: (node, index) => {
+      if (node?.attribs?.class) {
+        const classes = node.attribs.class.split(' ');
+        if (classes.some((el) => el.includes('advanced'))) {
+          return (
+            <span
+              className={classNames(node.attribs.class, 'adv-highlight-on')}
+              onMouseEnter={(e) => handleMouseEnter(e)}
+              onMouseLeave={() => handleMouseOut()}
+            >
+              {node.children.map((child) => child.data).join('')}
+            </span>
+          );
+        } else if (classes.some((el) => el.includes('intermediate'))) {
+          return (
+            <span
+              className={classNames(node.attribs.class, 'inter-highlight-on')}
               onMouseEnter={(e) => handleMouseEnter(e)}
               onMouseLeave={() => handleMouseOut()}
             >
@@ -269,12 +311,50 @@ const Article = ({ articleLocation }) => {
             ))}
           </span>
         </div>
-        {/* <article
-          dangerouslySetInnerHTML={{
-            __html: articleHTML,
+        <div
+          style={{
+            display:
+              isIntermediateHighlighted === false &&
+              isAdvancedHighlighted === false
+                ? 'block'
+                : 'none',
           }}
-        /> */}
-        <div>{reactElements}</div>
+        >
+          {noneHighlighted}
+        </div>
+        <div
+          style={{
+            display:
+              isIntermediateHighlighted === true &&
+              isAdvancedHighlighted === false
+                ? 'block'
+                : 'none',
+          }}
+        >
+          {interHighlighted}
+        </div>
+        <div
+          style={{
+            display:
+              isIntermediateHighlighted === false &&
+              isAdvancedHighlighted === true
+                ? 'block'
+                : 'none',
+          }}
+        >
+          {advHighlighted}
+        </div>
+        <div
+          style={{
+            display:
+              isIntermediateHighlighted === true &&
+              isAdvancedHighlighted === true
+                ? 'block'
+                : 'none',
+          }}
+        >
+          {bothHighlighted}
+        </div>
       </div>
     </div>
   );

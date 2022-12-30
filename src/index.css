@@ -143,6 +143,14 @@ small {
   background-color: aquamarine;
 }
 
+.dictionary-box {
+  height: 255px;
+  width: 200px;
+  position: absolute;
+  background-color:beige;
+  border: 1px solid aquamarine;
+}
+
 .hide-source {
   font-size: 0;
 }
@@ -151,7 +159,7 @@ small {
   max-width: 500px;
 }
 
-.advanced-words-highlighted {
+.adv-highlight-on {
   font-weight: 500;
   background-color: #fdca2d;
   border: 0.1px solid rgba(0, 0, 0, 0.067);
