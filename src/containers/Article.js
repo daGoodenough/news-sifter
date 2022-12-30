@@ -9,12 +9,12 @@
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
 import { Row, Col } from 'react-bootstrap';
 import axios from 'axios';
-import parse, { domToReact, attributesToProps } from 'html-react-parser';
+import parse from 'html-react-parser';
 import Reverso from 'reverso-api';
 import classNames from 'classnames';
 import { addSaved, removeSaved } from '../actions';
@@ -32,27 +32,11 @@ const Article = ({ articleLocation }) => {
     useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
-  const [translations, setTranslations] = useState([]);
-
-  // reverso.getContext(
-  //   'meet me half way',
-  //   'english',
-  //   'russian',
-  //   (err, response) => {
-  //     if (err) throw new Error(err.message);
-
-  //     console.log(response);
-  //   }
-  // );
+  const [translations, setTranslations] = useState('');
+  const [source, setSource] = useState('');
+  const [target, setTarget] = useState('');
 
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
-
-  const getDefinition = async (word) => {
-    const res = await axios.get(
-      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=PT-BR`
-    );
-    setTranslations(res.data.translations);
-  };
 
   if (thisArticle === undefined) {
     return (
@@ -68,6 +52,24 @@ const Article = ({ articleLocation }) => {
       </Row>
     );
   }
+
+  const getDefinition = async (word) => {
+    const res = await axios.get(
+      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=PT-BR`
+    );
+    setTranslations(res?.data?.translations[0].text);
+  };
+
+  const getContext = async (word) => {
+    const res = await reverso.getContext(word, 'portuguese', 'english');
+    const sentences = res.examples;
+    const shortest = sentences.reduce((a, b) =>
+      a.source.length <= b.source.length ? a : b
+    );
+    console.log('shortest', shortest);
+    setSource(shortest.source);
+    setTarget(shortest.target);
+  };
 
   const handleSaveClick = () => {
     if (Object.hasOwn(savedStories, thisArticle.id)) {
@@ -98,22 +100,23 @@ const Article = ({ articleLocation }) => {
     return newArr.join('');
   }
 
-  function handleMouseEnter(e) {
-    const rectX = e.clientX;
-    const rectY = e.clientY;
-    const word = e.target.innerHTML
-      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
-      .trim();
-    setIsHovering(true);
-    getDefinition(word);
-    setDictionaryPosition({
-      left: rectX - 100,
-      top: rectY + window.scrollY - 260,
-    });
-  }
-
-  function handleMouseOut() {
-    setIsHovering(false);
+  function handleWordClick(e) {
+    if (isHovering) {
+      setIsHovering(false);
+    } else {
+      setIsHovering(true);
+      const rectX = e.clientX;
+      const rectY = e.clientY;
+      const word = e.target.innerHTML
+        .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
+        .trim();
+      getDefinition(word);
+      getContext(word);
+      setDictionaryPosition({
+        left: rectX - 100,
+        top: rectY + window.scrollY - 280,
+      });
+    }
   }
 
   function wrapEachWordInSpan(str, arr, intermediateArr, advancedArr) {
@@ -156,8 +159,7 @@ const Article = ({ articleLocation }) => {
           return (
             <span
               className={node.attribs.class}
-              onMouseEnter={(e) => handleMouseEnter(e)}
-              onMouseLeave={() => handleMouseOut()}
+              onClick={(e) => handleWordClick(e)}
             >
               {node.children.map((child) => child.data).join('')}
             </span>
@@ -176,8 +178,7 @@ const Article = ({ articleLocation }) => {
           return (
             <span
               className={classNames(node.attribs.class, 'inter-highlight-on')}
-              onMouseEnter={(e) => handleMouseEnter(e)}
-              onMouseLeave={() => handleMouseOut()}
+              onClick={(e) => handleWordClick(e)}
             >
               {node.children.map((child) => child.data).join('')}
             </span>
@@ -196,8 +197,7 @@ const Article = ({ articleLocation }) => {
           return (
             <span
               className={classNames(node.attribs.class, 'adv-highlight-on')}
-              onMouseEnter={(e) => handleMouseEnter(e)}
-              onMouseLeave={() => handleMouseOut()}
+              onClick={(e) => handleWordClick(e)}
             >
               {node.children.map((child) => child.data).join('')}
             </span>
@@ -216,8 +216,7 @@ const Article = ({ articleLocation }) => {
           return (
             <span
               className={classNames(node.attribs.class, 'adv-highlight-on')}
-              onMouseEnter={(e) => handleMouseEnter(e)}
-              onMouseLeave={() => handleMouseOut()}
+              onClick={(e) => handleWordClick(e)}
             >
               {node.children.map((child) => child.data).join('')}
             </span>
@@ -240,6 +239,8 @@ const Article = ({ articleLocation }) => {
 
   const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
   const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
+  const intermediateSidebarJSX = parse(intermediateSidebar);
+  const advancedSidebarJSX = parse(advancedSidebar);
 
   return (
     <div>
@@ -263,22 +264,20 @@ const Article = ({ articleLocation }) => {
         </button>
         <ul
           className="sidebar-intermediate-word-list"
-          dangerouslySetInnerHTML={{
-            __html: intermediateSidebar,
-          }}
           style={{
             display: isIntermediateHighlighted === true ? 'block' : 'none',
           }}
-        />
+        >
+          {intermediateSidebarJSX}
+        </ul>
         <ul
           className="sidebar-advanced-word-list"
-          dangerouslySetInnerHTML={{
-            __html: advancedSidebar,
-          }}
           style={{
             display: isAdvancedHighlighted === true ? 'block' : 'none',
           }}
-        />
+        >
+          {advancedSidebarJSX}
+        </ul>
       </div>
 
       {Object.hasOwn(savedStories, thisArticle?.id) ? (
@@ -305,11 +304,9 @@ const Article = ({ articleLocation }) => {
             top: `${dictionaryPosition.top}px`,
           }}
         >
-          <span>
-            {translations.map((i) => (
-              <span>{i.text}</span>
-            ))}
-          </span>
+          <h3>{translations}</h3>
+          <p>{source}</p>
+          <p> {target}</p>
         </div>
         <div
           style={{

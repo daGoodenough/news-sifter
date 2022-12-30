@@ -151,6 +151,10 @@ small {
   border: 1px solid aquamarine;
 }
 
+.bolded-word {
+  font-weight: bold;
+}
+
 .hide-source {
   font-size: 0;
 }
