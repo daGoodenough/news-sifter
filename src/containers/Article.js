@@ -16,6 +16,7 @@ import _ from 'lodash';
 import axios from 'axios';
 import parse from 'html-react-parser';
 import Reverso from 'reverso-api';
+import { ChevronDoubleRight } from 'react-bootstrap-icons';
 import { addSaved, removeSaved } from '../actions';
 import { NoneHighlighted } from './ArticleTextElements/NoneHighlighted';
 import { AdvancedHighlighted } from './ArticleTextElements/AdvancedHighlighted';
@@ -35,7 +36,7 @@ const Article = ({ articleLocation }) => {
     useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
-  const [translations, setTranslations] = useState('tempo');
+  const [translations, setTranslations] = useState('');
   const [source, setSource] = useState('');
   const [target, setTarget] = useState('');
   const [supportedLanguages, setSupportedLanguages] = useState([]);
@@ -52,7 +53,7 @@ const Article = ({ articleLocation }) => {
     'slovenian',
   ];
   const [langNotAvailable, setLangNotAvailable] = useState(false);
-  const [word, setWord] = useState('time');
+  const [word, setWord] = useState('');
 
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
@@ -98,14 +99,20 @@ const Article = ({ articleLocation }) => {
         sentence.target.includes(translations)
       );
       console.log('filtered', filteredSentences);
-      const shortest = filteredSentences.reduce((a, b) =>
-        a.source.length <= b.source.length ? a : b
-      );
+      let shortest;
+      if (filteredSentences.length >= 1) {
+        shortest = filteredSentences.reduce((a, b) =>
+          a.source.length <= b.source.length ? a : b
+        );
+      } else
+        shortest = sentences.reduce((a, b) =>
+          a.source.length <= b.source.length ? a : b
+        );
       console.log('shortest', shortest);
       setSource(shortest.source);
       setTarget(shortest.target);
     };
-    fetchData();
+    if (translations.length > 1) fetchData();
   }, [translations]);
 
   if (thisArticle === undefined) {
@@ -190,7 +197,7 @@ const Article = ({ articleLocation }) => {
       getDefinition(selectedWord);
       setDictionaryPosition({
         left: rectX - 100,
-        top: rectY + window.scrollY - 280,
+        top: rectY + window.scrollY - 285,
       });
     }
   }
@@ -308,18 +315,29 @@ const Article = ({ articleLocation }) => {
             top: `${dictionaryPosition.top}px`,
           }}
         >
-          <h3>{translations}</h3>
+          <hr className="dictionary-line" />
+          <h4>{translations}</h4>
           <p style={{ display: langNotAvailable === true ? 'block' : 'none' }}>
             Sorry, we don't yet have sample sentence support for{' '}
             {capitalizedContextLang}
           </p>
           <div
+            className="sentence-box"
             style={{
-              display: langNotAvailable === false ? 'block' : 'none',
+              display: langNotAvailable === false ? 'flex' : 'none',
             }}
           >
-            <p>{source}</p>
-            <p> {target}</p>
+            {' '}
+            <span className="sentence-label">EN</span>
+            <p className="sentence">"{source}"</p>
+            <br />
+            <div className="middle-part">
+              <span className="more-sentences">(more sentences)</span>
+              <ChevronDoubleRight className="chevron" />
+            </div>
+            <br />
+            <span className="sentence-label">{transLang}</span>
+            <p className="sentence">"{target}"</p>
           </div>
         </div>
         <div>

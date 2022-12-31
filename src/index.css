@@ -145,12 +145,59 @@ small {
 
 .dictionary-box {
   height: 255px;
-  width: 200px;
+  width: 220px;
   position: absolute;
   background-color:beige;
   border: 1px solid aquamarine;
+  padding: .5%;
+  z-index: 2;
 }
 
+.sentence-box{
+  flex-direction: column;
+  justify-content: space-between;
+  
+}
+.sentence{
+  font-size: 14px;
+}
+.chevron{
+  font-size: 25px;
+  
+}
+
+.chevron:hover {
+  cursor:pointer;
+}
+
+.more-sentences{
+  align-self: center;
+  font-size: 11px;
+}
+
+.middle-part{
+  align-self:flex-end;
+  display: flex;
+}
+
+.sentence-label {
+  font-weight: bold;
+  font-style: italic;
+  font-size: 11px;
+}
+
+.dictionary-line{
+  position: absolute;
+  height: 20px;
+  width: 5px;
+  z-index: -1;
+  top: 235px;
+  left: 50%;
+  opacity: 100% !important;
+  color: aquamarine;
+  background: aquamarine;
+  border-radius: 100%;
+}
 .bolded-word {
   font-weight: bold;
 }
