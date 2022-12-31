@@ -39,6 +39,7 @@ const Article = ({ articleLocation }) => {
   const [translations, setTranslations] = useState('');
   const [source, setSource] = useState('');
   const [target, setTarget] = useState('');
+  const [supportedLanguages, setSupportedLanguages] = useState(null);
 
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
@@ -54,6 +55,16 @@ const Article = ({ articleLocation }) => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [ref]);
+
+  useEffect(() => {
+    const getSupportedLanguages = async () => {
+      const res = await axios.get(
+        `https://api-free.deepl.com/v2/languages?auth_key=${authKey}`
+      );
+      setSupportedLanguages(res.data);
+    };
+    getSupportedLanguages();
+  }, []);
 
   if (thisArticle === undefined) {
     return (
