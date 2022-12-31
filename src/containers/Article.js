@@ -5,6 +5,7 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-else-return */
+/* eslint-disable react/jsx-no-bind */
 
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,8 +17,11 @@ import { Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import parse from 'html-react-parser';
 import Reverso from 'reverso-api';
-import classNames from 'classnames';
 import { addSaved, removeSaved } from '../actions';
+import { NoneHighlighted } from './ArticleTextElements/NoneHighlighted';
+import { AdvancedHighlighted } from './ArticleTextElements/AdvancedHighlighted';
+import { IntermediateHighlighted } from './ArticleTextElements/IntermediateHighlighted';
+import { BothHighlighted } from './ArticleTextElements/BothHighlighted';
 
 const Article = ({ articleLocation }) => {
   const reverso = new Reverso();
@@ -37,6 +41,19 @@ const Article = ({ articleLocation }) => {
   const [target, setTarget] = useState('');
 
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsHovering(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref]);
 
   if (thisArticle === undefined) {
     return (
@@ -151,92 +168,6 @@ const Article = ({ articleLocation }) => {
     thisArticle.advancedWordsArr
   );
 
-  const noneHighlighted = parse(htmlToParse, {
-    replace: (node, index) => {
-      if (node?.attribs?.class) {
-        const classes = node.attribs.class.split(' ');
-        if (classes.some((el) => el.includes('article-word'))) {
-          return (
-            <span
-              className={node.attribs.class}
-              onClick={(e) => handleWordClick(e)}
-            >
-              {node.children.map((child) => child.data).join('')}
-            </span>
-          );
-        }
-      }
-      return node;
-    },
-  });
-
-  const interHighlighted = parse(htmlToParse, {
-    replace: (node, index) => {
-      if (node?.attribs?.class) {
-        const classes = node.attribs.class.split(' ');
-        if (classes.some((el) => el.includes('intermediate'))) {
-          return (
-            <span
-              className={classNames(node.attribs.class, 'inter-highlight-on')}
-              onClick={(e) => handleWordClick(e)}
-            >
-              {node.children.map((child) => child.data).join('')}
-            </span>
-          );
-        }
-      }
-      return node;
-    },
-  });
-
-  const advHighlighted = parse(htmlToParse, {
-    replace: (node, index) => {
-      if (node?.attribs?.class) {
-        const classes = node.attribs.class.split(' ');
-        if (classes.some((el) => el.includes('advanced'))) {
-          return (
-            <span
-              className={classNames(node.attribs.class, 'adv-highlight-on')}
-              onClick={(e) => handleWordClick(e)}
-            >
-              {node.children.map((child) => child.data).join('')}
-            </span>
-          );
-        }
-      }
-      return node;
-    },
-  });
-
-  const bothHighlighted = parse(htmlToParse, {
-    replace: (node, index) => {
-      if (node?.attribs?.class) {
-        const classes = node.attribs.class.split(' ');
-        if (classes.some((el) => el.includes('advanced'))) {
-          return (
-            <span
-              className={classNames(node.attribs.class, 'adv-highlight-on')}
-              onClick={(e) => handleWordClick(e)}
-            >
-              {node.children.map((child) => child.data).join('')}
-            </span>
-          );
-        } else if (classes.some((el) => el.includes('intermediate'))) {
-          return (
-            <span
-              className={classNames(node.attribs.class, 'inter-highlight-on')}
-              onMouseEnter={(e) => handleMouseEnter(e)}
-              onMouseLeave={() => handleMouseOut()}
-            >
-              {node.children.map((child) => child.data).join('')}
-            </span>
-          );
-        }
-      }
-      return node;
-    },
-  });
-
   const intermediateSidebar = wordArrToList(thisArticle.intermediateWordsArr);
   const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
   const intermediateSidebarJSX = parse(intermediateSidebar);
@@ -297,6 +228,7 @@ const Article = ({ articleLocation }) => {
         </div>
         <div
           className="dictionary-box"
+          ref={ref}
           style={{
             display: isHovering === true ? 'block' : 'none',
             position: 'absolute',
@@ -308,49 +240,41 @@ const Article = ({ articleLocation }) => {
           <p>{source}</p>
           <p> {target}</p>
         </div>
-        <div
-          style={{
-            display:
-              isIntermediateHighlighted === false &&
-              isAdvancedHighlighted === false
-                ? 'block'
-                : 'none',
-          }}
-        >
-          {noneHighlighted}
+        <div>
+          {isAdvancedHighlighted === false &&
+          isIntermediateHighlighted === false ? (
+            <NoneHighlighted
+              htmlToParse={htmlToParse}
+              handleWordClick={handleWordClick}
+            />
+          ) : null}
         </div>
-        <div
-          style={{
-            display:
-              isIntermediateHighlighted === true &&
-              isAdvancedHighlighted === false
-                ? 'block'
-                : 'none',
-          }}
-        >
-          {interHighlighted}
+        <div>
+          {isAdvancedHighlighted === false &&
+          isIntermediateHighlighted === true ? (
+            <IntermediateHighlighted
+              htmlToParse={htmlToParse}
+              handleWordClick={handleWordClick}
+            />
+          ) : null}
         </div>
-        <div
-          style={{
-            display:
-              isIntermediateHighlighted === false &&
-              isAdvancedHighlighted === true
-                ? 'block'
-                : 'none',
-          }}
-        >
-          {advHighlighted}
+        <div>
+          {isAdvancedHighlighted === true &&
+          isIntermediateHighlighted === false ? (
+            <AdvancedHighlighted
+              htmlToParse={htmlToParse}
+              handleWordClick={handleWordClick}
+            />
+          ) : null}
         </div>
-        <div
-          style={{
-            display:
-              isIntermediateHighlighted === true &&
-              isAdvancedHighlighted === true
-                ? 'block'
-                : 'none',
-          }}
-        >
-          {bothHighlighted}
+        <div>
+          {isAdvancedHighlighted === true &&
+          isIntermediateHighlighted === true ? (
+            <BothHighlighted
+              htmlToParse={htmlToParse}
+              handleWordClick={handleWordClick}
+            />
+          ) : null}
         </div>
       </div>
     </div>
