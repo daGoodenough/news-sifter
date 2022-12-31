@@ -51,6 +51,14 @@ const Article = ({ articleLocation }) => {
     'lithuanian',
     'latvian',
     'slovenian',
+    'swedish',
+    'danish',
+    'ukranian',
+    'hungarian',
+    'korean',
+    'slovak',
+    'greek',
+    'czecch',
   ];
   const [langNotAvailable, setLangNotAvailable] = useState(false);
   const [word, setWord] = useState('');
@@ -330,14 +338,12 @@ const Article = ({ articleLocation }) => {
             {' '}
             <span className="sentence-label">EN</span>
             <p className="sentence">"{source}"</p>
-            <br />
+            <span className="sentence-label">{transLang}</span>
+            <p className="sentence">"{target}"</p>
             <div className="middle-part">
               <span className="more-sentences">(more sentences)</span>
               <ChevronDoubleRight className="chevron" />
             </div>
-            <br />
-            <span className="sentence-label">{transLang}</span>
-            <p className="sentence">"{target}"</p>
           </div>
         </div>
         <div>
