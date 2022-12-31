@@ -149,14 +149,19 @@ small {
   position: absolute;
   background-color:beige;
   border: 1px solid aquamarine;
+  border-radius: 8px;
   padding: .5%;
   z-index: 2;
 }
 
+
 .sentence-box{
   flex-direction: column;
-  justify-content: space-between;
-  
+  justify-content: space-between; 
+}
+
+.sentence-box br{
+  font-size: 10px;
 }
 .sentence{
   font-size: 14px;
@@ -175,10 +180,17 @@ small {
   font-size: 11px;
 }
 
+.more-sentences:hover {
+  cursor:pointer;
+}
+
 .middle-part{
   align-self:flex-end;
   display: flex;
+  margin-top: 3%;
+  margin-bottom: 3%;
 }
+
 
 .sentence-label {
   font-weight: bold;
@@ -188,7 +200,7 @@ small {
 
 .dictionary-line{
   position: absolute;
-  height: 20px;
+  height: 25px;
   width: 5px;
   z-index: -1;
   top: 235px;
