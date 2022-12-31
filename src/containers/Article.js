@@ -35,7 +35,7 @@ const Article = ({ articleLocation }) => {
     useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
-  const [translations, setTranslations] = useState('');
+  const [translations, setTranslations] = useState('tempo');
   const [source, setSource] = useState('');
   const [target, setTarget] = useState('');
   const [supportedLanguages, setSupportedLanguages] = useState([]);
@@ -52,6 +52,7 @@ const Article = ({ articleLocation }) => {
     'slovenian',
   ];
   const [langNotAvailable, setLangNotAvailable] = useState(false);
+  const [word, setWord] = useState('time');
 
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
@@ -79,6 +80,34 @@ const Article = ({ articleLocation }) => {
     console.log(supportedLanguages);
   }, []);
 
+  const getContext = async (selectedWord) => {
+    const contextResponse = await reverso.getContext(
+      selectedWord,
+      'english',
+      contextLang
+    );
+    return contextResponse;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const contextResponse = await getContext(word);
+      const sentences = contextResponse.examples;
+      console.log('translations', translations);
+      const filteredSentences = sentences.filter((sentence) =>
+        sentence.target.includes(translations)
+      );
+      console.log('filtered', filteredSentences);
+      const shortest = filteredSentences.reduce((a, b) =>
+        a.source.length <= b.source.length ? a : b
+      );
+      console.log('shortest', shortest);
+      setSource(shortest.source);
+      setTarget(shortest.target);
+    };
+    fetchData();
+  }, [translations]);
+
   if (thisArticle === undefined) {
     return (
       <Row>
@@ -94,27 +123,11 @@ const Article = ({ articleLocation }) => {
     );
   }
 
-  const getDefinition = async (word) => {
-    const res = await axios.get(
-      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=${transLang}`
+  const getDefinition = async (selectedWord) => {
+    const translationsResponse = await axios.get(
+      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${selectedWord}&target_lang=${transLang}`
     );
-    setTranslations(res?.data?.translations[0].text);
-  };
-
-  const getContext = async (word) => {
-    const res = await reverso.getContext(word, 'english', contextLang);
-    const sentences = res.examples;
-    console.log('translations', translations);
-    const filteredSentences = sentences.filter((sentence) =>
-      sentence.target.includes(translations)
-    );
-    console.log('filtered', filteredSentences);
-    const shortest = filteredSentences.reduce((a, b) =>
-      a.source.length <= b.source.length ? a : b
-    );
-    console.log('shortest', shortest);
-    setSource(shortest.source);
-    setTarget(shortest.target);
+    setTranslations(translationsResponse?.data?.translations[0].text);
   };
 
   const handleTranslatorLanguageChange = (e) => {
@@ -170,11 +183,11 @@ const Article = ({ articleLocation }) => {
       setIsHovering(true);
       const rectX = e.clientX;
       const rectY = e.clientY;
-      const word = e.target.innerHTML
+      const selectedWord = e.target.innerHTML
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
         .trim();
-      getDefinition(word);
-      getContext(word);
+      setWord(selectedWord);
+      getDefinition(selectedWord);
       setDictionaryPosition({
         left: rectX - 100,
         top: rectY + window.scrollY - 280,
