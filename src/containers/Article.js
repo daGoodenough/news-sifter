@@ -9,11 +9,10 @@
 
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-
+import { Form, InputGroup, Col, Row } from 'react-bootstrap';
 import { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
-import { Row, Col } from 'react-bootstrap';
 import axios from 'axios';
 import parse from 'html-react-parser';
 import Reverso from 'reverso-api';
@@ -39,7 +38,20 @@ const Article = ({ articleLocation }) => {
   const [translations, setTranslations] = useState('');
   const [source, setSource] = useState('');
   const [target, setTarget] = useState('');
-  const [supportedLanguages, setSupportedLanguages] = useState(null);
+  const [supportedLanguages, setSupportedLanguages] = useState([]);
+  const [transLang, setTransLang] = useState('PT-BR');
+  const [contextLang, setContextLang] = useState('portuguese');
+  const [capitalizedContextLang, setCapitalizedContextLang] = useState('');
+  const noContextLangs = [
+    'bulgarian',
+    'estonian',
+    'finnish',
+    'indonesian',
+    'lithuanian',
+    'latvian',
+    'slovenian',
+  ];
+  const [langNotAvailable, setLangNotAvailable] = useState(false);
 
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
@@ -64,6 +76,7 @@ const Article = ({ articleLocation }) => {
       setSupportedLanguages(res.data);
     };
     getSupportedLanguages();
+    console.log(supportedLanguages);
   }, []);
 
   if (thisArticle === undefined) {
@@ -83,20 +96,42 @@ const Article = ({ articleLocation }) => {
 
   const getDefinition = async (word) => {
     const res = await axios.get(
-      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=PT-BR`
+      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${word}&target_lang=${transLang}`
     );
     setTranslations(res?.data?.translations[0].text);
   };
 
   const getContext = async (word) => {
-    const res = await reverso.getContext(word, 'portuguese', 'english');
+    const res = await reverso.getContext(word, 'english', contextLang);
     const sentences = res.examples;
-    const shortest = sentences.reduce((a, b) =>
+    console.log('translations', translations);
+    const filteredSentences = sentences.filter((sentence) =>
+      sentence.target.includes(translations)
+    );
+    console.log('filtered', filteredSentences);
+    const shortest = filteredSentences.reduce((a, b) =>
       a.source.length <= b.source.length ? a : b
     );
     console.log('shortest', shortest);
     setSource(shortest.source);
     setTarget(shortest.target);
+  };
+
+  const handleTranslatorLanguageChange = (e) => {
+    setTransLang(e.target.value);
+    const { options } = e.target;
+    const { selectedIndex } = e.target;
+    const selectedOption = options[selectedIndex];
+    const selectedLanguage = selectedOption.textContent.toLowerCase();
+    const capitalizedSelectedLanguage = selectedOption.textContent;
+    console.log(selectedLanguage);
+    setCapitalizedContextLang(capitalizedSelectedLanguage);
+    setContextLang(selectedLanguage);
+    if (noContextLangs.includes(selectedLanguage)) {
+      setLangNotAvailable(true);
+    } else {
+      setLangNotAvailable(false);
+    }
   };
 
   const handleSaveClick = () => {
@@ -190,6 +225,19 @@ const Article = ({ articleLocation }) => {
         <Button as={Link} to="/" className="back-button">
           Back
         </Button>
+        <Form.Group>
+          <InputGroup>
+            <Form.Select
+              onChange={(e) => handleTranslatorLanguageChange(e)}
+              aria-label="Default select example"
+            >
+              <option>Set Translator Language</option>
+              {supportedLanguages.map((i) => (
+                <option value={i.language}>{i.name}</option>
+              ))}
+            </Form.Select>
+          </InputGroup>
+        </Form.Group>
         <button
           onClick={handleHighlightIntermediateClick}
           type="button"
@@ -248,8 +296,18 @@ const Article = ({ articleLocation }) => {
           }}
         >
           <h3>{translations}</h3>
-          <p>{source}</p>
-          <p> {target}</p>
+          <p style={{ display: langNotAvailable === true ? 'block' : 'none' }}>
+            Sorry, we don't yet have sample sentence support for{' '}
+            {capitalizedContextLang}
+          </p>
+          <div
+            style={{
+              display: langNotAvailable === false ? 'block' : 'none',
+            }}
+          >
+            <p>{source}</p>
+            <p> {target}</p>
+          </div>
         </div>
         <div>
           {isAdvancedHighlighted === false &&
