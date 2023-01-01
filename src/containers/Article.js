@@ -62,7 +62,8 @@ const Article = ({ articleLocation }) => {
   ];
   const [langNotAvailable, setLangNotAvailable] = useState(false);
   const [word, setWord] = useState('');
-
+  const [arrOfSentences, setArrOfSentences] = useState([]);
+  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
 
@@ -103,22 +104,29 @@ const Article = ({ articleLocation }) => {
       const contextResponse = await getContext(word);
       const sentences = contextResponse.examples;
       console.log('translations', translations);
-      const filteredSentences = sentences.filter((sentence) =>
-        sentence.target.includes(translations)
+      const matchingSentences = [];
+      const unmatchingSentences = [];
+      sentences.forEach((sentence) => {
+        if (sentence.target.includes(translations)) {
+          matchingSentences.push(sentence);
+        } else unmatchingSentences.push(sentence);
+      });
+      console.log(
+        'matching',
+        matchingSentences,
+        'unmatching',
+        unmatchingSentences
       );
-      console.log('filtered', filteredSentences);
-      let shortest;
-      if (filteredSentences.length >= 1) {
-        shortest = filteredSentences.reduce((a, b) =>
-          a.source.length <= b.source.length ? a : b
-        );
-      } else
-        shortest = sentences.reduce((a, b) =>
-          a.source.length <= b.source.length ? a : b
-        );
-      console.log('shortest', shortest);
-      setSource(shortest.source);
-      setTarget(shortest.target);
+      matchingSentences.sort((a, b) => a.source.length - b.source.length);
+      unmatchingSentences.sort((a, b) => a.source.length - b.source.length);
+      unmatchingSentences.forEach((sentence) =>
+        matchingSentences.push(sentence)
+      );
+      console.log('matching', matchingSentences);
+      setArrOfSentences(matchingSentences);
+
+      setSource(matchingSentences[0].source);
+      setTarget(matchingSentences[0].target);
     };
     if (translations.length > 1) fetchData();
   }, [translations]);
@@ -208,6 +216,16 @@ const Article = ({ articleLocation }) => {
         top: rectY + window.scrollY - 285,
       });
     }
+  }
+
+  function handleNextSentenceClick() {
+    console.log('clicked');
+    setCurrentSentenceIndex((prevState) => prevState + 1);
+    console.log('arr', arrOfSentences);
+    console.log(currentSentenceIndex);
+    console.log(arrOfSentences[currentSentenceIndex].source);
+    setSource(arrOfSentences[currentSentenceIndex].source);
+    setTarget(arrOfSentences[currentSentenceIndex].target);
   }
 
   function wrapEachWordInSpan(str, arr, intermediateArr, advancedArr) {
@@ -341,8 +359,14 @@ const Article = ({ articleLocation }) => {
             <span className="sentence-label">{transLang}</span>
             <p className="sentence">"{target}"</p>
             <div className="middle-part">
-              <span className="more-sentences">(more sentences)</span>
-              <ChevronDoubleRight className="chevron" />
+              <div
+                onClick={() => {
+                  handleNextSentenceClick();
+                }}
+              >
+                <span className="more-sentences">(more sentences)</span>
+                <ChevronDoubleRight className="chevron" />
+              </div>
             </div>
           </div>
         </div>
