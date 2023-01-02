@@ -61,25 +61,13 @@ const Article = ({ articleLocation }) => {
     'czecch',
   ];
   const [langNotAvailable, setLangNotAvailable] = useState(false);
+  const [dictionaryBoxIsLoading, setDictionaryBoxIsLoading] = useState(true);
   const [word, setWord] = useState('');
   const [arrOfSentences, setArrOfSentences] = useState([]);
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
   const currentWordRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
-        setIsHovering(false);
-        currentWordRef.current.classList.remove('aquamarine-bg');
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, [ref]);
 
   useEffect(() => {
     const getSupportedLanguages = async () => {
@@ -91,6 +79,32 @@ const Article = ({ articleLocation }) => {
     getSupportedLanguages();
     console.log(supportedLanguages);
   }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (ref.current && !ref.current.contains(event.target)) {
+        setIsHovering(false);
+        setDictionaryBoxIsLoading(true);
+        currentWordRef.current.classList.remove('aquamarine-bg');
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [ref]);
+
+  useEffect(() => {
+    if (arrOfSentences.length < 1) return;
+    setSource(arrOfSentences[currentSentenceIndex].source);
+    setTarget(arrOfSentences[currentSentenceIndex].target);
+  }, [currentSentenceIndex]);
+
+  useEffect(() => {
+    if (source.length > 1) {
+      setDictionaryBoxIsLoading(false);
+    }
+  }, [source]);
 
   const getContext = async (selectedWord) => {
     const contextResponse = await reverso.getContext(
@@ -105,7 +119,6 @@ const Article = ({ articleLocation }) => {
     const fetchData = async () => {
       const contextResponse = await getContext(word);
       const sentences = contextResponse.examples;
-      console.log('translations', translations);
       const matchingSentences = [];
       const unmatchingSentences = [];
       sentences.forEach((sentence) => {
@@ -113,12 +126,6 @@ const Article = ({ articleLocation }) => {
           matchingSentences.push(sentence);
         } else unmatchingSentences.push(sentence);
       });
-      console.log(
-        'matching',
-        matchingSentences,
-        'unmatching',
-        unmatchingSentences
-      );
       matchingSentences.sort((a, b) => a.source.length - b.source.length);
       unmatchingSentences.sort((a, b) => a.source.length - b.source.length);
       unmatchingSentences.forEach((sentence) =>
@@ -126,11 +133,11 @@ const Article = ({ articleLocation }) => {
       );
       console.log('matching', matchingSentences);
       setArrOfSentences(matchingSentences);
-
       setSource(matchingSentences[0].source);
       setTarget(matchingSentences[0].target);
     };
-    if (translations.length > 1) fetchData();
+    if (translations.length > 1 && langNotAvailable === false) fetchData();
+    else if (langNotAvailable) setDictionaryBoxIsLoading(false);
   }, [translations]);
 
   if (thisArticle === undefined) {
@@ -156,17 +163,18 @@ const Article = ({ articleLocation }) => {
   };
 
   const handleTranslatorLanguageChange = (e) => {
+    setWord('');
+    setTranslations('');
+    setSource('');
     setTransLang(e.target.value);
-    const { options } = e.target;
-    const { selectedIndex } = e.target;
+    const { options, selectedIndex } = e.target;
     const selectedOption = options[selectedIndex];
     const selectedLanguage = selectedOption.textContent.toLowerCase();
-    const capitalizedSelectedLanguage = selectedOption.textContent;
-    console.log(selectedLanguage);
-    setCapitalizedContextLang(capitalizedSelectedLanguage);
+    setCapitalizedContextLang(selectedOption.textContent);
     setContextLang(selectedLanguage);
     if (noContextLangs.includes(selectedLanguage)) {
       setLangNotAvailable(true);
+      setDictionaryBoxIsLoading(false);
     } else {
       setLangNotAvailable(false);
     }
@@ -202,34 +210,38 @@ const Article = ({ articleLocation }) => {
   }
 
   function handleWordClick(e) {
-    if (isHovering) {
-      setIsHovering(false);
-    } else {
-      setIsHovering(true);
-      e.target.classList.toggle('aquamarine-bg');
-      currentWordRef.current = e.target;
-      const rectX = e.clientX;
-      const rectY = e.clientY;
-      const selectedWord = e.target.innerHTML
+    console.log(word);
+    if (
+      e.target.innerHTML
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
-        .trim();
-      setWord(selectedWord);
-      getDefinition(selectedWord);
-      setDictionaryPosition({
-        left: rectX - 100,
-        top: rectY + window.scrollY - 295,
-      });
+        .trim() === word
+    ) {
+      setIsHovering(false);
+      setWord('');
+      setTranslations('');
+      setSource('');
+      return;
     }
+    console.log('this shouldnt get logged');
+    setIsHovering(true);
+    e.target.classList.toggle('aquamarine-bg');
+    currentWordRef.current = e.target;
+    const rectX = e.clientX;
+    const rectY = e.clientY;
+    const selectedWord = e.target.innerHTML
+      .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
+      .trim();
+    console.log(selectedWord);
+    setWord(selectedWord);
+    getDefinition(selectedWord);
+    setDictionaryPosition({
+      left: rectX - 100,
+      top: rectY + window.scrollY - 295,
+    });
   }
 
   function handleNextSentenceClick() {
-    console.log('clicked');
-    setCurrentSentenceIndex((prevState) => prevState + 1);
-    console.log('arr', arrOfSentences);
-    console.log(currentSentenceIndex);
-    console.log(arrOfSentences[currentSentenceIndex].source);
-    setSource(arrOfSentences[currentSentenceIndex].source);
-    setTarget(arrOfSentences[currentSentenceIndex].target);
+    setCurrentSentenceIndex(currentSentenceIndex + 1);
   }
 
   function wrapEachWordInSpan(str, arr, intermediateArr, advancedArr) {
@@ -345,34 +357,73 @@ const Article = ({ articleLocation }) => {
             top: `${dictionaryPosition.top}px`,
           }}
         >
-          <h4 className="translations">{translations}</h4>
-          <p style={{ display: langNotAvailable === true ? 'block' : 'none' }}>
-            Sorry, we don't yet have sample sentence support for{' '}
-            {capitalizedContextLang}
-          </p>
           <div
-            className="sentence-box"
             style={{
-              display: langNotAvailable === false ? 'flex' : 'none',
+              display: dictionaryBoxIsLoading === true ? 'block' : 'none',
             }}
           >
-            {' '}
-            <span className="sentence-label">EN</span>
-            <p className="sentence">"{source}"</p>
-            <span className="sentence-label">{transLang}</span>
-            <p className="sentence">"{target}"</p>
+            <h4 className="translations">(loading..)</h4>
+            <div
+              className="sentence-box"
+              style={{
+                display: langNotAvailable === false ? 'flex' : 'none',
+              }}
+            >
+              {' '}
+              <span className="sentence-label">EN</span>
+              <p className="sentence">(loading..)</p>
+              <span className="sentence-label">{transLang}</span>
+              <p className="sentence">(loading..)</p>
+            </div>
+            <div
+              className="end-part"
+              style={{
+                display: langNotAvailable === false ? 'flex' : 'none',
+              }}
+              onClick={() => {
+                handleNextSentenceClick();
+              }}
+            >
+              <span className="more-sentences">(more sentences)</span>
+              <ChevronDoubleRight className="chevron" />
+            </div>
           </div>
           <div
-            className="end-part"
             style={{
-              display: langNotAvailable === false ? 'flex' : 'none',
-            }}
-            onClick={() => {
-              handleNextSentenceClick();
+              display: dictionaryBoxIsLoading === false ? 'block' : 'none',
             }}
           >
-            <span className="more-sentences">(more sentences)</span>
-            <ChevronDoubleRight className="chevron" />
+            <h4 className="translations">{translations}</h4>
+            <p
+              style={{ display: langNotAvailable === true ? 'block' : 'none' }}
+            >
+              Sorry, we don't yet have sample sentence support for{' '}
+              {capitalizedContextLang}
+            </p>
+            <div
+              className="sentence-box"
+              style={{
+                display: langNotAvailable === false ? 'flex' : 'none',
+              }}
+            >
+              {' '}
+              <span className="sentence-label">EN</span>
+              <p className="sentence">"{source}"</p>
+              <span className="sentence-label">{transLang}</span>
+              <p className="sentence">"{target}"</p>
+            </div>
+            <div
+              className="end-part"
+              style={{
+                display: langNotAvailable === false ? 'flex' : 'none',
+              }}
+              onClick={() => {
+                handleNextSentenceClick();
+              }}
+            >
+              <span className="more-sentences">(more sentences)</span>
+              <ChevronDoubleRight className="chevron" />
+            </div>
           </div>
         </div>
         <div>
