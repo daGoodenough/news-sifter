@@ -66,11 +66,13 @@ const Article = ({ articleLocation }) => {
   const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
+  const currentWordRef = useRef(null);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (ref.current && !ref.current.contains(event.target)) {
         setIsHovering(false);
+        currentWordRef.current.classList.remove('aquamarine-bg');
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -204,6 +206,8 @@ const Article = ({ articleLocation }) => {
       setIsHovering(false);
     } else {
       setIsHovering(true);
+      e.target.classList.toggle('aquamarine-bg');
+      currentWordRef.current = e.target;
       const rectX = e.clientX;
       const rectY = e.clientY;
       const selectedWord = e.target.innerHTML
@@ -213,7 +217,7 @@ const Article = ({ articleLocation }) => {
       getDefinition(selectedWord);
       setDictionaryPosition({
         left: rectX - 100,
-        top: rectY + window.scrollY - 285,
+        top: rectY + window.scrollY - 295,
       });
     }
   }
@@ -335,14 +339,13 @@ const Article = ({ articleLocation }) => {
           className="dictionary-box"
           ref={ref}
           style={{
-            display: isHovering === true ? 'block' : 'none',
+            display: isHovering === true ? 'flex' : 'none',
             position: 'absolute',
             left: `${dictionaryPosition.left}px`,
             top: `${dictionaryPosition.top}px`,
           }}
         >
-          <hr className="dictionary-line" />
-          <h4>{translations}</h4>
+          <h4 className="translations">{translations}</h4>
           <p style={{ display: langNotAvailable === true ? 'block' : 'none' }}>
             Sorry, we don't yet have sample sentence support for{' '}
             {capitalizedContextLang}
@@ -358,16 +361,18 @@ const Article = ({ articleLocation }) => {
             <p className="sentence">"{source}"</p>
             <span className="sentence-label">{transLang}</span>
             <p className="sentence">"{target}"</p>
-            <div className="middle-part">
-              <div
-                onClick={() => {
-                  handleNextSentenceClick();
-                }}
-              >
-                <span className="more-sentences">(more sentences)</span>
-                <ChevronDoubleRight className="chevron" />
-              </div>
-            </div>
+          </div>
+          <div
+            className="end-part"
+            style={{
+              display: langNotAvailable === false ? 'flex' : 'none',
+            }}
+            onClick={() => {
+              handleNextSentenceClick();
+            }}
+          >
+            <span className="more-sentences">(more sentences)</span>
+            <ChevronDoubleRight className="chevron" />
           </div>
         </div>
         <div>
