@@ -14,7 +14,6 @@ table {
 }
 
 tr {
-  border-top: 0.2px solid rgba(0, 0, 0, 0.9);
   display: flex;
   align-items: center;
 }
@@ -143,17 +142,52 @@ small {
   background-color: aquamarine;
 }
 
-.dictionary-box {
-  height: 255px;
-  width: 220px;
-  position: absolute;
-  background-color:beige;
-  border: 1px solid aquamarine;
-  border-radius: 8px;
-  padding: .5%;
-  z-index: 2;
+.aquamarine-bg{
+  background-color: aquamarine;
 }
 
+.dictionary-box {
+  height: 265px;
+  width: 240px;
+  display: flex;
+  flex-direction: column;
+  opacity: 98%;
+  padding: .8%;
+  z-index: 2;
+  /* box-shadow: inset 0px 0px 10px rgb(27, 32, 69); */
+  background-color: #f5f5f5;
+  border: 2px solid black;
+  border-radius: 6px;
+  z-index: 3;
+}
+
+.dictionary-box:before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 20px solid black;
+  border-bottom: 20px solid transparent;
+  right: 50%;
+  bottom: -40px;
+  z-index: -3;
+}
+
+.dictionary-box:after {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-top: 20px solid #f5f5f5;;
+  border-bottom: 20px solid transparent;
+  right: 50%;
+  bottom: -34px;
+  z-index: -3;
+}
 
 .sentence-box{
   flex-direction: column;
@@ -165,53 +199,31 @@ small {
 }
 .sentence{
   font-size: 14px;
-}
-.chevron{
-  font-size: 25px;
-  
+ 
 }
 
-.chevron:hover {
-  cursor:pointer;
-}
-
-.more-sentences{
-  align-self: center;
-  font-size: 11px;
-}
-
-.more-sentences:hover {
-  cursor:pointer;
-}
-
-.middle-part{
-  align-self:flex-end;
+.end-part{
+  align-self: flex-end;
+  align-content: center;
   display: flex;
-  margin-top: 3%;
-  margin-bottom: 3%;
+  align-items: center;
 }
 
+.end-part:hover {
+  cursor: pointer;
+}
+
+.chevron{
+  font-size: 20px;
+}
+.more-sentences{
+  font-size: 12px;
+}
 
 .sentence-label {
   font-weight: bold;
   font-style: italic;
   font-size: 11px;
-}
-
-.dictionary-line{
-  position: absolute;
-  height: 25px;
-  width: 5px;
-  z-index: -1;
-  top: 235px;
-  left: 50%;
-  opacity: 100% !important;
-  color: aquamarine;
-  background: aquamarine;
-  border-radius: 100%;
-}
-.bolded-word {
-  font-weight: bold;
 }
 
 .hide-source {
