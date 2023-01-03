@@ -10,13 +10,15 @@
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
 import axios from 'axios';
 import parse from 'html-react-parser';
 import Reverso from 'reverso-api';
 import { ChevronDoubleRight } from 'react-bootstrap-icons';
+import { Carousel } from 'react-responsive-carousel';
+import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import { addSaved, removeSaved } from '../actions';
 import { NoneHighlighted } from './ArticleTextElements/NoneHighlighted';
 import { AdvancedHighlighted } from './ArticleTextElements/AdvancedHighlighted';
@@ -37,8 +39,6 @@ const Article = ({ articleLocation }) => {
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
   const [translations, setTranslations] = useState('');
-  const [source, setSource] = useState('');
-  const [target, setTarget] = useState('');
   const [supportedLanguages, setSupportedLanguages] = useState([]);
   const [transLang, setTransLang] = useState('PT-BR');
   const [contextLang, setContextLang] = useState('portuguese');
@@ -58,15 +58,15 @@ const Article = ({ articleLocation }) => {
     'korean',
     'slovak',
     'greek',
-    'czecch',
+    'czech',
   ];
   const [langNotAvailable, setLangNotAvailable] = useState(false);
   const [dictionaryBoxIsLoading, setDictionaryBoxIsLoading] = useState(true);
   const [word, setWord] = useState('');
   const [arrOfSentences, setArrOfSentences] = useState([]);
-  const [currentSentenceIndex, setCurrentSentenceIndex] = useState(0);
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
+  const ref2 = useRef(null);
   const currentWordRef = useRef(null);
 
   useEffect(() => {
@@ -77,12 +77,16 @@ const Article = ({ articleLocation }) => {
       setSupportedLanguages(res.data);
     };
     getSupportedLanguages();
-    console.log(supportedLanguages);
   }, []);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (ref.current && !ref.current.contains(event.target)) {
+      if (
+        ref2.current &&
+        !ref2.current.contains(event.target) &&
+        ref.current &&
+        !ref.current.contains(event.target)
+      ) {
         setIsHovering(false);
         setDictionaryBoxIsLoading(true);
         currentWordRef.current.classList.remove('aquamarine-bg');
@@ -92,19 +96,25 @@ const Article = ({ articleLocation }) => {
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, [ref]);
+  }, [ref2, ref]);
 
   useEffect(() => {
-    if (arrOfSentences.length < 1) return;
-    setSource(arrOfSentences[currentSentenceIndex].source);
-    setTarget(arrOfSentences[currentSentenceIndex].target);
-  }, [currentSentenceIndex]);
-
-  useEffect(() => {
-    if (source.length > 1) {
+    if (arrOfSentences.length > 1) {
       setDictionaryBoxIsLoading(false);
     }
-  }, [source]);
+  }, [arrOfSentences]);
+
+  const observer = new MutationObserver(() => {
+    console.log('ref2', ref2?.current?.clientHeight);
+  });
+
+  useEffect(() => {
+    if (isHovering) {
+      observer.observe(ref2.current, { attributes: true });
+    } else {
+      observer.disconnect();
+    }
+  }, [isHovering]);
 
   const getContext = async (selectedWord) => {
     const contextResponse = await reverso.getContext(
@@ -131,10 +141,8 @@ const Article = ({ articleLocation }) => {
       unmatchingSentences.forEach((sentence) =>
         matchingSentences.push(sentence)
       );
-      console.log('matching', matchingSentences);
+
       setArrOfSentences(matchingSentences);
-      setSource(matchingSentences[0].source);
-      setTarget(matchingSentences[0].target);
     };
     if (translations.length > 1 && langNotAvailable === false) fetchData();
     else if (langNotAvailable) setDictionaryBoxIsLoading(false);
@@ -165,7 +173,7 @@ const Article = ({ articleLocation }) => {
   const handleTranslatorLanguageChange = (e) => {
     setWord('');
     setTranslations('');
-    setSource('');
+    setArrOfSentences([]);
     setTransLang(e.target.value);
     const { options, selectedIndex } = e.target;
     const selectedOption = options[selectedIndex];
@@ -210,7 +218,6 @@ const Article = ({ articleLocation }) => {
   }
 
   function handleWordClick(e) {
-    console.log(word);
     if (
       e.target.innerHTML
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
@@ -219,10 +226,9 @@ const Article = ({ articleLocation }) => {
       setIsHovering(false);
       setWord('');
       setTranslations('');
-      setSource('');
+      setArrOfSentences([]);
       return;
     }
-    console.log('this shouldnt get logged');
     setIsHovering(true);
     e.target.classList.toggle('aquamarine-bg');
     currentWordRef.current = e.target;
@@ -231,17 +237,13 @@ const Article = ({ articleLocation }) => {
     const selectedWord = e.target.innerHTML
       .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
       .trim();
-    console.log(selectedWord);
+
     setWord(selectedWord);
     getDefinition(selectedWord);
     setDictionaryPosition({
       left: rectX - 100,
       top: rectY + window.scrollY - 295,
     });
-  }
-
-  function handleNextSentenceClick() {
-    setCurrentSentenceIndex(currentSentenceIndex + 1);
   }
 
   function wrapEachWordInSpan(str, arr, intermediateArr, advancedArr) {
@@ -348,83 +350,67 @@ const Article = ({ articleLocation }) => {
           <h6>{thisArticle?.author} | </h6> <h6> {thisArticle?.source}</h6>
         </div>
         <div
-          className="dictionary-box"
           ref={ref}
+          className="dictionary-box"
           style={{
-            display: isHovering === true ? 'flex' : 'none',
+            display:
+              dictionaryBoxIsLoading === true && isHovering === true
+                ? 'flex'
+                : 'none',
             position: 'absolute',
             left: `${dictionaryPosition.left}px`,
             top: `${dictionaryPosition.top}px`,
           }}
         >
+          <h4 className="translations">(loading..)</h4>
           <div
+            className="sentence-box"
             style={{
-              display: dictionaryBoxIsLoading === true ? 'block' : 'none',
+              display: langNotAvailable === false ? 'block' : 'none',
             }}
           >
-            <h4 className="translations">(loading..)</h4>
-            <div
-              className="sentence-box"
-              style={{
-                display: langNotAvailable === false ? 'flex' : 'none',
-              }}
-            >
-              {' '}
-              <span className="sentence-label">EN</span>
-              <p className="sentence">(loading..)</p>
-              <span className="sentence-label">{transLang}</span>
-              <p className="sentence">(loading..)</p>
-            </div>
-            <div
-              className="end-part"
-              style={{
-                display: langNotAvailable === false ? 'flex' : 'none',
-              }}
-              onClick={() => {
-                handleNextSentenceClick();
-              }}
-            >
-              <span className="more-sentences">(more sentences)</span>
-              <ChevronDoubleRight className="chevron" />
-            </div>
+            {' '}
+            <span className="sentence-label">EN</span>
+            <p className="sentence">(loading..)</p>
+            <span className="sentence-label">{transLang}</span>
+            <p className="sentence">(loading..)</p>
           </div>
-          <div
+        </div>
+        <div
+          className="dictionary-box"
+          ref={ref2}
+          style={{
+            display:
+              dictionaryBoxIsLoading === false && isHovering === true
+                ? 'flex'
+                : 'none',
+            position: 'absolute',
+            left: `${dictionaryPosition.left}px`,
+            top: `${dictionaryPosition.top}px`,
+          }}
+        >
+          <h4 className="translations">{translations}</h4>
+          <p style={{ display: langNotAvailable === true ? 'block' : 'none' }}>
+            Sorry, we don't yet have sample sentence support for{' '}
+            {capitalizedContextLang}
+          </p>
+          <Carousel
+            showArrows
+            showThumbs={false}
+            showIndicators={false}
             style={{
-              display: dictionaryBoxIsLoading === false ? 'block' : 'none',
+              display: langNotAvailable === false ? 'flex' : 'none',
             }}
           >
-            <h4 className="translations">{translations}</h4>
-            <p
-              style={{ display: langNotAvailable === true ? 'block' : 'none' }}
-            >
-              Sorry, we don't yet have sample sentence support for{' '}
-              {capitalizedContextLang}
-            </p>
-            <div
-              className="sentence-box"
-              style={{
-                display: langNotAvailable === false ? 'flex' : 'none',
-              }}
-            >
-              {' '}
-              <span className="sentence-label">EN</span>
-              <p className="sentence">"{source}"</p>
-              <span className="sentence-label">{transLang}</span>
-              <p className="sentence">"{target}"</p>
-            </div>
-            <div
-              className="end-part"
-              style={{
-                display: langNotAvailable === false ? 'flex' : 'none',
-              }}
-              onClick={() => {
-                handleNextSentenceClick();
-              }}
-            >
-              <span className="more-sentences">(more sentences)</span>
-              <ChevronDoubleRight className="chevron" />
-            </div>
-          </div>
+            {arrOfSentences.map((s, i) => (
+              <div key={i} className="sentence-box">
+                <span className="sentence-label">EN</span>
+                <p className="sentence">"{s.source}"</p>
+                <span className="sentence-label">{transLang}</span>
+                <p className="sentence">"{s.target}"</p>
+              </div>
+            ))}
+          </Carousel>
         </div>
         <div>
           {isAdvancedHighlighted === false &&
