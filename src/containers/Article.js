@@ -38,6 +38,7 @@ const Article = ({ articleLocation }) => {
     useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [dictionaryPosition, setDictionaryPosition] = useState({});
+  const [isGettingPosition, setIsGettingPosition] = useState(true);
   const [translations, setTranslations] = useState('');
   const [supportedLanguages, setSupportedLanguages] = useState([]);
   const [transLang, setTransLang] = useState('PT-BR');
@@ -65,6 +66,7 @@ const Article = ({ articleLocation }) => {
   const [dictionaryBoxIsLoading, setDictionaryBoxIsLoading] = useState(true);
   const [word, setWord] = useState('');
   const [arrOfSentences, setArrOfSentences] = useState([]);
+  const [boxHeight, setBoxHeight] = useState(0);
   const authKey = '289916f3-fce1-fe01-b0e0-c97df35cbc8a:fx';
   const ref = useRef(null);
   const ref2 = useRef(null);
@@ -105,8 +107,14 @@ const Article = ({ articleLocation }) => {
     }
   }, [arrOfSentences]);
 
+  useEffect(() => {
+    setIsGettingPosition(false);
+  }, [boxHeight]);
+
   const observer = new MutationObserver(() => {
-    console.log('ref2', ref2?.current?.clientHeight);
+    const currentHeight = ref2?.current?.clientHeight;
+    console.log('ref2', currentHeight);
+    setBoxHeight(currentHeight);
   });
 
   useEffect(() => {
@@ -235,6 +243,7 @@ const Article = ({ articleLocation }) => {
   }
 
   function handleWordClick(e) {
+    setIsGettingPosition(true);
     if (
       e.target.innerHTML
         .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
@@ -249,7 +258,6 @@ const Article = ({ articleLocation }) => {
     setIsHovering(true);
     e.target.classList.toggle('aquamarine-bg');
     currentWordRef.current = e.target;
-
     const rectX = e.clientX;
     const rectY = e.clientY;
     const selectedWord = e.target.innerHTML
@@ -257,7 +265,7 @@ const Article = ({ articleLocation }) => {
       .trim();
     setDictionaryPosition({
       left: rectX - 100,
-      top: rectY + window.scrollY - 295,
+      top: rectY + window.scrollY - 36,
     });
     getDefinition(selectedWord);
     setWord(selectedWord);
@@ -376,7 +384,8 @@ const Article = ({ articleLocation }) => {
                 : 'none',
             position: 'absolute',
             left: `${dictionaryPosition.left}px`,
-            top: `${dictionaryPosition.top}px`,
+            top: `${dictionaryPosition.top - 200}px`,
+            height: `200px`,
           }}
         >
           <h4 className="translations">(loading..)</h4>
@@ -403,7 +412,8 @@ const Article = ({ articleLocation }) => {
                 : 'none',
             position: 'absolute',
             left: `${dictionaryPosition.left}px`,
-            top: `${dictionaryPosition.top}px`,
+            top: `${dictionaryPosition.top - boxHeight}px`,
+            visibility: isGettingPosition ? 'hidden' : 'visible',
           }}
         >
           <h4 className="translations">{translations}</h4>

@@ -147,7 +147,7 @@ small {
 }
 
 .dictionary-box {
-  height: 265px;
+  height: auto;
   width: 240px;
   display: flex;
   flex-direction: column;
@@ -210,19 +210,21 @@ small {
 
 .carousel.carousel-slider {
   overflow: visible !important;
-  height: 220px !important;
+  height: auto !important;
 }
 
 .carousel-status {
   top: auto !important;
-  bottom: 0% !important;
-  color: black !important;
+  bottom: 0 !important;
+  right: -31% !important;
+  background-color: rgba(0, 0, 0, 0.85) !important;
   text-shadow: 0px 0px 0px !important;
+  border-radius: 0px 12px 12px 0px;
   font-size: 13px !important;
 }
 
 .carousel .control-prev.control-arrow:before {
-  border-right: 8px solid white)!important;
+  border-right: 8px solid white!important;
 }
 
 .carousel .control-next.control-arrow:before {
@@ -234,7 +236,7 @@ small {
   top: auto !important;
   bottom: 40% !important;
   right: -18% !important;
-  border-radius: 0px 12px 12px 0px;
+  border-radius: 0px 12px 0px 0px;
 }
 
 .control-prev.control-arrow {
