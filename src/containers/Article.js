@@ -61,6 +61,7 @@ const Article = ({ articleLocation }) => {
     'czech',
   ];
   const [langNotAvailable, setLangNotAvailable] = useState(false);
+  const [contextError, setContextError] = useState(false);
   const [dictionaryBoxIsLoading, setDictionaryBoxIsLoading] = useState(true);
   const [word, setWord] = useState('');
   const [arrOfSentences, setArrOfSentences] = useState([]);
@@ -125,10 +126,26 @@ const Article = ({ articleLocation }) => {
     return contextResponse;
   };
 
+  // const getCheck = async () => {
+  //   const check = await reverso.getContext('the', 'english', 'russian');
+  //   console.log(check);
+  // };
+  // getCheck();
+
   useEffect(() => {
     const fetchData = async () => {
       const contextResponse = await getContext(word);
       const sentences = contextResponse.examples;
+      console.log('this sentences', sentences);
+      if (sentences.length < 2) {
+        console.log(sentences);
+        console.log('this word', word);
+        setContextError(true);
+        setArrOfSentences([]);
+        setDictionaryBoxIsLoading(false);
+        return;
+      }
+      setContextError(false);
       const matchingSentences = [];
       const unmatchingSentences = [];
       sentences.forEach((sentence) => {
@@ -144,7 +161,7 @@ const Article = ({ articleLocation }) => {
 
       setArrOfSentences(matchingSentences);
     };
-    if (translations.length > 1 && langNotAvailable === false) fetchData();
+    if (translations.length >= 1 && langNotAvailable === false) fetchData();
     else if (langNotAvailable) setDictionaryBoxIsLoading(false);
   }, [translations]);
 
@@ -232,18 +249,18 @@ const Article = ({ articleLocation }) => {
     setIsHovering(true);
     e.target.classList.toggle('aquamarine-bg');
     currentWordRef.current = e.target;
+
     const rectX = e.clientX;
     const rectY = e.clientY;
     const selectedWord = e.target.innerHTML
       .replace(/[.,\/#!$%\^&\*;:{}=\-_`~()“”"″]/g, '')
       .trim();
-
-    setWord(selectedWord);
-    getDefinition(selectedWord);
     setDictionaryPosition({
       left: rectX - 100,
       top: rectY + window.scrollY - 295,
     });
+    getDefinition(selectedWord);
+    setWord(selectedWord);
   }
 
   function wrapEachWordInSpan(str, arr, intermediateArr, advancedArr) {
@@ -394,12 +411,18 @@ const Article = ({ articleLocation }) => {
             Sorry, we don't yet have sample sentence support for{' '}
             {capitalizedContextLang}
           </p>
+          <p style={{ display: contextError === true ? 'block' : 'none' }}>
+            Sorry, can't return sentences with that word.
+          </p>
           <Carousel
             showArrows
             showThumbs={false}
             showIndicators={false}
             style={{
-              display: langNotAvailable === false ? 'flex' : 'none',
+              display:
+                langNotAvailable === false && contextError === false
+                  ? 'flex'
+                  : 'none',
             }}
           >
             {arrOfSentences.map((s, i) => (
