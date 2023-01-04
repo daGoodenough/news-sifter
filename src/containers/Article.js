@@ -16,9 +16,9 @@ import _ from 'lodash';
 import axios from 'axios';
 import parse from 'html-react-parser';
 import Reverso from 'reverso-api';
-import { ChevronDoubleRight } from 'react-bootstrap-icons';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import Modal from 'react-bootstrap/Modal';
 import { addSaved, removeSaved } from '../actions';
 import { NoneHighlighted } from './ArticleTextElements/NoneHighlighted';
 import { AdvancedHighlighted } from './ArticleTextElements/AdvancedHighlighted';
@@ -71,6 +71,8 @@ const Article = ({ articleLocation }) => {
   const ref = useRef(null);
   const ref2 = useRef(null);
   const currentWordRef = useRef(null);
+  const [show, setShow] = useState(true);
+  const handleClose = () => setShow(false);
 
   useEffect(() => {
     const getSupportedLanguages = async () => {
@@ -315,6 +317,14 @@ const Article = ({ articleLocation }) => {
           Back
         </Button>
         <Form.Group>
+          <Modal show={show} onHide={handleClose}>
+            <Modal.Header closeButton>
+              <Modal.Title>Set Your Language Here</Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+              Then click on a word to get it's translation.
+            </Modal.Body>
+          </Modal>
           <InputGroup>
             <Form.Select
               onChange={(e) => handleTranslatorLanguageChange(e)}
