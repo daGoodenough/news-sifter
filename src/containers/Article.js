@@ -6,6 +6,7 @@
 /* eslint-disable no-useless-escape */
 /* eslint-disable no-else-return */
 /* eslint-disable react/jsx-no-bind */
+/* eslint-disable no-plusplus */
 
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -146,10 +147,7 @@ const Article = ({ articleLocation }) => {
     const fetchData = async () => {
       const contextResponse = await getContext(word);
       const sentences = contextResponse.examples;
-      console.log('this sentences', sentences);
       if (sentences.length < 2) {
-        console.log(sentences);
-        console.log('this word', word);
         setContextError(true);
         setArrOfSentences([]);
         setDictionaryBoxIsLoading(false);
@@ -168,10 +166,14 @@ const Article = ({ articleLocation }) => {
       unmatchingSentences.forEach((sentence) =>
         matchingSentences.push(sentence)
       );
-
-      setArrOfSentences(matchingSentences);
+      const shortenedArray = [];
+      for (let i = 0; i < 10; i++) {
+        const element = matchingSentences[i];
+        shortenedArray.push(element);
+      }
+      setArrOfSentences(shortenedArray);
     };
-    if (translations.length >= 1 && langNotAvailable === false) fetchData();
+    if (translations.length >= 1 && !langNotAvailable) fetchData();
     else if (langNotAvailable) setDictionaryBoxIsLoading(false);
   }, [translations]);
 
