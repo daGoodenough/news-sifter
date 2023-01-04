@@ -96,6 +96,28 @@ small {
   margin: 2%;
 }
 
+.modal-dialog {
+top: 36%;
+left: 20%;
+position: absolute;
+}
+
+.modal-dialog:before {
+  content: "";
+  width: 0px;
+  height: 0px;
+  position: absolute;
+  border-left: 20px solid transparent;
+  border-right: 30px solid white;
+  border-top: 20px solid transparent;
+  border-bottom:20px solid transparent;
+  left: -10%;
+  top: 10%;
+  z-index: 3;
+}
+
+
+
 .highlight-button {
   margin-top: 15%;
 }
@@ -216,7 +238,7 @@ small {
 .carousel-status {
   top: auto !important;
   bottom: 0 !important;
-  right: -31% !important;
+  right: -30% !important;
   background-color: rgba(0, 0, 0, 0.85) !important;
   text-shadow: 0px 0px 0px !important;
   border-radius: 0px 12px 12px 0px;
@@ -236,7 +258,7 @@ small {
   top: auto !important;
   bottom: 40% !important;
   right: -18% !important;
-  border-radius: 0px 12px 0px 0px;
+  border-radius: 0px 12px 12px 0px;
 }
 
 .control-prev.control-arrow {
