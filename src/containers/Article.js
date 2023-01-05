@@ -10,16 +10,14 @@
 
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { Form, InputGroup, Col, Row } from 'react-bootstrap';
+import { Form, InputGroup, Col, Row, Modal, Button } from 'react-bootstrap';
 import React, { useEffect, useState, useRef } from 'react';
-import Button from 'react-bootstrap/Button';
 import _ from 'lodash';
 import axios from 'axios';
 import parse from 'html-react-parser';
 import Reverso from 'reverso-api';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
-import Modal from 'react-bootstrap/Modal';
 import { addSaved, removeSaved, setTranslator, setVisited } from '../actions';
 import { NoneHighlighted } from './ArticleTextElements/NoneHighlighted';
 import { AdvancedHighlighted } from './ArticleTextElements/AdvancedHighlighted';
@@ -335,6 +333,7 @@ const Article = ({ articleLocation }) => {
               Then click on a word to get it's translation.
             </Modal.Body>
           </Modal>
+
           <InputGroup>
             <Form.Select
               onChange={(e) => handleTranslatorLanguageChange(e)}
@@ -350,14 +349,22 @@ const Article = ({ articleLocation }) => {
         <button
           onClick={handleHighlightIntermediateClick}
           type="button"
-          className="highlight-button btn btn-info"
+          className="highlight-button btn inter-btn"
+          style={{
+            backgroundColor: isIntermediateHighlighted ? '#101D42' : 'white',
+            color: isIntermediateHighlighted ? '#F4F4F9' : 'black',
+          }}
         >
           Highlight Intermediate Words
         </button>
         <button
           onClick={handleHighlightAdvancedClick}
           type="button"
-          className="highlight-button btn btn-warning"
+          className="highlight-button btn adv-btn"
+          style={{
+            backgroundColor: isAdvancedHighlighted ? '#101D42' : 'white',
+            color: isAdvancedHighlighted ? '#F4F4F9' : 'black',
+          }}
         >
           Highlight Advanced Words
         </button>
@@ -434,6 +441,7 @@ const Article = ({ articleLocation }) => {
             left: `${dictionaryPosition.left}px`,
             top: `${dictionaryPosition.top - boxHeight}px`,
             visibility: isGettingPosition ? 'hidden' : 'visible',
+            height: langNotAvailable === true ? '200px' : 'auto',
           }}
         >
           <h4 className="translations">{translations}</h4>
