@@ -65,7 +65,7 @@ const ArticleListItem = ({ id, history }) => {
                 </span>
               </div>
             </div>
-            <ul>
+            <ul className="article-info-ul">
               <h6>
                 <u>Article Info</u>
               </h6>

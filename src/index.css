@@ -1,6 +1,10 @@
 .App {
-  background-color: rgba(245, 245, 245, 0.3);
+  background-color: #F4F4F9;
   margin-bottom: 200px;
+}
+
+html {
+  background-color: #F4F4F9;
 }
 
 .search-results-box {
@@ -36,15 +40,16 @@ td img {
 .reading-level-box {
   border-radius: 8px;
   border: 0.1px solid black;
+  color: #F4F4F9;
   width: 110%;
-  background-color: aquamarine !important;
+  background-color: #101D42 !important;
   backdrop-filter: blur(2px) !important;
 }
 
 .extra-reading-level-info {
   position: absolute;
   right: 102%;
-  background-color: aquamarine;
+  background-color: #101D42;
   width: 180px;
   height: fit-content;
   padding: 3%;
@@ -89,7 +94,22 @@ small {
 .fa-star:hover {
   cursor: pointer;
 }
+
+.article-info-ul li{
+  list-style-type: none;
+  margin-left: -10px;
+ 
+}
+
+.article-info-ul li:before {
+  content: "\f35a";
+  font-family: "Font Awesome 5 Free";
+  font-weight: 100 !important;
+  margin-right: 10px;
+}
+
 .sidebar-left {
+  position: relative;
   display: flex;
   flex-direction: column;
   float: left;
@@ -99,8 +119,11 @@ small {
 .modal-dialog {
 top: 36%;
 left: 20%;
-position: absolute;
+position: absolute !important;
+display: inline-block !important;
 }
+
+
 
 .modal-dialog:before {
   content: "";
@@ -120,17 +143,27 @@ position: absolute;
 
 .highlight-button {
   margin-top: 15%;
+  border: .1px solid #101D42;
+  background-color: white;
+}
+
+.highlight-button:hover{
+  background-color: #101D42 !important;
+  color: #F4F4F9 !important;
 }
 
 .sidebar-intermediate-word-list {
-  background-color: #31d2f2;
+  background-color:  #31d2f2;;
+  border: .1px solid #101D42;
+  color: black;
   border-radius: 8px;
   margin-top: 5%;
   font-weight: 500;
 }
 
 .sidebar-advanced-word-list {
-  background-color: #fdca2d;
+  background-color: #fdca2d;;
+  border: .1px solid #101D42;
   border-radius: 8px;
   margin-top: 5%;
   font-weight: 500;
@@ -140,15 +173,17 @@ position: absolute;
   float: right;
   margin: 2%;
   color: black;
-  background-color: #fdca2d;
-  border: none;
+  border: .1px solid #101D42;
+  background-color: white;
 }
-.save-button:hover {
-  cursor: pointer;
+
+.save-button:hover{
+  background-color: #101D42;
+  color: #F4F4F9
 }
 
 .saved {
-  color: #0a58ca;
+  color: #520025;
 }
 
 .article-box {
@@ -161,11 +196,11 @@ position: absolute;
 }
 
 .article-word:hover {
-  background-color: aquamarine;
+  background-color: #F19A3E;
 }
 
 .aquamarine-bg{
-  background-color: aquamarine;
+  background-color: #F19A3E;
 }
 
 .dictionary-box {
@@ -177,8 +212,9 @@ position: absolute;
   padding: .8%;
   z-index: 2;
   /* box-shadow: inset 0px 0px 10px rgb(27, 32, 69); */
-  background-color: #f5f5f5;
-  border: 2px solid black;
+  -webkit-filter: drop-shadow(0px 2px 2px rgba(130,130,130,1));
+  background-color: white;
+  border: 2px solid #101D42;
   border-radius: 6px;
   z-index: 3;
 }
@@ -190,7 +226,7 @@ position: absolute;
   position: absolute;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-top: 20px solid black;
+  border-top: 20px solid #101D42;
   border-bottom: 20px solid transparent;
   right: 50%;
   bottom: -40px;
@@ -204,7 +240,7 @@ position: absolute;
   position: absolute;
   border-left: 7px solid transparent;
   border-right: 7px solid transparent;
-  border-top: 20px solid #f5f5f5;;
+  border-top: 20px solid white;
   border-bottom: 20px solid transparent;
   right: 50%;
   bottom: -34px;
@@ -238,9 +274,9 @@ position: absolute;
 .carousel-status {
   top: auto !important;
   bottom: 0 !important;
-  right: -29.6% !important;
+  right: -30% !important;
   background-color: rgba(0, 0, 0, 0.85) !important;
-  border: 1px solid rgba(0,0,0,0.85) !important;
+  border: 1px solid rgb(0,0,0) !important;
   text-shadow: 0px 0px 0px !important;
   border-radius: 0px 12px 12px 0px;
   font-size: 13px !important;
@@ -314,9 +350,15 @@ article img {
 .back-button {
   margin: 1%;
   margin-bottom: 15%;
-  background-color: aquamarine;
+  border: .1px solid #101D42;
+  background-color: white;
   color: black;
-  border: 0px;
+}
+
+.back-button:hover {
+  background-color: #101D42;
+  color: #F4F4F9
+
 }
 
 @media screen and (max-width: 480px) {
@@ -326,21 +368,44 @@ article img {
 }
 
 .color-nav {
-  background-color: aquamarine;
+  background-color: #101D42;
   margin-bottom: 2%;
 }
 
+.navbar-brand {
+  color: white;
+}
+
+.nav-link {
+  color: white;
+  
+}
+
+.nav-link strong {
+  font-weight:normal;
+}
+
+.form-select {
+  border: .1px solid #101D42;
+}
+
 .btn-search {
-  background-color: aquamarine;
-  border-radius: 0 18px 18px 0;
+  background-color: #101D42;
+  color: white;
 }
 
 .btn-search:hover {
-  background-color: rgb(65, 165, 131);
+  background-color: #F4F4F9;
+  border-right: .1px solid #101D42;
+  border-bottom: .1px solid #101D42;
+  border-top: .1px solid #101D42;
+  
+  color: black;
 }
 
 .search-bar {
   border-radius: 18px 0 0 18px;
+  border: .1px solid #101D42;
 }
 
 .form-select {
