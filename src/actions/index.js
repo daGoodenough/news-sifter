@@ -8,6 +8,7 @@ export const DELETE_HISTORY = 'DELETE_HISTORY';
 export const CHANGE_DIFFICULTY = 'CHANGE_DIFFICULTY';
 export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
 export const CHANGE_SORTBY = 'CHANGE_SORTBY';
+export const SET_TRANSLATOR = 'SET_TRANSLATOR';
 
 export function addStories(storiesData) {
   return {
@@ -103,5 +104,15 @@ export function changeSortBy(sortBy) {
   return {
     type: CHANGE_SORTBY,
     payload: sortBy,
+  };
+}
+
+export function setTranslator(translator, language) {
+  return {
+    type: SET_TRANSLATOR,
+    payload: {
+      translator,
+      language,
+    },
   };
 }
