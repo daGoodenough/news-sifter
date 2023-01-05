@@ -20,7 +20,7 @@ import Reverso from 'reverso-api';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Modal from 'react-bootstrap/Modal';
-import { addSaved, removeSaved } from '../actions';
+import { addSaved, removeSaved, setTranslator } from '../actions';
 import { NoneHighlighted } from './ArticleTextElements/NoneHighlighted';
 import { AdvancedHighlighted } from './ArticleTextElements/AdvancedHighlighted';
 import { IntermediateHighlighted } from './ArticleTextElements/IntermediateHighlighted';
@@ -30,6 +30,7 @@ const Article = ({ articleLocation }) => {
   const reverso = new Reverso();
   const stories = useSelector((state) => state[articleLocation]);
   const savedStories = useSelector((state) => state.saved);
+  const translator = useSelector((state) => state.translator);
   const thisURL = window.location.href;
   const id = parseInt(thisURL.substring(thisURL.lastIndexOf('/') + 1));
   const thisArticle = _.find(stories, (element) => element.id === id);
@@ -42,9 +43,6 @@ const Article = ({ articleLocation }) => {
   const [isGettingPosition, setIsGettingPosition] = useState(true);
   const [translations, setTranslations] = useState('');
   const [supportedLanguages, setSupportedLanguages] = useState([]);
-  const [transLang, setTransLang] = useState('PT-BR');
-  const [contextLang, setContextLang] = useState('portuguese');
-  const [capitalizedContextLang, setCapitalizedContextLang] = useState('');
   const noContextLangs = [
     'bulgarian',
     'estonian',
@@ -116,7 +114,6 @@ const Article = ({ articleLocation }) => {
 
   const observer = new MutationObserver(() => {
     const currentHeight = ref2?.current?.clientHeight;
-    console.log('ref2', currentHeight);
     setBoxHeight(currentHeight);
   });
 
@@ -132,7 +129,7 @@ const Article = ({ articleLocation }) => {
     const contextResponse = await reverso.getContext(
       selectedWord,
       'english',
-      contextLang
+      translator.language
     );
     return contextResponse;
   };
@@ -194,7 +191,7 @@ const Article = ({ articleLocation }) => {
 
   const getDefinition = async (selectedWord) => {
     const translationsResponse = await axios.get(
-      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${selectedWord}&target_lang=${transLang}`
+      `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${selectedWord}&target_lang=${translator.translator}`
     );
     setTranslations(translationsResponse?.data?.translations[0].text);
   };
@@ -203,12 +200,11 @@ const Article = ({ articleLocation }) => {
     setWord('');
     setTranslations('');
     setArrOfSentences([]);
-    setTransLang(e.target.value);
     const { options, selectedIndex } = e.target;
     const selectedOption = options[selectedIndex];
-    const selectedLanguage = selectedOption.textContent.toLowerCase();
-    setCapitalizedContextLang(selectedOption.textContent);
-    setContextLang(selectedLanguage);
+    const selectedTranslator = selectedOption.value;
+    const selectedLanguage = selectedOption.textContent;
+    dispatch(setTranslator(selectedTranslator, selectedLanguage));
     if (noContextLangs.includes(selectedLanguage)) {
       setLangNotAvailable(true);
       setDictionaryBoxIsLoading(false);
@@ -332,7 +328,7 @@ const Article = ({ articleLocation }) => {
               onChange={(e) => handleTranslatorLanguageChange(e)}
               aria-label="Default select example"
             >
-              <option>Set Translator Language</option>
+              <option>{translator.language}</option>
               {supportedLanguages.map((i) => (
                 <option value={i.language}>{i.name}</option>
               ))}
@@ -410,7 +406,7 @@ const Article = ({ articleLocation }) => {
             {' '}
             <span className="sentence-label">EN</span>
             <p className="sentence">(loading..)</p>
-            <span className="sentence-label">{transLang}</span>
+            <span className="sentence-label">{translator.translator}</span>
             <p className="sentence">(loading..)</p>
           </div>
         </div>
@@ -431,7 +427,7 @@ const Article = ({ articleLocation }) => {
           <h4 className="translations">{translations}</h4>
           <p style={{ display: langNotAvailable === true ? 'block' : 'none' }}>
             Sorry, we don't yet have sample sentence support for{' '}
-            {capitalizedContextLang}
+            {translator.language}
           </p>
           <p style={{ display: contextError === true ? 'block' : 'none' }}>
             Sorry, can't return sentences with that word.
@@ -451,7 +447,7 @@ const Article = ({ articleLocation }) => {
               <div key={i} className="sentence-box">
                 <span className="sentence-label">EN</span>
                 <p className="sentence">"{s.source}"</p>
-                <span className="sentence-label">{transLang}</span>
+                <span className="sentence-label">{translator.translator}</span>
                 <p className="sentence">"{s.target}"</p>
               </div>
             ))}
