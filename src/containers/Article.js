@@ -20,7 +20,7 @@ import Reverso from 'reverso-api';
 import { Carousel } from 'react-responsive-carousel';
 import 'react-responsive-carousel/lib/styles/carousel.min.css';
 import Modal from 'react-bootstrap/Modal';
-import { addSaved, removeSaved, setTranslator } from '../actions';
+import { addSaved, removeSaved, setTranslator, setVisited } from '../actions';
 import { NoneHighlighted } from './ArticleTextElements/NoneHighlighted';
 import { AdvancedHighlighted } from './ArticleTextElements/AdvancedHighlighted';
 import { IntermediateHighlighted } from './ArticleTextElements/IntermediateHighlighted';
@@ -31,6 +31,7 @@ const Article = ({ articleLocation }) => {
   const stories = useSelector((state) => state[articleLocation]);
   const savedStories = useSelector((state) => state.saved);
   const translator = useSelector((state) => state.translator);
+  const visited = useSelector((state) => state.visited);
   const thisURL = window.location.href;
   const id = parseInt(thisURL.substring(thisURL.lastIndexOf('/') + 1));
   const thisArticle = _.find(stories, (element) => element.id === id);
@@ -44,21 +45,21 @@ const Article = ({ articleLocation }) => {
   const [translations, setTranslations] = useState('');
   const [supportedLanguages, setSupportedLanguages] = useState([]);
   const noContextLangs = [
-    'bulgarian',
-    'estonian',
-    'finnish',
-    'indonesian',
-    'lithuanian',
-    'latvian',
-    'slovenian',
-    'swedish',
-    'danish',
-    'ukranian',
-    'hungarian',
-    'korean',
-    'slovak',
-    'greek',
-    'czech',
+    'Bulgarian',
+    'Estonian',
+    'Finnish',
+    'Indonesian',
+    'Lithuanian',
+    'Latvian',
+    'Slovenian',
+    'Swedish',
+    'Danish',
+    'Ukranian',
+    'Hungarian',
+    'Korean',
+    'Slovak',
+    'Greek',
+    'Czech',
   ];
   const [langNotAvailable, setLangNotAvailable] = useState(false);
   const [contextError, setContextError] = useState(false);
@@ -71,7 +72,16 @@ const Article = ({ articleLocation }) => {
   const ref2 = useRef(null);
   const currentWordRef = useRef(null);
   const [show, setShow] = useState(true);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {
+    setShow(false);
+    dispatch(setVisited(true));
+    localStorage.setItem('visited', true);
+  };
+
+  useEffect(() => {
+    if (!visited) setShow(true);
+    else setShow(false);
+  }, []);
 
   useEffect(() => {
     const getSupportedLanguages = async () => {
@@ -308,6 +318,8 @@ const Article = ({ articleLocation }) => {
   const intermediateSidebarJSX = parse(intermediateSidebar);
   const advancedSidebarJSX = parse(advancedSidebar);
 
+  console.log('visited', visited);
+
   return (
     <div>
       <div className="sidebar-left">
@@ -427,7 +439,7 @@ const Article = ({ articleLocation }) => {
           <h4 className="translations">{translations}</h4>
           <p style={{ display: langNotAvailable === true ? 'block' : 'none' }}>
             Sorry, we don't yet have sample sentence support for{' '}
-            {translator.language}
+            {translator.language}.
           </p>
           <p style={{ display: contextError === true ? 'block' : 'none' }}>
             Sorry, can't return sentences with that word.

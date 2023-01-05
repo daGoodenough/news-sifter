@@ -9,6 +9,7 @@ export const CHANGE_DIFFICULTY = 'CHANGE_DIFFICULTY';
 export const CHANGE_LANGUAGE = 'CHANGE_LANGUAGE';
 export const CHANGE_SORTBY = 'CHANGE_SORTBY';
 export const SET_TRANSLATOR = 'SET_TRANSLATOR';
+export const SET_VISITED = 'SET_VISITED';
 
 export function addStories(storiesData) {
   return {
@@ -114,5 +115,12 @@ export function setTranslator(translator, language) {
       translator,
       language,
     },
+  };
+}
+
+export function setVisited(value) {
+  return {
+    type: SET_VISITED,
+    payload: value,
   };
 }
