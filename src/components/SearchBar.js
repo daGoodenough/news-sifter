@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
 import { useState, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { fetchStories } from '../helpers/fetchStoryData';
@@ -11,19 +11,20 @@ import {
   changeDifficulty,
   changeLanguage,
   changeSortBy,
+  setLoading,
 } from '../actions';
 
 /* eslint-disable no-unused-vars */
 
 const SearchBar = ({ wordList, cocaWords }) => {
+  const loading = useSelector((state) => state.loading);
   const [query, setQuery] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
 
   const handleSubmitClick = async () => {
     try {
-      setIsLoading(true);
+      dispatch(setLoading(true));
       const storiesData = await fetchStories(
         query,
         await wordList,
@@ -34,7 +35,7 @@ const SearchBar = ({ wordList, cocaWords }) => {
       console.error(e);
       dispatch(addStories(null));
     } finally {
-      setIsLoading(false);
+      dispatch(setLoading(false));
     }
   };
 
@@ -125,7 +126,7 @@ const SearchBar = ({ wordList, cocaWords }) => {
       </Row>
       <Row>
         <Col xs={{ offset: 6 }}>
-          {isLoading ? <div className="loader" /> : null}
+          {loading ? <div className="loader" /> : null}
         </Col>
       </Row>
     </>

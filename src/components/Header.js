@@ -15,13 +15,13 @@ const Header = () => (
           height="30"
           className="d-inline-block align-top"
         />{' '}
-        News-Sifter
+        News<span className="bold-title-word">Edu</span>
       </Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="ms-auto" alignRight>
           <Nav.Link as={Link} to="/saved">
-            <strong>Saved</strong>
+            Saved
           </Nav.Link>
           <Nav.Link as={Link} to="/history">
             History
