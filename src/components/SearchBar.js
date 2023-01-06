@@ -19,6 +19,7 @@ import {
 const SearchBar = ({ wordList, cocaWords }) => {
   const loading = useSelector((state) => state.loading);
   const [query, setQuery] = useState('');
+  const [pageSize, setPageSize] = useState(5);
 
   const dispatch = useDispatch();
 
@@ -27,6 +28,7 @@ const SearchBar = ({ wordList, cocaWords }) => {
       dispatch(setLoading(true));
       const storiesData = await fetchStories(
         query,
+        pageSize,
         await wordList,
         await cocaWords
       );
@@ -47,89 +49,91 @@ const SearchBar = ({ wordList, cocaWords }) => {
 
   const handleSortByChange = (e) => dispatch(changeSortBy(e.target.value));
 
-  return (
-    <>
-      <Row>
-        <Col md={{ span: 6, offset: 3 }}>
-          <Form className="m-3">
-            <Form.Group>
-              <InputGroup>
-                <Form.Control
-                  onChange={(e) => setQuery(e.target.value)}
-                  type="text"
-                  placeholder="Search to find articles..."
-                  className="search-bar"
-                />
-                <InputGroup.Text
-                  onClick={handleSubmitClick}
-                  role="button"
-                  type="submit"
-                  className="btn btn-search"
-                  as={Link}
-                  to="/"
-                >
-                  Search
-                </InputGroup.Text>
-              </InputGroup>
-            </Form.Group>
-            <Row className="pt-3">
-              <Col md={4}>
-                <Form.Group>
-                  <InputGroup>
-                    <Form.Select
-                      onChange={(e) => handleLanguageChange(e)}
-                      aria-label="Default select example"
-                    >
-                      <option>Language</option>
-                      <option value="english">English</option>
-                    </Form.Select>
-                  </InputGroup>
-                </Form.Group>
-              </Col>
-              <Col md={4}>
-                <Form.Group>
-                  <InputGroup>
-                    <Form.Select
-                      onChange={(e) => handleReadingLevelChange(e)}
-                      aria-label="Default select example"
-                    >
-                      <option value="default">Reading Level</option>
+  const handleResultsChange = (e) => {
+    console.log('this got called');
+    const userChoice = parseInt(e.target.value);
+    setPageSize(userChoice);
+  };
 
-                      <option value="beginner">Beginner</option>
-                      <option value="intermediate">Intermediate</option>
-                      <option value="advanced">Advanced</option>
-                    </Form.Select>
-                  </InputGroup>
-                </Form.Group>
-              </Col>
-              <Col md={4}>
-                <Form.Group>
-                  <InputGroup>
-                    <Form.Select
-                      onChange={(e) => handleSortByChange(e)}
-                      aria-label="Default select example"
-                    >
-                      <option value="default">Sort By</option>
-                      <option value="beginnerToAdvanced">
-                        Beginner - Advanced
-                      </option>
-                      <option value="advancedToBeginner">
-                        Advanced - Beginner
-                      </option>
-                    </Form.Select>
-                  </InputGroup>
-                </Form.Group>
-              </Col>
-            </Row>
-          </Form>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={{ offset: 6 }}>
-          {loading ? <div className="loader" /> : null}
-        </Col>
-      </Row>
-    </>
+  return (
+    <Row>
+      <Col md={{ span: 6, offset: 3 }}>
+        <Form className="m-3">
+          <Form.Group>
+            <InputGroup>
+              <Form.Control
+                onChange={(e) => setQuery(e.target.value)}
+                type="text"
+                placeholder="Search to find articles..."
+                className="search-bar"
+              />
+              <InputGroup.Text
+                onClick={handleSubmitClick}
+                role="button"
+                type="submit"
+                className="btn btn-search"
+                as={Link}
+                to="/"
+              >
+                Search
+              </InputGroup.Text>
+            </InputGroup>
+          </Form.Group>
+          <Row className="pt-3">
+            <Col md={4}>
+              <Form.Group>
+                <InputGroup>
+                  <Form.Select
+                    onChange={(e) => handleReadingLevelChange(e)}
+                    aria-label="Default select example"
+                  >
+                    <option value="default">Reading Level</option>
+
+                    <option value="beginner">Beginner</option>
+                    <option value="intermediate">Intermediate</option>
+                    <option value="advanced">Advanced</option>
+                  </Form.Select>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group>
+                <InputGroup>
+                  <Form.Select
+                    onChange={(e) => handleSortByChange(e)}
+                    aria-label="Default select example"
+                  >
+                    <option value="default">Sort By</option>
+                    <option value="beginnerToAdvanced">
+                      Beginner - Advanced
+                    </option>
+                    <option value="advancedToBeginner">
+                      Advanced - Beginner
+                    </option>
+                  </Form.Select>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+            <Col md={4}>
+              <Form.Group>
+                <InputGroup>
+                  <Form.Select
+                    onChange={(e) => handleResultsChange(e)}
+                    aria-label="Default select example"
+                  >
+                    <option>Results</option>
+                    <option value="10">10</option>
+                    <option value="20">20</option>
+                    <option value="50">50 (Slow)</option>
+                    <option value="100">100 (Slower)</option>
+                  </Form.Select>
+                </InputGroup>
+              </Form.Group>
+            </Col>
+          </Row>
+        </Form>
+      </Col>
+    </Row>
   );
 };
 
