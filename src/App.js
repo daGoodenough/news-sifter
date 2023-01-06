@@ -53,7 +53,7 @@ function App() {
       setCocaWords(a);
       setWordList(b);
 
-      const storiesData = await fetchStories('news', b, a);
+      const storiesData = await fetchStories('news', 5, b, a);
       dispatch(addStories(storiesData));
     } catch (e) {
       console.error('Error getting story data: ', e);
@@ -72,11 +72,11 @@ function App() {
     <div className="App">
       <Header />
       <SearchBar cocaWords={cocaWords} wordList={wordList} />
-      {/* <Row>
+      <Row>
         <Col xs={{ offset: 6 }}>
           {loading ? <div className="loader" /> : null}
         </Col>
-      </Row> */}
+      </Row>
       <Main />
     </div>
   );

@@ -13,6 +13,7 @@ html {
   justify-content: center;
 }
 
+
 table {
   max-width: 70%;
 }
@@ -377,6 +378,9 @@ article img {
   }
 }
 
+.form-select:hover{
+  cursor:pointer !important;
+}
 
 
 .color-nav {

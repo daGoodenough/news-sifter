@@ -8,12 +8,14 @@ import axios from 'axios';
 
 const API_KEY = process.env.REACT_APP_API_KEY;
 
-export const fetchStories = async (query, wordList, cocaWords) => {
+export const fetchStories = async (query, pageSize, wordList, cocaWords) => {
+  console.log(pageSize)
   try {
-    // const results = await axios.get(
-    //   `https://newsapi.org/v2/everything?q=${query}&pageSize=5&apiKey=${API_KEY}`
-    // );
-    const results = await axios.get('./data.json');
+    const results = await axios.get(
+      `https://newsapi.org/v2/everything?q=${query}&pageSize=${pageSize}&language=en&apiKey=${API_KEY}`
+    );
+    // const results = await axios.get('./data.json');
+    console.log('results', results)
     const { articles } = results.data;
 
     if (articles.length === 0) {
@@ -41,10 +43,10 @@ async function extractArticles(data) {
   const extractedArticles = await Promise.allSettled(articlePromises)
     .then((data) =>
       data.map((article) => {
-        const content = article.value.content.replaceAll('<', ' <');
+        const content = article?.value?.content.replaceAll('<', ' <');
         const parser = new DOMParser();
         const parsedArticle = parser.parseFromString(content, 'text/html');
-        return parsedArticle.all[0].textContent;
+        return parsedArticle.all[0]?.textContent;
       })
     )
     .catch((err) => {
