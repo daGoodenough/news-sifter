@@ -1,15 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { Row, Col } from 'react-bootstrap';
 import React, { useEffect, useState } from 'react';
 import { fetchStories } from './helpers/fetchStoryData';
 import SearchBar from './components/SearchBar';
 import Header from './components/Header';
 import Main from './components/Main';
-import { addStories } from './actions';
+import { addStories, setLoading } from './actions';
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
+  const loading = useSelector((state) => state.loading);
   const dispatch = useDispatch();
   const [cocaWords, setCocaWords] = useState([]);
   const [wordList, setWordList] = useState({});
@@ -46,7 +46,7 @@ function App() {
 
   const initialLoad = async () => {
     try {
-      setIsLoading(true);
+      dispatch(setLoading(true));
       const a = await getCocaWords();
       const b = await getNewWords();
 
@@ -60,7 +60,7 @@ function App() {
 
       dispatch(addStories(null));
     } finally {
-      setIsLoading(false);
+      dispatch(setLoading(false));
     }
   };
 
@@ -72,11 +72,11 @@ function App() {
     <div className="App">
       <Header />
       <SearchBar cocaWords={cocaWords} wordList={wordList} />
-      <Row>
+      {/* <Row>
         <Col xs={{ offset: 6 }}>
-          {isLoading ? <div className="loader" /> : null}
+          {loading ? <div className="loader" /> : null}
         </Col>
-      </Row>
+      </Row> */}
       <Main />
     </div>
   );

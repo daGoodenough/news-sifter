@@ -33,23 +33,31 @@ td img {
   width: 100%;
   height: 120px;
   width: 120px;
-  border-radius: 8px;
+  border-radius: 0.375rem;
   cursor: pointer;
 }
 
 .reading-level-box {
-  border-radius: 8px;
-  border: 0.1px solid black;
-  color: #F4F4F9;
+  color: black;
+  background-color: white !important;
+  border-radius: 0.375rem;
+  border: 0.1px solid #101D42;
   width: 110%;
-  background-color: #101D42 !important;
-  backdrop-filter: blur(2px) !important;
+  padding: 0.375rem, 0.75rem;
+  -webkit-filter: drop-shadow(0px 1px 1px rgba(130,130,130,.1));
+  
+}
+
+.article-info-ul h5 {
+  text-decoration: underline;
+  
 }
 
 .extra-reading-level-info {
   position: absolute;
   right: 102%;
   background-color: #101D42;
+  color: #F4F4F9;
   width: 180px;
   height: fit-content;
   padding: 3%;
@@ -95,17 +103,19 @@ small {
   cursor: pointer;
 }
 
+
 .article-info-ul li{
   list-style-type: none;
-  margin-left: -10px;
+  margin-left: -10%;
  
 }
 
 .article-info-ul li:before {
-  content: "\f35a";
+  content: "\f069";
   font-family: "Font Awesome 5 Free";
   font-weight: 100 !important;
   margin-right: 10px;
+  color:rgba(0, 0, 0, 0.75);
 }
 
 .sidebar-left {
@@ -158,7 +168,7 @@ display: inline-block !important;
   color: black;
   border-radius: 8px;
   margin-top: 5%;
-  font-weight: 500;
+
 }
 
 .sidebar-advanced-word-list {
@@ -166,7 +176,7 @@ display: inline-block !important;
   border: .1px solid #101D42;
   border-radius: 8px;
   margin-top: 5%;
-  font-weight: 500;
+
 }
 
 .save-button {
@@ -367,18 +377,32 @@ article img {
   }
 }
 
+
+
 .color-nav {
   background-color: #101D42;
   margin-bottom: 2%;
+}
+
+.bold-title-word {
+  font-weight: 600;
 }
 
 .navbar-brand {
   color: white;
 }
 
+.navbar-brand:hover {
+  color: gray;
+}
+
 .nav-link {
   color: white;
   
+}
+
+.nav-link:hover {
+  color: gray;
 }
 
 .nav-link strong {
@@ -422,7 +446,7 @@ article img {
 
 .loader {
   border: 5px solid #f3f3f3; /* Light grey */
-  border-top: 5px solid aquamarine; /* Blue */
+  border-top: 5px solid #101D42; /* Blue */
   border-radius: 50%;
   width: 60px;
   height: 60px;

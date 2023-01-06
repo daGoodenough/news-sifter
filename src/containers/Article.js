@@ -30,6 +30,7 @@ const Article = ({ articleLocation }) => {
   const savedStories = useSelector((state) => state.saved);
   const translator = useSelector((state) => state.translator);
   const visited = useSelector((state) => state.visited);
+  const loading = useSelector((state) => state.loading);
   const thisURL = window.location.href;
   const id = parseInt(thisURL.substring(thisURL.lastIndexOf('/') + 1));
   const thisArticle = _.find(stories, (element) => element.id === id);
@@ -182,7 +183,9 @@ const Article = ({ articleLocation }) => {
     else if (langNotAvailable) setDictionaryBoxIsLoading(false);
   }, [translations]);
 
-  if (thisArticle === undefined) {
+  if (loading === true) {
+    return <div />;
+  } else if (thisArticle === undefined) {
     return (
       <Row>
         <Col>
@@ -197,6 +200,7 @@ const Article = ({ articleLocation }) => {
     );
   }
 
+  console.log('loading', loading);
   const getDefinition = async (selectedWord) => {
     const translationsResponse = await axios.get(
       `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${selectedWord}&target_lang=${translator.translator}`
@@ -213,6 +217,13 @@ const Article = ({ articleLocation }) => {
     const selectedTranslator = selectedOption.value;
     const selectedLanguage = selectedOption.textContent;
     dispatch(setTranslator(selectedTranslator, selectedLanguage));
+    localStorage.setItem(
+      'translator',
+      JSON.stringify({
+        translator: selectedTranslator,
+        language: selectedLanguage,
+      })
+    );
     if (noContextLangs.includes(selectedLanguage)) {
       setLangNotAvailable(true);
       setDictionaryBoxIsLoading(false);
@@ -315,8 +326,6 @@ const Article = ({ articleLocation }) => {
   const advancedSidebar = wordArrToList(thisArticle.advancedWordsArr);
   const intermediateSidebarJSX = parse(intermediateSidebar);
   const advancedSidebarJSX = parse(advancedSidebar);
-
-  console.log('visited', visited);
 
   return (
     <div>

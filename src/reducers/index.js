@@ -5,6 +5,7 @@ import historyReducer from './historyReducer';
 import sortReducer from './sortReducer';
 import translatorReducer from './translatorReducer';
 import visitedReducer from './visitedReducer';
+import loadingReducer from './loadingReducer';
 
 const rootReducer = combineReducers({
   articles: articleReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   sort: sortReducer,
   translator: translatorReducer,
   visited: visitedReducer,
+  loading: loadingReducer,
 });
 
 export default rootReducer;

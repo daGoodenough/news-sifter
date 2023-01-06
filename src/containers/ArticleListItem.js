@@ -66,9 +66,7 @@ const ArticleListItem = ({ id, history }) => {
               </div>
             </div>
             <ul className="article-info-ul">
-              <h6>
-                <u>Article Info</u>
-              </h6>
+              <h5>Article Info</h5>
               <li>Word count: {stories[id].wordCount}</li>
               <li>
                 Beginner words: {calculatePercentage(stories[id].beginnerWords)}
