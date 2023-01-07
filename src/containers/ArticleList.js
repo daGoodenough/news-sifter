@@ -10,16 +10,15 @@ import NoResults from '../components/NoResults';
 
 const ArticleList = ({ history }) => {
   const stories = useSelector((state) => state.articles);
+  const loading = useSelector((state) => state.loading);
   const sort = useSelector((state) => state.sort);
   if (!stories) {
     return <ErrorPage />;
   }
 
   const sortedArticles = sortArticles(stories, sort);
-  console.log('storted', sortedArticles);
-
   const renderArticleListItems = () => {
-    if (sortedArticles.length === 0) {
+    if (sortedArticles.length === 0 && loading === false) {
       return 'No articles found at that level. Try expanding your search results or changing the difficulty level.';
     }
     return sortedArticles.map((article) => (
