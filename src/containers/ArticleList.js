@@ -16,12 +16,16 @@ const ArticleList = ({ history }) => {
   }
 
   const sortedArticles = sortArticles(stories, sort);
+  console.log('storted', sortedArticles);
 
-  const renderArticleListItems = () =>
-    sortedArticles.map((article) => (
+  const renderArticleListItems = () => {
+    if (sortedArticles.length === 0) {
+      return 'No articles found at that level. Try expanding your search results or changing the difficulty level.';
+    }
+    return sortedArticles.map((article) => (
       <ArticleListItem history={history} key={article.id} id={article.id} />
     ));
-
+  };
   return (
     <div className="search-results-box">
       <table className="table">{renderArticleListItems()}</table>

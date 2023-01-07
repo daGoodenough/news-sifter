@@ -200,7 +200,6 @@ const Article = ({ articleLocation }) => {
     );
   }
 
-  console.log('loading', loading);
   const getDefinition = async (selectedWord) => {
     const translationsResponse = await axios.get(
       `https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${selectedWord}&target_lang=${translator.translator}`

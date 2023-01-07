@@ -32,7 +32,7 @@ export async function getNewWords() {
     wordForms.push(wordForm);
   });
   const wordList = { lemmas, wordForms };
-  console.log('just got word list');
+
   return wordList;
 }
 
@@ -46,6 +46,6 @@ export async function getCocaWords() {
     const cocaWord = columns[0];
     cocaWords.push(cocaWord);
   });
-  console.log('just got coca words');
+
   return cocaWords;
 }

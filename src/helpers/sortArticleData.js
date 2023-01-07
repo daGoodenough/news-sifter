@@ -22,10 +22,12 @@ const sortByDifficulty = (articleData, sortDifficulty) => {
   }
 
   if (sortDifficulty === 'beginner') {
-    return _.filter(
+    const beginnerArticles = _.filter(
       articleData,
       (article) => article.intermediateAndAdvancedWords <= intermediate
     );
+    console.log('begginer', beginnerArticles);
+    return beginnerArticles;
   }
   if (sortDifficulty === 'intermediate') {
     return _.filter(

@@ -50,7 +50,6 @@ const SearchBar = ({ wordList, cocaWords }) => {
   const handleSortByChange = (e) => dispatch(changeSortBy(e.target.value));
 
   const handleResultsChange = (e) => {
-    console.log('this got called');
     const userChoice = parseInt(e.target.value);
     setPageSize(userChoice);
   };
