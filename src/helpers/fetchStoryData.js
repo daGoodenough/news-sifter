@@ -14,9 +14,8 @@ export const fetchStories = async (query, pageSize, wordList, cocaWords) => {
       `https://newsapi.org/v2/everything?q=${query}&pageSize=${pageSize}&language=en&apiKey=${API_KEY}`
     );
     // const results = await axios.get('./data.json');
-   
+  
     const { articles } = results.data;
-
     if (articles.length === 0) {
       return null;
     }
@@ -31,7 +30,7 @@ export const fetchStories = async (query, pageSize, wordList, cocaWords) => {
 };
 
 function pullURLS(data) {
-  const pulled = data.map((i) => i.url);
+  const pulled = data.map((i) =>  i.url);
   return pulled;
 }
 
@@ -122,6 +121,7 @@ const formatData = async (articles, wordList, cocaWords) => {
       extractedHTML = data;
     });
     const storiesWithInfo = storiesDifficulty.reduce((acc, item, index) => {
+      if (storiesDifficulty[index].total > 300) {
       acc[Date.parse(articles[index].publishedAt)] = {
         id: Date.parse(articles[index].publishedAt) || '',
         url: articles[index].url || '',
@@ -159,6 +159,7 @@ const formatData = async (articles, wordList, cocaWords) => {
             storiesDifficulty[index].advanced) /
             storiesDifficulty[index].total || '',
       };
+    }
       return acc;
     }, {});
     return storiesWithInfo

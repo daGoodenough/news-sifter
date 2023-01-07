@@ -26,7 +26,6 @@ const sortByDifficulty = (articleData, sortDifficulty) => {
       articleData,
       (article) => article.intermediateAndAdvancedWords <= intermediate
     );
-    console.log('begginer', beginnerArticles);
     return beginnerArticles;
   }
   if (sortDifficulty === 'intermediate') {
@@ -58,7 +57,10 @@ const sortBySortByMethod = (articles, sortByMethod) => {
   }
 
   if (sortByMethod === 'advancedToBeginner') {
-    return _.sortBy(articles, (article) => article.beginnerWords);
+    return _.sortBy(
+      articles,
+      (article) => -article.intermediateAndAdvancedWords
+    );
   }
 };
 
