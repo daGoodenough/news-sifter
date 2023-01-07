@@ -9,13 +9,12 @@ import axios from 'axios';
 const API_KEY = process.env.REACT_APP_API_KEY;
 
 export const fetchStories = async (query, pageSize, wordList, cocaWords) => {
-  console.log(pageSize)
   try {
     const results = await axios.get(
       `https://newsapi.org/v2/everything?q=${query}&pageSize=${pageSize}&language=en&apiKey=${API_KEY}`
     );
     // const results = await axios.get('./data.json');
-    console.log('results', results)
+   
     const { articles } = results.data;
 
     if (articles.length === 0) {
