@@ -16,7 +16,6 @@ export const fetchStories = async (query, pageSize, wordList, cocaWords) => {
     //   `https://newsapi.org/v2/everything?q=${query}&pageSize=${pageSize}&language=en&apiKey=${API_KEY}`
     // );
     const results = getFakeArticleData(pageSize);
-  
     const articles = results.data ? results.data.articles : results;
     if (articles.length === 0) {
       return 'no articles';

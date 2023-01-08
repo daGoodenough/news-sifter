@@ -1,28 +1,34 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/prop-types */
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { fetchStories } from '../helpers/fetchStoryData';
 import SearchFormDisabled from './SearchFormDisabled';
-// import { getNewWords, getCocaWords } from '../helpers/getWords';
+
 import {
   addStories,
   changeDifficulty,
   changeLanguage,
   changeSortBy,
   setLoading,
+  changePageSize,
 } from '../actions';
 
 /* eslint-disable no-unused-vars */
 
-const SearchBar = ({ wordList, cocaWords }) => {
+// const SearchBar = ({ wordList, cocaWords }) => {
+const SearchBar = () => {
   const { loading, searchDisabled } = useSelector((state) => state);
   const [query, setQuery] = useState('');
-  const [pageSize, setPageSize] = useState(5);
-  console.log(searchDisabled, 'disabled?');
-  console.log('Loading: ', loading);
+  const { pageSize } = useSelector((state) => state.sort);
+  const { cocaWords, wordList } = useSelector((state) => state.wordInfo);
+
+  useEffect(() => {
+    handleSubmitClick();
+  }, [pageSize]);
 
   const dispatch = useDispatch();
 
@@ -54,7 +60,7 @@ const SearchBar = ({ wordList, cocaWords }) => {
 
   const handleResultsChange = (e) => {
     const userChoice = parseInt(e.target.value);
-    setPageSize(userChoice);
+    dispatch(changePageSize(userChoice));
   };
 
   return (
