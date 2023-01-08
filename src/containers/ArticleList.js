@@ -11,8 +11,13 @@ import NoResults from '../components/NoResults';
 const ArticleList = ({ history }) => {
   const stories = useSelector((state) => state.articles);
   const sort = useSelector((state) => state.sort);
+
   if (!stories) {
     return <ErrorPage />;
+  }
+
+  if (stories === 'no articles') {
+    return <NoResults />;
   }
 
   const sortedArticles = sortArticles(stories, sort);
