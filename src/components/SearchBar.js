@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import { Form, InputGroup, Col, Row } from 'react-bootstrap';
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 import { fetchStories } from '../helpers/fetchStoryData';
+import SearchFormDisabled from './SearchFormDisabled';
 // import { getNewWords, getCocaWords } from '../helpers/getWords';
 import {
   addStories,
@@ -60,32 +61,30 @@ const SearchBar = ({ wordList, cocaWords }) => {
     <Row>
       <Col md={{ span: 6, offset: 3 }}>
         <Form className="m-3">
-          <Form.Group>
-            <InputGroup>
-              <Form.Control
-                onChange={(e) => setQuery(e.target.value)}
-                type="text"
-                placeholder="Search to find articles..."
-                className={`search-bar ${
-                  searchDisabled ? 'search-disabled' : ''
-                }`}
-                disabled={searchDisabled}
-              />
-              <InputGroup.Text
-                disabled={searchDisabled}
-                onClick={handleSubmitClick}
-                role="button"
-                type="submit"
-                className={`btn btn-search ${
-                  searchDisabled ? 'search-btn-disabled' : ''
-                }`}
-                as={Link}
-                to="/"
-              >
-                Search
-              </InputGroup.Text>
-            </InputGroup>
-          </Form.Group>
+          {searchDisabled ? (
+            <SearchFormDisabled />
+          ) : (
+            <Form.Group>
+              <InputGroup>
+                <Form.Control
+                  onChange={(e) => setQuery(e.target.value)}
+                  type="text"
+                  placeholder="Search to find articles..."
+                  className="search-bar"
+                />
+                <InputGroup.Text
+                  onClick={handleSubmitClick}
+                  role="button"
+                  type="submit"
+                  className="btn btn-search"
+                  as={Link}
+                  to="/"
+                >
+                  Search
+                </InputGroup.Text>
+              </InputGroup>
+            </Form.Group>
+          )}
           <Row className="pt-3">
             <Col md={4}>
               <Form.Group>
