@@ -26,13 +26,7 @@ const SearchBar = () => {
   const { pageSize } = useSelector((state) => state.sort);
   const { cocaWords, wordList } = useSelector((state) => state.wordInfo);
 
-  useEffect(() => {
-    handleSubmitClick();
-  }, [pageSize]);
-
-  const dispatch = useDispatch();
-
-  const handleSubmitClick = async () => {
+  const search = async () => {
     try {
       dispatch(setLoading(true));
       const storiesData = await fetchStories(
@@ -49,6 +43,14 @@ const SearchBar = () => {
       dispatch(setLoading(false));
     }
   };
+
+  useEffect(() => {
+    search();
+  }, [pageSize]);
+
+  const dispatch = useDispatch();
+
+  const handleSubmitClick = () => search();
 
   const handleReadingLevelChange = (e) => {
     dispatch(changeDifficulty(e.target.value));
