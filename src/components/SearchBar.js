@@ -22,7 +22,7 @@ import {
 // const SearchBar = ({ wordList, cocaWords }) => {
 const SearchBar = () => {
   const { loading, searchDisabled } = useSelector((state) => state);
-  const [query, setQuery] = useState('');
+  const [query, setQuery] = useState('news');
   const { pageSize } = useSelector((state) => state.sort);
   const { cocaWords, wordList } = useSelector((state) => state.wordInfo);
 
