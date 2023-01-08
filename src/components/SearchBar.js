@@ -17,9 +17,11 @@ import {
 /* eslint-disable no-unused-vars */
 
 const SearchBar = ({ wordList, cocaWords }) => {
-  const loading = useSelector((state) => state.loading);
+  const { loading, searchDisabled } = useSelector((state) => state);
   const [query, setQuery] = useState('');
   const [pageSize, setPageSize] = useState(5);
+  console.log(searchDisabled, 'disabled?');
+  console.log('Loading: ', loading);
 
   const dispatch = useDispatch();
 
@@ -64,13 +66,19 @@ const SearchBar = ({ wordList, cocaWords }) => {
                 onChange={(e) => setQuery(e.target.value)}
                 type="text"
                 placeholder="Search to find articles..."
-                className="search-bar"
+                className={`search-bar ${
+                  searchDisabled ? 'search-disabled' : ''
+                }`}
+                disabled={searchDisabled}
               />
               <InputGroup.Text
+                disabled={searchDisabled}
                 onClick={handleSubmitClick}
                 role="button"
                 type="submit"
-                className="btn btn-search"
+                className={`btn btn-search ${
+                  searchDisabled ? 'search-btn-disabled' : ''
+                }`}
                 as={Link}
                 to="/"
               >
