@@ -15,6 +15,7 @@ const rootReducer = combineReducers({
   translator: translatorReducer,
   visited: visitedReducer,
   loading: loadingReducer,
+  searchDisabled: () => true,
 });
 
 export default rootReducer;
