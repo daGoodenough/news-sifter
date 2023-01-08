@@ -17,7 +17,7 @@ export const fetchStories = async (query, pageSize, wordList, cocaWords) => {
   
     const { articles } = results.data;
     if (articles.length === 0) {
-      return null;
+      return 'no articles';
     }
 
     const formattedData = await formatData(articles, wordList, cocaWords);
